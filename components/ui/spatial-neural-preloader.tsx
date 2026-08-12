@@ -11,7 +11,7 @@ import * as random from "maath/random/dist/maath-random.esm";
 function NeuralParticles(props: any) {
     const ref = useRef<any>();
     // Generate random points in a sphere
-    const [sphere] = useState(() => random.inSphere(new Float32Array(5000), { radius: 1.5 }));
+    const [sphere] = useState(() => random.inSphere(new Float32Array(2000), { radius: 1.5 }));
 
     useFrame((state: any, delta: number) => {
         if (ref.current) {
