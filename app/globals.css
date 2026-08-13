@@ -46,6 +46,18 @@
 }
 
 @layer utilities {
+  /* Scroll-entrance, driven by lib/use-in-view.ts (replaces framer-motion). */
+  .reveal {
+    opacity: 0;
+    transform: translateY(1.5rem);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .reveal-visible {
+    opacity: 1;
+    transform: none;
+  }
+
   .text-outline {
     -webkit-text-stroke: 1px hsl(var(--muted-foreground) / 0.4);
     color: transparent;
@@ -65,5 +77,26 @@
   .glow-ring-subtle {
     box-shadow: 0 0 10px hsl(var(--glow) / 0.2),
       0 0 20px hsl(var(--glow) / 0.1);
+  }
+}
+
+/* Honour the OS-level motion preference everywhere at once, so individual
+   components don't each have to remember to check it. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
   }
 }

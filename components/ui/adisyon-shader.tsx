@@ -5,7 +5,7 @@
 // canvas that fills its parent. Drop it behind your content with
 // <div className="relative"><ShaderBackground className="absolute inset-0" />…
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 
 const VERT = `attribute vec2 a_position;
 void main() {
@@ -305,8 +305,15 @@ const UNIFORMS = {
 
 const pendingContextReleases = new WeakMap<HTMLCanvasElement, number>()
 
+// Shown if WebGL is unavailable or the shader fails to build, so the page never
+// falls back to a flat void. The canvas paints over it when the shader works.
+const FALLBACK_BACKGROUND =
+  "linear-gradient(160deg, #030d13 0%, #1b6ca8 55%, #5ad2f4 100%)"
+
 export function ShaderBackground({ className }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  // Bumped on webglcontextrestored to re-run the whole setup effect.
+  const [contextEpoch, setContextEpoch] = useState(0)
 
   useEffect(() => {
     const canvas = canvasRef.current as HTMLCanvasElement
@@ -314,23 +321,48 @@ export function ShaderBackground({ className }: { className?: string }) {
     const pendingRelease = pendingContextReleases.get(canvas)
     if (pendingRelease !== undefined) window.clearTimeout(pendingRelease)
     pendingContextReleases.delete(canvas)
-    const gl = canvas.getContext("webgl", { antialias: false }) as WebGLRenderingContext
-    if (!gl) return
+    // Narrow once into a non-null const rather than asserting, so the render
+    // loop below is genuinely type-checked instead of trusting a cast.
+    const context = canvas.getContext("webgl", { antialias: false })
+    if (!context) return // CSS gradient fallback on the canvas stays visible.
+    const gl = context
 
+    // Compilation can fail on older drivers even when getContext succeeds.
+    // Without these checks a failure is silent: the canvas simply stays blank
+    // and the page loses its background with nothing in the console.
     const compile = (type: number, src: string) => {
-      const s = gl.createShader(type)!
+      const s = gl.createShader(type)
+      if (!s) return null
       gl.shaderSource(s, src)
       gl.compileShader(s)
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+        console.error("ShaderBackground: shader compile failed —", gl.getShaderInfoLog(s))
+        gl.deleteShader(s)
+        return null
+      }
       return s
     }
-    const program = gl.createProgram()!
+
+    const program = gl.createProgram()
     const vertexShader = compile(gl.VERTEX_SHADER, VERT)
     const fragmentShader = compile(gl.FRAGMENT_SHADER, FRAG)
+    if (!program || !vertexShader || !fragmentShader) {
+      if (vertexShader) gl.deleteShader(vertexShader)
+      if (fragmentShader) gl.deleteShader(fragmentShader)
+      if (program) gl.deleteProgram(program)
+      return // CSS gradient fallback on the wrapper stays visible.
+    }
+
     gl.attachShader(program, vertexShader)
     gl.attachShader(program, fragmentShader)
     gl.linkProgram(program)
     gl.deleteShader(vertexShader)
     gl.deleteShader(fragmentShader)
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      console.error("ShaderBackground: program link failed —", gl.getProgramInfoLog(program))
+      gl.deleteProgram(program)
+      return
+    }
     gl.useProgram(program)
 
     const buf = gl.createBuffer()
@@ -407,7 +439,14 @@ export function ShaderBackground({ className }: { className?: string }) {
     let inView = true
     let disposed = false
     const start = performance.now()
-    const timeAnimated = Math.abs(UNIFORMS.timeScale) > 0.0001
+    // A continuously animating full-screen shader is the single largest ongoing
+    // cost on the page. Honour the OS motion preference: render one frame and
+    // stop, instead of holding the GPU awake for the whole visit.
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches
+    const timeAnimated =
+      Math.abs(UNIFORMS.timeScale) > 0.0001 && !prefersReducedMotion
 
     const resizeCanvas = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2)
@@ -506,6 +545,22 @@ export function ShaderBackground({ className }: { className?: string }) {
     }
     document.addEventListener("visibilitychange", onVisibilityChange)
 
+    // GPU resets, driver timeouts and tab-switching on some mobile drivers kill
+    // the context. preventDefault() is what makes it restorable at all; without
+    // this pair the background dies permanently for the rest of the session.
+    const onContextLost = (event: Event) => {
+      event.preventDefault()
+      disposed = true
+      if (raf !== 0) {
+        cancelAnimationFrame(raf)
+        raf = 0
+      }
+      lastNow = null
+    }
+    const onContextRestored = () => setContextEpoch((n) => n + 1)
+    canvas.addEventListener("webglcontextlost", onContextLost)
+    canvas.addEventListener("webglcontextrestored", onContextRestored)
+
     function render(now: number) {
       raf = 0
       if (disposed || !visible || !inView) return
@@ -554,6 +609,10 @@ export function ShaderBackground({ className }: { className?: string }) {
       resizeObserver.disconnect()
       intersectionObserver.disconnect()
       document.removeEventListener("visibilitychange", onVisibilityChange)
+      // Removed before the deferred loseContext() below, so our own teardown
+      // doesn't trip the recovery path.
+      canvas.removeEventListener("webglcontextlost", onContextLost)
+      canvas.removeEventListener("webglcontextrestored", onContextRestored)
       window.removeEventListener("resize", updateLayout)
       if (UNIFORMS.cursorEnabled) {
         window.removeEventListener("pointermove", onPointerMove)
@@ -576,9 +635,19 @@ export function ShaderBackground({ className }: { className?: string }) {
       }, 0)
       pendingContextReleases.set(canvas, releaseTimer)
     }
-  }, [])
+  }, [contextEpoch])
 
   return (
-    <canvas ref={canvasRef} className={className} style={{ display: "block", width: "100%", height: "100%" }} />
+    <canvas
+      ref={canvasRef}
+      className={className}
+      aria-hidden="true"
+      style={{
+        display: "block",
+        width: "100%",
+        height: "100%",
+        background: FALLBACK_BACKGROUND,
+      }}
+    />
   )
 }
