@@ -50,6 +50,8 @@ const config: Config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      // Only what the preloader still uses. `underline-in` and `fade-up-fast`
+      // went with the components that consumed them.
       keyframes: {
         "fade-up": {
           from: { opacity: "0", transform: "translateY(24px)" },
@@ -59,15 +61,9 @@ const config: Config = {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0" },
         },
-        "underline-in": {
-          from: { width: "0%" },
-          to: { width: "100%" },
-        },
       },
       animation: {
         "fade-up": "fade-up 0.7s ease-out both",
-        "fade-up-fast": "fade-up 0.45s ease-out both",
-        "underline-in": "underline-in 0.8s ease-out both",
         blink: "blink 1.1s step-end infinite",
       },
     },

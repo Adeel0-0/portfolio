@@ -1,17 +1,19 @@
 import { ImageResponse } from "next/og";
-import { profile, stats } from "@/data/resume";
+import { profile, stats, content } from "@/data";
 
 // Deliberately no `runtime = "edge"`: on the Node runtime Next prerenders this
 // to a static PNG at build time. Edge would make it render per request.
-export const alt = "Syed Mohammad Adeel — AI/ML & Software Engineer";
+export const alt = content.siteMeta.title;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-// Theme tokens from app/globals.css, resolved to hex — ImageResponse has no
-// access to Tailwind or CSS custom properties.
-const BACKGROUND = "#0f1729";
-const PRIMARY = "#00eeff";
-const MUTED = "#b6c2d9";
+// ImageResponse can't read Tailwind classes or CSS custom properties, so the
+// palette has to be inlined as hex. These are the neutral placeholders that
+// match app/globals.css — update them alongside the new theme.
+const BACKGROUND = "#0a0a0a";
+const BACKGROUND_TO = "#171717";
+const PRIMARY = "#fafafa";
+const MUTED = "#a1a1a1";
 
 export default async function Image() {
   return new ImageResponse(
@@ -23,7 +25,7 @@ export default async function Image() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          background: `linear-gradient(135deg, ${BACKGROUND} 0%, #16233d 100%)`,
+          background: `linear-gradient(135deg, ${BACKGROUND} 0%, ${BACKGROUND_TO} 100%)`,
           padding: "80px",
         }}
       >

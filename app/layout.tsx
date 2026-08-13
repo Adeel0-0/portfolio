@@ -1,43 +1,33 @@
 import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
-import { ShaderBackground } from "@/components/ui/adisyon-shader";
 import { SpatialNeuralPreloader } from "@/components/ui/spatial-neural-preloader";
+import { content } from "@/data";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-space-grotesk",
 });
 
-const title = "Syed Mohammad Adeel — AI/ML & Software Engineer";
-const description =
-  "Portfolio of Syed Mohammad Adeel: AI-powered backend systems, embeddings & vector search, RAG pipelines, computer vision, and production APIs.";
+const { siteMeta } = content;
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://adeel-portfolio.vercel.app"),
-  title,
-  description,
-  keywords: [
-    "AI Engineer",
-    "ML Engineer",
-    "Backend Engineer",
-    "RAG",
-    "Vector Search",
-    "Python",
-    "FastAPI",
-  ],
-  authors: [{ name: "Syed Mohammad Adeel" }],
+  metadataBase: new URL(siteMeta.url),
+  title: siteMeta.title,
+  description: siteMeta.description,
+  keywords: siteMeta.keywords,
+  authors: [{ name: siteMeta.author }],
   openGraph: {
-    title,
-    description,
+    title: siteMeta.title,
+    description: siteMeta.description,
     type: "website",
-    locale: "en_US",
-    siteName: "Syed Mohammad Adeel",
+    locale: siteMeta.locale,
+    siteName: siteMeta.siteName,
   },
   twitter: {
     card: "summary_large_image",
-    title,
-    description,
+    title: siteMeta.title,
+    description: siteMeta.description,
   },
 };
 
@@ -47,19 +37,17 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${spaceGrotesk.variable} font-sans`}>
-        {/* Without JS the prerendered markup would keep the preloader overlay up
-            and leave every scroll-reveal at opacity 0 — i.e. a black screen.
-            The content is server-rendered, so it should still be readable. */}
+        {/* Without JS the prerendered markup would keep the preloader overlay
+            up forever — it covers the whole viewport, so the page would read as
+            a dead black screen. The content itself is server-rendered. */}
         <noscript>
           <style
             dangerouslySetInnerHTML={{
-              __html:
-                ".js-preloader{display:none!important}.reveal{opacity:1!important;transform:none!important}",
+              __html: ".js-preloader{display:none!important}",
             }}
           />
         </noscript>
         <SpatialNeuralPreloader />
-        <ShaderBackground className="fixed inset-0 -z-10 h-full w-full" />
         {children}
       </body>
     </html>
