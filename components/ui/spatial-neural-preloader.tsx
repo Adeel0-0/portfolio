@@ -16,12 +16,27 @@ const commands = [
 // Single source of truth: the progress counter and the typing animation both
 // pace off this, so they can't drift apart.
 const LOADER_DURATION = 2000;
-const HOLD_AT_100 = 400;
-const EXIT_DURATION = 600;
+// Deliberately short. The anticipation dip below supplies its own beat, so a
+// longer pause here just reads as dead air before anything happens.
+const HOLD_AT_100 = 200;
+// The hand-off: pull back briefly, then rush past the camera. globals.css
+// animates the page forward against LAUNCH_DURATION, so if you change this,
+// change the transition there too.
+const ANTICIPATE_DURATION = 120;
+const LAUNCH_DURATION = 1000;
 // Hard ceiling. If anything above misbehaves, the overlay still leaves — it
 // covers the entire page, so a stuck preloader means a dead site.
 const FAILSAFE = LOADER_DURATION + 4000;
 const SESSION_KEY = "preloader:seen";
+// Playing once per tab is right for visitors and hostile to iteration — you
+// can't tune an animation you have to open a new tab to see. The key is still
+// written in dev, just not read, so production behaviour is unchanged.
+const REPLAY_EVERY_LOAD = process.env.NODE_ENV !== "production";
+// Written onto <html> so globals.css can animate the page in without this
+// component needing a client boundary around the whole tree.
+const ROOT_ATTR = "data-preloader";
+
+type Phase = "running" | "anticipate" | "launching" | "done";
 
 /** Derive the typed line from progress — no extra state, no per-character render. */
 function lineFor(progress: number) {
@@ -34,7 +49,12 @@ function lineFor(progress: number) {
 
 export function SpatialNeuralPreloader() {
     const [progress, setProgress] = useState(0);
-    const [phase, setPhase] = useState<"running" | "exiting" | "done">("running");
+    const [phase, setPhase] = useState<Phase>("running");
+    // Gates the page-hiding attribute below. Starts false and is set only on
+    // the path where the sequence actually plays, so a repeat visit, a
+    // reduced-motion visitor or an early bail-out can never leave the page
+    // hidden. The worst case is a missing animation, not a missing site.
+    const [sequenceActive, setSequenceActive] = useState(false);
 
     const dismiss = useCallback(() => {
         try {
@@ -42,7 +62,7 @@ export function SpatialNeuralPreloader() {
         } catch {
             // Private browsing / storage disabled — the loader just replays.
         }
-        setPhase((p) => (p === "running" ? "exiting" : p));
+        setPhase((p) => (p === "running" ? "anticipate" : p));
     }, []);
 
     useEffect(() => {
@@ -52,7 +72,8 @@ export function SpatialNeuralPreloader() {
         // useState initializer — otherwise server and client markup differ.
         let alreadySeen = false;
         try {
-            alreadySeen = sessionStorage.getItem(SESSION_KEY) === "1";
+            alreadySeen =
+                !REPLAY_EVERY_LOAD && sessionStorage.getItem(SESSION_KEY) === "1";
         } catch {
             // Storage unavailable; fall through and play the animation.
         }
@@ -64,6 +85,10 @@ export function SpatialNeuralPreloader() {
             setPhase("done");
             return;
         }
+
+        // Past this point the sequence is committed, so it's safe to let the
+        // page be hidden underneath the overlay.
+        setSequenceActive(true);
 
         const intervalTime = 30;
         const steps = LOADER_DURATION / intervalTime;
@@ -89,12 +114,34 @@ export function SpatialNeuralPreloader() {
         };
     }, [dismiss]);
 
-    // Unmount after the fade-out so the canvas and its rAF loop stop for good.
+    // Dip back, then launch. Splitting these keeps each phase a plain CSS
+    // transition rather than a keyframe sequence to keep in sync by hand.
     useEffect(() => {
-        if (phase !== "exiting") return;
-        const timer = setTimeout(() => setPhase("done"), EXIT_DURATION);
+        if (phase !== "anticipate") return;
+        const timer = setTimeout(() => setPhase("launching"), ANTICIPATE_DURATION);
         return () => clearTimeout(timer);
     }, [phase]);
+
+    // Unmount after the dive so the canvas and its rAF loop stop for good.
+    useEffect(() => {
+        if (phase !== "launching") return;
+        const timer = setTimeout(() => setPhase("done"), LAUNCH_DURATION);
+        return () => clearTimeout(timer);
+    }, [phase]);
+
+    // Mirror the phase onto <html> for globals.css. The cleanup runs on every
+    // phase change and on unmount, so there is no path that leaves the page
+    // stuck hidden — including the FAILSAFE jump straight to "done".
+    useEffect(() => {
+        if (!sequenceActive) return;
+        const root = document.documentElement;
+        if (phase === "done") {
+            root.removeAttribute(ROOT_ATTR);
+            return;
+        }
+        root.setAttribute(ROOT_ATTR, phase);
+        return () => root.removeAttribute(ROOT_ATTR);
+    }, [phase, sequenceActive]);
 
     // Escape hatch: any click or keypress skips straight to the page.
     useEffect(() => {
@@ -109,24 +156,39 @@ export function SpatialNeuralPreloader() {
 
     if (phase === "done") return null;
 
+    // The exit choreography lives in globals.css, keyed off the same
+    // data-preloader attribute, so the overlay's dive and the page's
+    // push-forward sit beside each other and stay in sync.
     return (
         <div
             role="status"
             aria-label="Loading portfolio"
-            className={`js-preloader fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-black transition-all duration-500 ease-in ${
-                phase === "exiting" ? "scale-110 opacity-0" : "scale-100 opacity-100"
-            }`}
+            className="js-preloader fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-black"
         >
             {/* Particle backdrop */}
             <div className="absolute inset-0 z-0">
                 <ParticleField className="h-full w-full" />
             </div>
 
-            {/* Frosted Glass Overlay */}
-            <div className="absolute inset-0 z-10 bg-black/40 backdrop-blur-sm" />
+            {/* Frosted glass overlay. The backdrop-blur comes off during the
+                dive — nesting backdrop-filter inside an ancestor whose filter
+                is animating is expensive and renders inconsistently, and the
+                real blur supersedes it anyway. */}
+            <div
+                className={`absolute inset-0 z-10 bg-black/40 ${
+                    phase === "launching" ? "" : "backdrop-blur-sm"
+                }`}
+            />
 
-            {/* Terminal Window */}
-            <div className="animate-fade-up relative z-20 w-full max-w-lg overflow-hidden rounded-xl border border-white/10 bg-black/60 p-6 shadow-2xl backdrop-blur-md">
+            {/* Terminal Window. Its backdrop-blur comes off during the dive for
+                the same reason as the frost above — and it matters more here,
+                because this card is what scales, so its backdrop gets
+                re-rendered at 3.2x viewport area every frame. */}
+            <div
+                className={`animate-fade-up relative z-20 w-full max-w-3xl overflow-hidden rounded-xl border border-white/10 bg-black/60 p-8 shadow-2xl ${
+                    phase === "launching" ? "" : "backdrop-blur-md"
+                }`}
+            >
                 {/* Terminal Header */}
                 <div className="mb-4 flex items-center gap-2 border-b border-white/10 pb-4">
                     <div className="h-3 w-3 rounded-full bg-red-500/80" />
@@ -152,7 +214,7 @@ export function SpatialNeuralPreloader() {
                 {/* Progress Counter */}
                 <div className="mt-8 flex items-end justify-between border-t border-white/10 pt-4">
                     <div className="font-mono text-xs text-white/50">SYSTEM_BOOT</div>
-                    <div className="font-mono text-4xl font-bold tracking-tighter text-white">
+                    <div className="font-mono text-5xl font-bold tracking-tighter text-white">
                         {progress}%
                     </div>
                 </div>

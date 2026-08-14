@@ -51,6 +51,82 @@
   }
 }
 
+/* The preloader hands off by diving past the camera while the page pushes
+   forward into place behind it. Driven by the data-preloader attribute the
+   preloader writes onto <html>, so the page tree needs no client boundary and
+   the animation costs no React re-renders.
+
+   The default state is fully visible and untransformed. The attribute exists
+   only while JS is actively running the sequence, so no-JS visitors, repeat
+   visitors and reduced-motion visitors all get an ordinary page — a failure
+   here degrades to a missing animation, never a blank site.
+
+   Note the transform is dropped entirely rather than parked at scale(1): a
+   lingering transform would make #site-shell a containing block and quietly
+   break position:fixed for anything inside it.
+
+   Both halves of the move are written here rather than as Tailwind classes on
+   the overlay: the durations have to agree, and `tailwindcss-animate` claims
+   the `duration-*` / `ease-*` prefixes, which makes arbitrary values there
+   ambiguous between transition-* and animation-*. */
+
+/* --- the overlay diving past the camera --- */
+.js-preloader {
+  transform-origin: center center;
+  /* An explicit identity filter to transition *from*. */
+  filter: blur(0);
+  will-change: transform, opacity, filter;
+}
+
+html[data-preloader="anticipate"] .js-preloader {
+  transform: scale(0.97);
+  transition: transform 120ms ease-out;
+}
+
+html[data-preloader="launching"] .js-preloader {
+  transform: scale(3.2);
+  opacity: 0;
+  filter: blur(6px);
+  /* Each property does one job on its own curve. Sharing a single hard ease-in
+     across all three was what made this read as "nothing, then gone": it put
+     only ~27% of the motion in the first two thirds, then crammed the rest
+     into the tail.
+
+     Scale moves from the first frame — this is the part you actually see, and
+     mild acceleration reads as a dolly where a hard ease-in reads as a snap.
+     Opacity holds solid through the first half so the terminal is still fully
+     legible while it is visibly rushing outward, then drops. Blur comes in
+     late, once the motion has already registered. */
+  transition:
+    transform 1000ms cubic-bezier(0.55, 0, 0.85, 0.5),
+    opacity 500ms ease-in 500ms,
+    filter 600ms ease-in 400ms;
+}
+
+/* --- the page pushing forward into place --- */
+#site-shell {
+  transform-origin: center center;
+}
+
+html[data-preloader="running"] #site-shell,
+html[data-preloader="anticipate"] #site-shell {
+  opacity: 0;
+  transform: scale(0.88);
+}
+
+html[data-preloader="launching"] #site-shell {
+  opacity: 1;
+  transform: scale(1);
+  /* The opacity delay makes the page emerge *as* the terminal fades rather
+     than cross-dissolving underneath it while the terminal is still solid.
+     Transform lands at 950ms against the overlay's 1000ms dive, so the page
+     has settled before the attribute is removed and nothing snaps. */
+  transition:
+    opacity 600ms ease-out 350ms,
+    transform 950ms cubic-bezier(0.2, 0.8, 0.3, 1);
+  will-change: transform, opacity;
+}
+
 /* Honour the OS-level motion preference everywhere at once, so individual
    components don't each have to remember to check it. */
 @media (prefers-reduced-motion: reduce) {

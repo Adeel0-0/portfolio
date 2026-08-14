@@ -48,7 +48,10 @@ export default function RootLayout({
           />
         </noscript>
         <SpatialNeuralPreloader />
-        {children}
+        {/* Target for the preloader hand-off in globals.css — the page pushes
+            forward into place as the overlay dives past. Left untouched
+            whenever the preloader is skipped. */}
+        <div id="site-shell">{children}</div>
       </body>
     </html>
   );
