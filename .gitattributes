@@ -1,0 +1,13 @@
+# Normalize line endings to LF in the index regardless of a machine's
+# core.autocrlf. Working-tree endings stay native.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
