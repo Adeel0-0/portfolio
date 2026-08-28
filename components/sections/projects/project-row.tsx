@@ -1,4 +1,4 @@
-import { AttentionGlow } from "@/components/effects/attention-glow";
+import { SkillHighlight } from "@/components/effects/skill-highlight";
 import type { Project } from "@/data";
 import { cn } from "@/lib/utils";
 import { ProjectMedia } from "./project-media";
@@ -32,7 +32,7 @@ export function ProjectRow({
       className="scroll-mt-20 overflow-x-clip border-t border-border py-14 md:py-20"
     >
       <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-        <AttentionGlow
+        <SkillHighlight
           skills={project.skills}
           className={cn("flex flex-col gap-8", mediaFirst && "lg:order-2")}
         >
@@ -72,7 +72,7 @@ export function ProjectRow({
               {project.description[1]}
             </p>
           </LineGroup>
-        </AttentionGlow>
+        </SkillHighlight>
 
         <div className={cn(mediaFirst && "lg:order-1")}>
           <SlamIn direction={direction}>
