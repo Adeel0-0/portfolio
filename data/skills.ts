@@ -28,7 +28,13 @@ export type SkillGroup = {
   items: SkillItem[];
 };
 
-export const skills: SkillGroup[] = [
+/**
+ * `as const satisfies` rather than a `SkillGroup[]` annotation, matching the
+ * idiom in lib/sections.ts. The annotation would widen every name to `string`;
+ * this keeps the literals so `SkillName` below can be derived from them, while
+ * `satisfies` still checks the shape.
+ */
+export const skills = [
   {
     group: "AI / ML",
     items: [
@@ -102,7 +108,16 @@ export const skills: SkillGroup[] = [
       { name: "Data Logging", grade: "hard" },
     ],
   },
-];
+] as const satisfies readonly SkillGroup[];
+
+/**
+ * Every skill name that exists, as a union.
+ *
+ * data/projects.ts uses this for `project.skills`, which are foreign keys into
+ * this file. Before, they were plain strings checked by nobody: a typo left the
+ * attention connectors silently highlighting nothing.
+ */
+export type SkillName = (typeof skills)[number]["items"][number]["name"];
 
 export const GRADE_LABEL: Record<SkillGrade, string> = {
   soft: "Daily",

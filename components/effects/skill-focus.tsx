@@ -17,9 +17,14 @@ import { createContext, useContext, useMemo, useState } from "react";
  */
 
 type SkillFocus = {
-  /** Skill names to emphasise, or null when nothing is hovered. */
-  focused: string[] | null;
-  setFocused: (skills: string[] | null) => void;
+  /**
+   * Skill names to emphasise, or null when nothing is hovered.
+   *
+   * `readonly` all the way through: the value originates as a literal tuple on
+   * a project in data/projects.ts, and this context only ever reads it.
+   */
+  focused: readonly string[] | null;
+  setFocused: (skills: readonly string[] | null) => void;
 };
 
 const SkillFocusContext = createContext<SkillFocus | null>(null);
@@ -29,7 +34,7 @@ export function SkillFocusProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [focused, setFocused] = useState<string[] | null>(null);
+  const [focused, setFocused] = useState<readonly string[] | null>(null);
   const value = useMemo(() => ({ focused, setFocused }), [focused]);
 
   return (

@@ -14,6 +14,8 @@
  * screen recording in later is a one-line change here and nothing else:
  * components/sections/projects/project-media.tsx switches on `kind`.
  */
+import type { SkillName } from "./skills";
+
 export type ProjectMedia =
   | { kind: "telemetry" }
   | { kind: "image"; src: string; alt: string }
@@ -32,8 +34,14 @@ export type Project = {
   index: string;
   title: string;
   subtitle: string;
-  /** [0] = what it is. [1] = how it works. */
-  description: string[];
+  /**
+   * [0] = what it is. [1] = how it works.
+   *
+   * A tuple, not an array: the two-element contract is documented at the top
+   * of this file and project-row.tsx indexes [0] and [1] blindly. The type now
+   * enforces what the comment asks for.
+   */
+  description: [string, string];
   stack: string[];
   /**
    * Architecture nodes for the telemetry panel's flow diagram. Kept separate
@@ -43,8 +51,12 @@ export type Project = {
   /**
    * Names matching `SkillItem.name` in data/skills.ts. Drives the attention
    * connectors and pre-highlights the matching chips in the Garage section.
+   *
+   * Typed as a union derived from data/skills.ts rather than as string[], so a
+   * typo is a compile error instead of silent no-op highlighting — the failure
+   * mode this coupling had before, and the reason it is worth the indirection.
    */
-  skills?: string[];
+  skills?: readonly SkillName[];
   /** Absent means no time set — the tower renders an em dash, like a DNF. */
   metric?: ProjectMetric;
   media?: ProjectMedia;

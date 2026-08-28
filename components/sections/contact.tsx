@@ -16,9 +16,7 @@ import { SectionShell } from "./section-shell";
  * message the site has no backend to deliver.
  */
 export function Contact() {
-  const [before, accent] = content.contact.heading.split(
-    content.contact.headingAccent
-  );
+  const { before, accent } = content.contact.heading;
 
   return (
     // Bottom padding clears the fixed dock, which would otherwise sit over the

@@ -37,7 +37,12 @@ export function SectionShell({
       <div className="container">
         <div className="mb-10 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">
           <span aria-hidden="true" className="h-px w-6 bg-brand" />
-          <h2 className="whitespace-nowrap">{section.eyebrow}</h2>
+          {/* A <p>, not an <h2>. The eyebrow is a decorative marker ("// GRID"),
+              while About and Contact render their real heading as a sibling
+              <h2> — so every section had two, and the one in the document
+              outline was the punctuation. Tailwind preflight resets h2 and p
+              identically here, so this is pixel-for-pixel the same. */}
+          <p className="whitespace-nowrap">{section.eyebrow}</p>
           <SectorSweep sector={sector} />
         </div>
         {/* Children get their own wrapper rather than sharing the container, so

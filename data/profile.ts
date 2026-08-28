@@ -1,21 +1,54 @@
-export const profile = {
-  name: "Syed Mohammad Adeel",
-  firstName: "ADEEL",
-  role: "AI/ML & Software Engineer",
+/** The portrait in the Developer Profile section. */
+export type Avatar = {
+  /** Any file in public/. */
+  src: string;
+  /**
+   * True for pixel art. Without it the browser smooth-scales the image and a
+   * 64px sprite blown up to 320px turns to mush; with it, every pixel stays a
+   * hard square.
+   */
+  pixelated: boolean;
+};
+
+export type Profile = {
+  name: string;
+  firstName: string;
+  role: string;
   /**
    * Race number, the way drivers carry one. Threads through the pit board, the
    * nav corner and the footer; every one of those renders conditionally, so
-   * null simply means the number is omitted everywhere. Pick one and set it.
+   * null simply means the number is omitted everywhere.
    */
-  raceNumber: 22 as number | null,
-
+  raceNumber: number | null;
+  avatar: Avatar;
+  tagline: string;
+  summary: string;
   /**
-   * The portrait in the Developer Profile section.
+   * The sponsor bar along the base of the hero — your tools as livery decals.
    *
-   * Swap `src` for any file in public/. Set `pixelated: true` for pixel art —
-   * without it the browser smooth-scales the image and a 64px sprite blown up
-   * to 320px turns to mush; with it, every pixel stays a hard square.
+   * Short wordmarks only. Deliberately a hand-picked subset rather than a slice
+   * of data/skills.ts, because the headline skills there are phrases
+   * ("Embeddings & Vector Search") and a decal has to read at a glance.
    */
+  toolbelt: string[];
+  location: string;
+  email: string;
+  phone: string;
+  github: string;
+  /**
+   * Held separately from the URL: the contributions API wants the bare handle,
+   * and slicing it back out of a URL breaks the first time the URL changes.
+   */
+  githubUsername: string;
+  linkedin: string;
+};
+
+export const profile: Profile = {
+  name: "Syed Mohammad Adeel",
+  firstName: "ADEEL",
+  role: "AI/ML & Software Engineer",
+  raceNumber: 22,
+
   avatar: {
     src: "/profile.jpg",
     pixelated: false,
@@ -24,13 +57,6 @@ export const profile = {
     "I build and ship AI-powered backend systems — embeddings, vector search, RAG pipelines, and production APIs.",
   summary:
     "Computer Science graduate (VIT-AP, 2026) who builds and ships AI-powered backend systems in Python. Hands-on with LLM applications — embeddings, vector search, and retrieval (RAG) — plus computer-vision model training (YOLO, 86% mAP@0.5) and production practices: REST API design, Redis caching, and CI-tested deployments on AWS.",
-  /**
-   * The sponsor bar along the base of the hero — your tools as livery decals.
-   *
-   * Short wordmarks only. This is deliberately a hand-picked subset rather than
-   * a slice of data/skills.ts, because the headline skills there are phrases
-   * ("Embeddings & Vector Search") and a decal has to read at a glance.
-   */
   toolbelt: [
     "Python",
     "FastAPI",
@@ -45,8 +71,6 @@ export const profile = {
   email: "mohammad.adeel.syed@gmail.com",
   phone: "+91 80917 79849",
   github: "https://github.com/Adeel0-0",
-  /** Held separately from the URL: the contributions API wants the bare handle,
-   *  and slicing it back out of a URL breaks the first time the URL changes. */
   githubUsername: "Adeel0-0",
   linkedin: "https://www.linkedin.com/in/syed-mohammad-adeel-397b4b263/",
 };

@@ -28,8 +28,13 @@ export function AttentionGlow({
 }: {
   children: React.ReactNode;
   className?: string;
-  /** Marks these skills in the Garage section while this block is hovered. */
-  skills?: string[];
+  /**
+   * Marks these skills in the Garage section while this block is hovered.
+   *
+   * `readonly` because the caller passes `project.skills`, which is a readonly
+   * tuple of literals derived from data/skills.ts. Nothing here mutates it.
+   */
+  skills?: readonly string[];
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const frame = useRef(0);
