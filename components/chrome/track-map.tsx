@@ -16,12 +16,19 @@ import { useMotionValueEvent, useReducedMotion } from "@/lib/motion";
  * 100x100 viewBox works — the marker is positioned with getPointAtLength(), so
  * nothing here is tied to this particular shape.
  *
- * This one is a stylised Spa-Francorchamps: recognisable in silhouette (the
- * La Source hairpin, the climb through Eau Rouge, the long Kemmel straight)
- * but deliberately simplified, not a survey-accurate trace.
+ * This one is a stylised Buddh International Circuit: recognisable in
+ * silhouette (the main straight past the pits, Turn 1 folding right onto the
+ * long back straight, the big banked double-apex loop, the esses dropping back
+ * down) but deliberately simplified, not a survey-accurate trace.
+ *
+ * Traced clockwise, which is the direction the circuit is actually run, so the
+ * marker travels the way a car would.
  */
 const CIRCUIT =
-  "M 30,88 L 18,88 C 9,88 7,79 14,75 L 30,67 C 36,63 38,57 44,53 L 62,29 C 66,23 74,23 78,27 C 82,31 80,37 76,41 L 68,49 C 61,55 63,62 70,66 L 83,73 C 90,77 90,84 83,86 L 40,89 Z";
+  "M 44,60 L 78,60 C 86,60 91,64 90,69 C 89,73 85,75 80,74 L 31,72 C 25,72 22,67 23,62 L 21,50 C 19,43 13,39 15,33 C 17,26 24,25 29,28 C 35,31 37,36 34,40 C 31,43 27,44 27,48 C 27,52 33,52 36,54 C 40,56 42,57 44,60 Z";
+
+/** Start/finish, on the main straight. The marker's resting position. */
+const START = { x: 44, y: 60 };
 
 export function TrackMap() {
   const progress = useScrollProgress();
@@ -85,12 +92,17 @@ export function TrackMap() {
           strokeDashoffset={length || undefined}
         />
         {/* Start/finish line. */}
-        <circle cx="30" cy="88" r="2" fill="hsl(var(--muted-foreground))" />
+        <circle
+          cx={START.x}
+          cy={START.y}
+          r="2"
+          fill="hsl(var(--muted-foreground))"
+        />
         {/* The car. */}
         <circle
           ref={markerRef}
-          cx="30"
-          cy="88"
+          cx={START.x}
+          cy={START.y}
           r="3"
           fill="hsl(var(--signal))"
           className={reduced ? undefined : "animate-led-flash"}
