@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { profile } from "@/data";
+import type { ContributionDay } from "@/lib/contributions";
 
 /**
  * Server-side proxy for the GitHub contribution graph.
@@ -20,12 +21,6 @@ import { profile } from "@/data";
 export const revalidate = 3600;
 
 const UPSTREAM = "https://github-contributions-api.jogruber.de/v4";
-
-export type ContributionDay = {
-  date: string;
-  count: number;
-  level?: 0 | 1 | 2 | 3 | 4;
-};
 
 export async function GET() {
   const empty = NextResponse.json({ contributions: [] as ContributionDay[] });

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import type { MascotGaze } from "@/components/mascot/mascot-sprite";
+import type { MascotGaze } from "@/lib/mascot-gaze";
 
 const CENTRE: MascotGaze = { x: 0, y: 0 };
 

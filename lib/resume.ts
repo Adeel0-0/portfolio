@@ -1,3 +1,5 @@
+import "server-only";
+
 import fs from "node:fs";
 import path from "node:path";
 
@@ -12,7 +14,9 @@ import path from "node:path";
  * Checked with fs rather than fetched, so this resolves at build time. A resume
  * added after a build needs a rebuild, which is what deploying does anyway.
  *
- * Server-only: importing this into a client component will fail to bundle.
+ * Server-only, and now enforced rather than assumed. Without the `server-only`
+ * import above, a client component importing this failed incidentally — a
+ * webpack polyfill error about `node:fs` — instead of saying what was wrong.
  */
 
 export const RESUME_HREF = "/resume.pdf";

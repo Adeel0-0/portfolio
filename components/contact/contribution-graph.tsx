@@ -2,7 +2,7 @@
 
 import { Fragment, useMemo, useState } from "react";
 
-import type { ContributionDay } from "@/app/api/contributions/route";
+import type { ContributionDay } from "@/lib/contributions";
 
 /**
  * A year of GitHub activity as a 7-row grid.

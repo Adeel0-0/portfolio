@@ -1,3 +1,5 @@
+import type { MascotGaze } from "@/lib/mascot-gaze";
+
 /**
  * The contract between the mascot engine and whatever draws it.
  *
@@ -29,12 +31,16 @@ export type MascotPose =
   | "point"
   | "cheer";
 
-export type MascotGaze = {
-  /** -1 (hard left) to 1 (hard right). Already clamped and eased. */
-  x: number;
-  /** -1 (up) to 1 (down). */
-  y: number;
-};
+/**
+ * Re-exported so this file stays the single place to read the sprite contract.
+ * MascotGaze is defined in lib/ because lib/hooks/use-gaze.ts produces it, and
+ * lib/ must not import from components/.
+ *
+ * It is imported at the top as well as re-exported here because
+ * `export ... from` does not bind the name locally, and MascotSpriteProps
+ * below needs it.
+ */
+export type { MascotGaze };
 
 export type MascotSpriteProps = {
   pose: MascotPose;

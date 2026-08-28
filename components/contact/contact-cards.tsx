@@ -3,7 +3,7 @@
 import { Github, Linkedin } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-import type { ContributionDay } from "@/app/api/contributions/route";
+import type { ContributionDay } from "@/lib/contributions";
 import { profile } from "@/data";
 import { AnimatePresence, m } from "@/lib/motion";
 import { ContributionGraph } from "./contribution-graph";
