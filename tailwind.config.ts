@@ -5,10 +5,13 @@ const config: Config = {
   // `./data` is deliberately absent: content there is prose, not markup. Any
   // Tailwind class name written into a data file would be purged silently, so
   // value->class mapping (skill grade -> tyre colour, etc.) lives in components.
+  // Tests are excluded for the same reason: assertion strings are data, and
+  // the scanner is loose enough that a fixture could quietly emit a utility.
   content: [
     "./app/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
     "./lib/**/*.{ts,tsx}",
+    "!./**/*.test.{ts,tsx}",
   ],
   theme: {
     container: {
