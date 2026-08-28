@@ -162,7 +162,17 @@
    Both halves of the move are written here rather than as Tailwind classes on
    the overlay: the durations have to agree, and `tailwindcss-animate` claims
    the `duration-*` / `ease-*` prefixes, which makes arbitrary values there
-   ambiguous between transition-* and animation-*. */
+   ambiguous between transition-* and animation-*.
+
+   Every duration below is a calc() off --pl-launch, which the preloader writes
+   onto <html> from its LAUNCH_DURATION constant. That number used to be
+   hardcoded here as well, with a comment in the component asking whoever
+   changed one to remember the other. Deriving the ratios instead means the
+   choreography keeps its shape at any speed and cannot drift.
+
+   The fallback in each var() is the current value, so the stylesheet still
+   describes a coherent animation if it is ever read before the property is
+   set. */
 
 /* --- the overlay diving past the camera --- */
 .js-preloader {
@@ -170,11 +180,6 @@
   /* An explicit identity filter to transition *from*. */
   filter: blur(0);
   will-change: transform, opacity, filter;
-}
-
-html[data-preloader="anticipate"] .js-preloader {
-  transform: scale(0.97);
-  transition: transform 120ms ease-out;
 }
 
 html[data-preloader="launching"] .js-preloader {
@@ -192,9 +197,11 @@ html[data-preloader="launching"] .js-preloader {
      legible while it is visibly rushing outward, then drops. Blur comes in
      late, once the motion has already registered. */
   transition:
-    transform 1000ms cubic-bezier(0.55, 0, 0.85, 0.5),
-    opacity 500ms ease-in 500ms,
-    filter 600ms ease-in 400ms;
+    transform var(--pl-launch, 220ms) cubic-bezier(0.55, 0, 0.85, 0.5),
+    opacity calc(var(--pl-launch, 220ms) * 0.5) ease-in
+      calc(var(--pl-launch, 220ms) * 0.5),
+    filter calc(var(--pl-launch, 220ms) * 0.6) ease-in
+      calc(var(--pl-launch, 220ms) * 0.4);
 }
 
 /* --- the page pushing forward into place --- */
@@ -202,8 +209,7 @@ html[data-preloader="launching"] .js-preloader {
   transform-origin: center center;
 }
 
-html[data-preloader="running"] #site-shell,
-html[data-preloader="anticipate"] #site-shell {
+html[data-preloader="running"] #site-shell {
   opacity: 0;
   transform: scale(0.88);
 }
@@ -213,11 +219,13 @@ html[data-preloader="launching"] #site-shell {
   transform: scale(1);
   /* The opacity delay makes the page emerge *as* the terminal fades rather
      than cross-dissolving underneath it while the terminal is still solid.
-     Transform lands at 950ms against the overlay's 1000ms dive, so the page
-     has settled before the attribute is removed and nothing snaps. */
+     Transform lands at 95% of the dive, so the page has settled before the
+     attribute is removed and nothing snaps. */
   transition:
-    opacity 600ms ease-out 350ms,
-    transform 950ms cubic-bezier(0.2, 0.8, 0.3, 1);
+    opacity calc(var(--pl-launch, 220ms) * 0.6) ease-out
+      calc(var(--pl-launch, 220ms) * 0.35),
+    transform calc(var(--pl-launch, 220ms) * 0.95)
+      cubic-bezier(0.2, 0.8, 0.3, 1);
   will-change: transform, opacity;
 }
 

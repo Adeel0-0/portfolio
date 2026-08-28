@@ -4,30 +4,30 @@ import { useState, useEffect, useCallback } from "react";
 import { ParticleField } from "@/components/ui/particle-field";
 import { readStorage, writeStorage } from "@/lib/storage";
 
+// Three lines, not seven. The whole run is 350ms, so seven would be ~50ms
+// each — that is flicker, not a boot sequence.
 const commands = [
     "Initializing neural weights...",
     "Loading vector embeddings...",
-    "Connecting to PostgreSQL...",
-    "Establishing RAG pipelines...",
-    "Optimizing model inference...",
-    "Bypassing mainframe security...",
     "Access granted."
 ];
 
 // Single source of truth: the progress counter and the typing animation both
 // pace off this, so they can't drift apart.
-const LOADER_DURATION = 2000;
-// Deliberately short. The anticipation dip below supplies its own beat, so a
-// longer pause here just reads as dead air before anything happens.
-const HOLD_AT_100 = 200;
-// The hand-off: pull back briefly, then rush past the camera. globals.css
-// animates the page forward against LAUNCH_DURATION, so if you change this,
-// change the transition there too.
-const ANTICIPATE_DURATION = 120;
-const LAUNCH_DURATION = 1000;
+//
+// The whole sequence is ~630ms (350 + 60 + 220). It used to be 3320ms, which
+// was 3.3 seconds of black screen held over content that was already fully
+// server-rendered underneath — the page was being deliberately hidden from the
+// visitor and from LCP. A brand moment is worth a beat; it is not worth that.
+const LOADER_DURATION = 350;
+const HOLD_AT_100 = 60;
+// The hand-off: rush past the camera while the page pushes forward behind it.
+// globals.css derives every duration in that choreography from this number via
+// the --pl-launch custom property, so this really is the only place it lives.
+const LAUNCH_DURATION = 220;
 // Hard ceiling. If anything above misbehaves, the overlay still leaves — it
 // covers the entire page, so a stuck preloader means a dead site.
-const FAILSAFE = LOADER_DURATION + 4000;
+const FAILSAFE = LOADER_DURATION + 1500;
 const SESSION_KEY = "preloader:seen";
 // Playing once per tab is right for visitors and hostile to iteration — you
 // can't tune an animation you have to open a new tab to see. The key is still
@@ -37,7 +37,10 @@ const REPLAY_EVERY_LOAD = process.env.NODE_ENV !== "production";
 // component needing a client boundary around the whole tree.
 const ROOT_ATTR = "data-preloader";
 
-type Phase = "running" | "anticipate" | "launching" | "done";
+// The old sequence had an "anticipate" phase between running and launching: a
+// 120ms dip to scale(0.97) before the dive. At this speed it is imperceptible,
+// and dropping it removes a phase, an effect and a CSS block.
+type Phase = "running" | "launching" | "done";
 
 /** Derive the typed line from progress — no extra state, no per-character render. */
 function lineFor(progress: number) {
@@ -61,7 +64,7 @@ export function SpatialNeuralPreloader() {
         // Private browsing / storage disabled just means the loader replays;
         // writeStorage swallows that for us.
         writeStorage("session", SESSION_KEY, "1");
-        setPhase((p) => (p === "running" ? "anticipate" : p));
+        setPhase((p) => (p === "running" ? "launching" : p));
     }, []);
 
     useEffect(() => {
@@ -110,14 +113,6 @@ export function SpatialNeuralPreloader() {
         };
     }, [dismiss]);
 
-    // Dip back, then launch. Splitting these keeps each phase a plain CSS
-    // transition rather than a keyframe sequence to keep in sync by hand.
-    useEffect(() => {
-        if (phase !== "anticipate") return;
-        const timer = setTimeout(() => setPhase("launching"), ANTICIPATE_DURATION);
-        return () => clearTimeout(timer);
-    }, [phase]);
-
     // Unmount after the dive so the canvas and its rAF loop stop for good.
     useEffect(() => {
         if (phase !== "launching") return;
@@ -128,9 +123,15 @@ export function SpatialNeuralPreloader() {
     // Mirror the phase onto <html> for globals.css. The cleanup runs on every
     // phase change and on unmount, so there is no path that leaves the page
     // stuck hidden — including the FAILSAFE jump straight to "done".
+    //
+    // LAUNCH_DURATION goes across as a custom property in the same pass. Every
+    // duration in the hand-off choreography is a calc() off it, so the
+    // stylesheet cannot fall out of step with this file the way it could when
+    // the number was written in both places.
     useEffect(() => {
         if (!sequenceActive) return;
         const root = document.documentElement;
+        root.style.setProperty("--pl-launch", `${LAUNCH_DURATION}ms`);
         if (phase === "done") {
             root.removeAttribute(ROOT_ATTR);
             return;
