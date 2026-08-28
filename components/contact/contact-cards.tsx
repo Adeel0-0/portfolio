@@ -1,7 +1,7 @@
 "use client";
 
 import { Github, Linkedin } from "lucide-react";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
 import type { ContributionDay } from "@/lib/contributions";
 import { profile } from "@/data";
@@ -18,8 +18,13 @@ import { ContributionGraph } from "./contribution-graph";
  * Adapted from the original in three ways: the hand-rolled keyframes are
  * replaced with framer (which the site already ships, and which gets the
  * reduced-motion behaviour from MotionConfig for free), the Tailwind v4
- * utilities are translated to v3, and the contribution fetch goes through this
- * app's own cached route instead of hitting a third-party API from the browser.
+ * utilities are translated to v3, and the contribution data arrives as a prop
+ * instead of being fetched from the browser.
+ *
+ * That last one matters: this component is rendered by a Server Component that
+ * already has the data, so fetching it again on mount meant the server handing
+ * the client a skeleton and the client asking the server for what it had just
+ * finished rendering.
  */
 
 type CardLink = {
@@ -29,29 +34,12 @@ type CardLink = {
   card: React.ReactNode;
 };
 
-export function ContactCards() {
-  const [days, setDays] = useState<ContributionDay[]>([]);
-  const [failed, setFailed] = useState(false);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    fetch("/api/contributions")
-      .then((response) => (response.ok ? response.json() : Promise.reject()))
-      .then((data: { contributions: ContributionDay[] }) => {
-        if (cancelled) return;
-        if (data.contributions.length === 0) setFailed(true);
-        else setDays(data.contributions);
-      })
-      // The graph is decorative. Hiding it beats showing an error on a
-      // portfolio, so a failure just collapses that half of the card.
-      .catch(() => !cancelled && setFailed(true));
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
+export function ContactCards({ days }: { days: ContributionDay[] }) {
+  // Derived, not state. The graph is decorative, so an upstream failure —
+  // which lib/contributions.ts already normalises to an empty list — just
+  // collapses that half of the card to the bare domain rather than showing an
+  // error on a portfolio.
+  const failed = days.length === 0;
   const total = days.reduce((sum, day) => sum + day.count, 0);
 
   const links: CardLink[] = [

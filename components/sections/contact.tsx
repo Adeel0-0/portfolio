@@ -4,19 +4,25 @@ import { ContactCards } from "@/components/contact/contact-cards";
 import { RadioWave } from "@/components/contact/radio-wave";
 import { CopyButton } from "@/components/ui/copy-button";
 import { content, profile } from "@/data";
+import { fetchContributions } from "@/lib/contributions";
 import { RESUME_HREF, hasResume } from "@/lib/resume";
 import { SectionShell } from "./section-shell";
 
 /**
  * Team radio.
  *
- * Phase 2 replaces the link row with the morphing contact cards and the
- * contribution graph, and Phase 3 adds the radio treatment. What's here is the
- * honest version: every channel reachable, nothing that pretends to send a
- * message the site has no backend to deliver.
+ * Every channel reachable, and nothing that pretends to send a message the
+ * site has no backend to deliver.
+ *
+ * Async because it resolves the contribution graph here rather than letting
+ * ContactCards fetch it from the browser. The data is cached for an hour, so
+ * awaiting it costs the page nothing and makes app/page.tsx revalidate on that
+ * interval instead of freezing at build time — which is also what stops
+ * content.footer.copyright() from being stuck on the build year.
  */
-export function Contact() {
+export async function Contact() {
   const { before, accent } = content.contact.heading;
+  const contributions = await fetchContributions(profile.githubUsername);
 
   return (
     // Bottom padding clears the fixed dock, which would otherwise sit over the
@@ -77,7 +83,7 @@ export function Contact() {
           <span className="font-mono text-[0.625rem] uppercase tracking-[0.2em] text-muted-foreground">
             Elsewhere
           </span>
-          <ContactCards />
+          <ContactCards days={contributions} />
         </div>
       </div>
     </SectionShell>

@@ -1,51 +1,37 @@
 import { NextResponse } from "next/server";
 
 import { profile } from "@/data";
-import type { ContributionDay } from "@/lib/contributions";
+import {
+  CONTRIBUTIONS_REVALIDATE,
+  fetchContributions,
+} from "@/lib/contributions";
 
 /**
  * Server-side proxy for the GitHub contribution graph.
  *
- * The component this feeds originally fetched jogruber.de straight from the
- * browser, which puts a free community service on the critical path of a job
- * -hunt portfolio with no caching, a CORS dependency, and an uncached round
- * trip per visitor. Going through a route handler fixes all three at once:
- * responses are cached for an hour, there is no cross-origin request, and the
- * upstream shape is normalised here rather than in the render path.
+ * The page no longer needs this: Contact is a Server Component and awaits
+ * fetchContributions() directly, so the graph is in the prerendered HTML. The
+ * route is kept as the addressable fallback — it costs nothing, it shares the
+ * same cached fetch, and deleting a public endpoint that something might be
+ * pointed at is not worth the tidiness.
  *
- * Failure is deliberately quiet. A contribution graph is a nice-to-have; an
- * error message where one should be is worse than no graph at all, so this
- * returns an empty set and lets the component render nothing.
+ * All the interesting logic (validation, timeout, quiet failure) lives in
+ * lib/contributions.ts, where it is unit-testable without an HTTP layer.
  */
 
-export const revalidate = 3600;
-
-const UPSTREAM = "https://github-contributions-api.jogruber.de/v4";
+export const revalidate = CONTRIBUTIONS_REVALIDATE;
 
 export async function GET() {
-  const empty = NextResponse.json({ contributions: [] as ContributionDay[] });
+  const contributions = await fetchContributions(profile.githubUsername);
 
-  try {
-    const response = await fetch(
-      `${UPSTREAM}/${encodeURIComponent(profile.githubUsername)}?y=last`,
-      {
-        // Matches `revalidate` above; without it fetch would opt the whole
-        // route out of caching and hit upstream on every request.
-        next: { revalidate },
-        headers: { accept: "application/json" },
-      }
-    );
-
-    if (!response.ok) return empty;
-
-    const data = (await response.json()) as {
-      contributions?: ContributionDay[];
-    };
-
-    if (!Array.isArray(data.contributions)) return empty;
-
-    return NextResponse.json({ contributions: data.contributions });
-  } catch {
-    return empty;
-  }
+  return NextResponse.json(
+    { contributions },
+    {
+      headers: {
+        // The Next data cache already prevents an upstream call, but without
+        // this every visitor still pays a round trip to the function.
+        "cache-control": `public, s-maxage=${CONTRIBUTIONS_REVALIDATE}, stale-while-revalidate`,
+      },
+    }
+  );
 }
