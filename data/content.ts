@@ -23,7 +23,9 @@ export const siteMeta = {
   ],
   author: "Syed Mohammad Adeel",
   siteName: "Syed Mohammad Adeel",
-  url: "https://adeel-portfolio.vercel.app",
+  // The canonical origin is environment, not content — it differs between
+  // local, preview and production, and this file cannot know which it is in.
+  // It lives in lib/env.ts as SITE_URL.
   locale: "en_US",
 };
 

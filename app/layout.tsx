@@ -8,6 +8,7 @@ import { NavDock } from "@/components/nav/nav-dock";
 import { SiteProviders } from "@/components/providers/site-providers";
 import { SpatialNeuralPreloader } from "@/components/ui/spatial-neural-preloader";
 import { content } from "@/data";
+import { SITE_URL } from "@/lib/env";
 
 /**
  * Two faces, one rule: Space Grotesk for anything a human wrote, JetBrains Mono
@@ -30,7 +31,7 @@ const jetbrainsMono = JetBrains_Mono({
 const { siteMeta } = content;
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteMeta.url),
+  metadataBase: new URL(SITE_URL),
   title: siteMeta.title,
   description: siteMeta.description,
   keywords: siteMeta.keywords,

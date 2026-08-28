@@ -7,6 +7,7 @@ import { useGaze } from "@/lib/hooks/use-gaze";
 import { usePreloaderDone } from "@/lib/hooks/use-preloader-done";
 import { AnimatePresence, m, useReducedMotion } from "@/lib/motion";
 import { sectionById } from "@/lib/sections";
+import { readStorage, writeStorage } from "@/lib/storage";
 import type { MascotPose, MascotSprite } from "./mascot-sprite";
 import { RadioBubble } from "./radio-bubble";
 import { SvgPixelMascot } from "./sprites/svg-pixel";
@@ -53,7 +54,7 @@ export function Mascot() {
   // exist on the server, and branching on it during render would desync
   // hydration. Defaults to dismissed so nothing flashes in before we know.
   useEffect(() => {
-    setDismissed(window.localStorage.getItem(DISMISS_KEY) === "true");
+    setDismissed(readStorage("local", DISMISS_KEY) === "true");
   }, []);
 
   // Blink. Rescheduled at a fresh random interval each time so it never falls
@@ -105,7 +106,7 @@ export function Mascot() {
 
   function handleDismiss() {
     setDismissed(true);
-    window.localStorage.setItem(DISMISS_KEY, "true");
+    writeStorage("local", DISMISS_KEY, "true");
   }
 
   // Talking wins over blinking: a blink mid-sentence reads as a glitch.

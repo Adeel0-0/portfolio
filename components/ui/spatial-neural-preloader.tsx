@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { ParticleField } from "@/components/ui/particle-field";
+import { readStorage, writeStorage } from "@/lib/storage";
 
 const commands = [
     "Initializing neural weights...",
@@ -57,11 +58,9 @@ export function SpatialNeuralPreloader() {
     const [sequenceActive, setSequenceActive] = useState(false);
 
     const dismiss = useCallback(() => {
-        try {
-            sessionStorage.setItem(SESSION_KEY, "1");
-        } catch {
-            // Private browsing / storage disabled — the loader just replays.
-        }
+        // Private browsing / storage disabled just means the loader replays;
+        // writeStorage swallows that for us.
+        writeStorage("session", SESSION_KEY, "1");
         setPhase((p) => (p === "running" ? "anticipate" : p));
     }, []);
 
@@ -70,13 +69,10 @@ export function SpatialNeuralPreloader() {
         // skip the whole sequence. sessionStorage and matchMedia don't exist
         // during SSR, so this has to run after hydration rather than in the
         // useState initializer — otherwise server and client markup differ.
-        let alreadySeen = false;
-        try {
-            alreadySeen =
-                !REPLAY_EVERY_LOAD && sessionStorage.getItem(SESSION_KEY) === "1";
-        } catch {
-            // Storage unavailable; fall through and play the animation.
-        }
+        // Storage unavailable reads as null, i.e. not seen, and the animation
+        // plays — the right way to fail.
+        const alreadySeen =
+            !REPLAY_EVERY_LOAD && readStorage("session", SESSION_KEY) === "1";
         const prefersReducedMotion = window.matchMedia(
             "(prefers-reduced-motion: reduce)"
         ).matches;
