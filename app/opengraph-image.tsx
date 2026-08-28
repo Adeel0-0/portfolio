@@ -8,12 +8,14 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 // ImageResponse can't read Tailwind classes or CSS custom properties, so the
-// palette has to be inlined as hex. These are the neutral placeholders that
-// match app/globals.css — update them alongside the new theme.
-const BACKGROUND = "#0a0a0a";
-const BACKGROUND_TO = "#171717";
-const PRIMARY = "#fafafa";
-const MUTED = "#a1a1a1";
+// palette has to be inlined as hex. Mirrors the --rb-* tier in app/globals.css
+// and must be edited alongside it (and alongside app/icon.svg).
+const BACKGROUND = "#070B18"; // --rb-bg
+const BACKGROUND_TO = "#0D1428"; // --rb-surface
+const PRIMARY = "#E8ECF5"; // --rb-fg
+const MUTED = "#8894B0"; // --rb-dim
+const BRAND = "#E1112C"; // --rb-red
+const BEST = "#B14BF4"; // --rb-purple
 
 export default async function Image() {
   return new ImageResponse(
@@ -29,9 +31,15 @@ export default async function Image() {
           padding: "80px",
         }}
       >
+        {/* Livery stripe — the only brand-red mark on the card. */}
+        <div
+          style={{ display: "flex", width: 96, height: 6, background: BRAND }}
+        />
+
         <div
           style={{
             display: "flex",
+            marginTop: 28,
             fontSize: 24,
             letterSpacing: "0.3em",
             textTransform: "uppercase",
@@ -71,7 +79,15 @@ export default async function Image() {
         <div style={{ display: "flex", marginTop: 56, gap: 64 }}>
           {stats.map((s) => (
             <div key={s.value} style={{ display: "flex", flexDirection: "column" }}>
-              <div style={{ fontSize: 52, fontWeight: 700, color: PRIMARY }}>
+              {/* Timing purple marks the personal best, exactly as on the page.
+                  Only one stat carries it, or the signal stops meaning anything. */}
+              <div
+                style={{
+                  fontSize: 52,
+                  fontWeight: 700,
+                  color: s.best ? BEST : PRIMARY,
+                }}
+              >
                 {s.value}
               </div>
               <div style={{ marginTop: 6, fontSize: 20, color: MUTED, maxWidth: 300 }}>

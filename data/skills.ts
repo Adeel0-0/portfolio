@@ -1,58 +1,111 @@
+/**
+ * Skills, graded by tyre compound.
+ *
+ * The grade encodes how hard a tool actually gets run, so the Garage section
+ * carries information rather than decoration:
+ *
+ *   soft   — daily driver. Current, deep, and evidenced in the projects.
+ *   medium — regular use. Solid, reached for often.
+ *   hard   — foundational. Real, but occasional or further back.
+ *
+ * Grades below are a first pass inferred from the resume and the three
+ * projects. They are meant to be corrected — nobody knows this but you.
+ *
+ * Note the grade is a value, not a class name: Tailwind's `content` globs skip
+ * ./data, so a class string written here would be purged silently. The
+ * grade -> colour mapping lives in the component.
+ */
+
+export type SkillGrade = "soft" | "medium" | "hard";
+
+export type SkillItem = {
+  name: string;
+  grade: SkillGrade;
+};
+
 export type SkillGroup = {
   group: string;
-  items: string[];
+  items: SkillItem[];
 };
 
 export const skills: SkillGroup[] = [
   {
     group: "AI / ML",
     items: [
-      "Embeddings & Vector Search",
-      "RAG Pipelines",
-      "LLM API Integration",
-      "Prompt Engineering & Evaluation",
-      "PyTorch",
-      "TensorFlow",
-      "scikit-learn",
-      "OpenCV",
-      "YOLOv5/v7",
+      { name: "Embeddings & Vector Search", grade: "soft" },
+      { name: "RAG Pipelines", grade: "soft" },
+      { name: "LLM API Integration", grade: "soft" },
+      { name: "YOLOv5/v7", grade: "soft" },
+      { name: "Prompt Engineering & Evaluation", grade: "medium" },
+      { name: "PyTorch", grade: "medium" },
+      { name: "OpenCV", grade: "medium" },
+      { name: "TensorFlow", grade: "hard" },
+      { name: "scikit-learn", grade: "hard" },
     ],
   },
   {
     group: "Languages",
-    items: ["Python", "TypeScript", "JavaScript", "Java", "SQL", "C/C++"],
+    items: [
+      { name: "Python", grade: "soft" },
+      { name: "TypeScript", grade: "medium" },
+      { name: "JavaScript", grade: "medium" },
+      { name: "SQL", grade: "medium" },
+      { name: "C/C++", grade: "medium" },
+      { name: "Java", grade: "hard" },
+    ],
   },
   {
     group: "Backend & APIs",
     items: [
-      "FastAPI",
-      "Flask",
-      "Node/Express",
-      "REST API Design",
-      "Redis Caching",
-      "Celery",
-      "Rate Limiting & Pagination",
+      { name: "FastAPI", grade: "soft" },
+      { name: "REST API Design", grade: "soft" },
+      { name: "Flask", grade: "medium" },
+      { name: "Redis Caching", grade: "medium" },
+      { name: "Celery", grade: "medium" },
+      { name: "Rate Limiting & Pagination", grade: "medium" },
+      { name: "Node/Express", grade: "hard" },
     ],
   },
   {
     group: "Frontend",
-    items: ["React", "Next.js", "Tailwind CSS"],
+    items: [
+      { name: "React", grade: "medium" },
+      { name: "Next.js", grade: "medium" },
+      { name: "Tailwind CSS", grade: "medium" },
+    ],
   },
   {
     group: "Databases",
-    items: ["PostgreSQL", "MySQL", "MongoDB", "Redis"],
+    items: [
+      { name: "PostgreSQL", grade: "medium" },
+      { name: "Redis", grade: "medium" },
+      { name: "MySQL", grade: "hard" },
+      { name: "MongoDB", grade: "hard" },
+    ],
   },
   {
     group: "Cloud & DevOps",
-    items: ["AWS (EC2 · S3 · Lambda)", "Docker", "Git", "GitHub Actions CI/CD", "Linux"],
+    items: [
+      { name: "Git", grade: "soft" },
+      { name: "AWS (EC2 · S3 · Lambda)", grade: "medium" },
+      { name: "Docker", grade: "medium" },
+      { name: "GitHub Actions CI/CD", grade: "medium" },
+      { name: "Linux", grade: "medium" },
+    ],
   },
   {
     group: "Testing",
     items: [
-      "Automated Test Suites",
-      "CI-Based Testing",
-      "Structured Test-Case Design",
-      "Data Logging",
+      { name: "Automated Test Suites", grade: "medium" },
+      { name: "CI-Based Testing", grade: "medium" },
+      { name: "Structured Test-Case Design", grade: "medium" },
+      { name: "Data Logging", grade: "hard" },
     ],
   },
 ];
+
+export const GRADE_LABEL: Record<SkillGrade, string> = {
+  soft: "Daily",
+  medium: "Regular",
+  hard: "Foundational",
+};

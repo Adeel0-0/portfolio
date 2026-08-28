@@ -2,36 +2,97 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  /* Neutral placeholder palette. The old cyan-on-navy theme was stripped with
-     the rest of the design — these greys exist so `bg-primary`, `text-muted-
-     foreground` etc. keep resolving while the new palette is decided. Swapping
-     in the real colours is a single edit here; tailwind.config.ts maps every
-     token by name and needs no change.
+/* ---------------------------------------------------------------------------
+   PALETTE — "Telemetry" (Red Bull navy)
 
-     Kept dark deliberately: the preloader overlay is solid black, so a dark
-     page underneath means no white flash when it fades out. */
+   Three other files hold hardcoded copies of these colours because they cannot
+   read CSS custom properties. Recolouring is a FOUR-file edit, always:
+     · app/globals.css        (here — the source of truth)
+     · app/opengraph-image.tsx  ImageResponse can't resolve vars or Tailwind
+     · app/icon.svg             a static asset
+     · lib/tokens.ts            readToken() bridges these into <canvas>
+
+   Colour discipline. The F1 timing colours only mean something while they stay
+   scarce, so each has exactly one job:
+     --brand  (red)     interactive only — active nav, CTAs, links, live dots
+     --signal (yellow)  measurement only — metrics, hover glow, sector sweeps
+     --best   (purple)  ONE job — a number that is a personal best. Nothing else.
+     green              dropped site-wide. Two carve-outs, both functional:
+                        the preloader terminal, and --led-* below (a shift light
+                        is literally green; see components/chrome/rev-strip).
+--------------------------------------------------------------------------- */
+
+@layer base {
   :root {
-    --background: 0 0% 4%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 6%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 6%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14%;
-    --muted-foreground: 0 0% 63%;
-    --accent: 0 0% 14%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62% 50%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 16%;
-    --input: 0 0% 16%;
-    --ring: 0 0% 83%;
+    /* --- tier 1: raw palette ---------------------------------------------
+       HSL triplets rather than hex so hover/active states derive by shifting
+       L alone, and so Tailwind's `/opacity` modifiers work against them. Hex
+       kept alongside so drift against the three copies above stays checkable. */
+    --rb-bg: 226 55% 6%; /* #070B18 */
+    --rb-surface: 224 51% 10%; /* #0D1428 */
+    --rb-raised: 224 46% 16%; /* #16203C */
+    --rb-border: 224 42% 20%; /* #1E2A4A */
+    --rb-fg: 222 39% 94%; /* #E8ECF5 */
+    --rb-dim: 222 20% 61%; /* #8894B0 */
+    --rb-red: 352 86% 47%; /* #E1112C */
+    --rb-yellow: 47 100% 50%; /* #FFC800 */
+    --rb-purple: 276 88% 63%; /* #B14BF4 */
+
+    /* --- tier 2: semantic aliases ----------------------------------------
+       Two shadcn naming traps live here, both silent and both painful:
+
+       `--muted` is a SURFACE; `--muted-foreground` is the TEXT. Dim grey
+       belongs on the latter — put it on --muted and every `bg-muted` becomes
+       a light grey block on navy.
+
+       `--accent` is shadcn's subtle HOVER SURFACE (`bg-accent` on a hovered
+       menu item), not a brand colour. Mapping red onto it makes every hover
+       scream. Brand colours get their own names below instead. */
+    --background: var(--rb-bg);
+    --foreground: var(--rb-fg);
+    --card: var(--rb-surface);
+    --card-foreground: var(--rb-fg);
+    --popover: var(--rb-surface);
+    --popover-foreground: var(--rb-fg);
+    --primary: var(--rb-fg);
+    --primary-foreground: var(--rb-bg);
+    --secondary: var(--rb-raised);
+    --secondary-foreground: var(--rb-fg);
+    --muted: var(--rb-raised);
+    --muted-foreground: var(--rb-dim);
+    --accent: var(--rb-raised);
+    --accent-foreground: var(--rb-fg);
+    --destructive: var(--rb-red);
+    --destructive-foreground: var(--rb-fg);
+    --border: var(--rb-border);
+    --input: var(--rb-border);
+    --ring: var(--rb-red);
     --radius: 0.5rem;
+
+    /* --- tier 3: domain tokens ------------------------------------------- */
+    --brand: var(--rb-red);
+    --brand-foreground: var(--rb-fg);
+    --signal: var(--rb-yellow);
+    --best: var(--rb-purple);
+    --surface: var(--rb-surface);
+    --raised: var(--rb-raised);
+
+    /* Rev-strip shift lights. The ONLY green on the site, isolated here so
+       that carve-out stays a one-line decision rather than a refactor. */
+    --led-1: 145 100% 39%; /* #00C853 green  */
+    --led-2: 42 100% 50%; /* #FFB300 amber  */
+    --led-3: var(--rb-red); /*         red    */
+    --led-flash: 224 100% 65%; /* #4D7CFF blue   */
+
+    /* Tyre compounds — how hard a tool actually gets run. */
+    --tyre-soft: var(--brand); /* daily driver, current, deep */
+    --tyre-medium: var(--signal); /* regular use, solid          */
+    --tyre-hard: var(--foreground); /* foundational, occasional    */
+
+    /* Cursor-tracked glow origin, written per-element by JS. Declared here so
+       the radial resolves to something sane before any pointer event lands. */
+    --mx: 50%;
+    --my: 50%;
   }
 
   * {
@@ -47,9 +108,42 @@
   }
 
   ::selection {
-    @apply bg-primary text-primary-foreground;
+    @apply bg-brand text-brand-foreground;
   }
 }
+
+@layer components {
+  /* The "DRS zone" — a dim light behind the text, tracked to the cursor.
+     Painted on a ::before so it never participates in layout, and driven by
+     custom properties so pointer moves cost one style recalc on one element
+     instead of a React render. Signal yellow at low alpha reads as a garage
+     work light; brand red here would read as an error state. */
+  .attention-glow {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .attention-glow::before {
+    content: "";
+    position: absolute;
+    inset: -2rem;
+    z-index: -1;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 400ms ease-out;
+    background: radial-gradient(
+      18rem 18rem at var(--mx) var(--my),
+      hsl(var(--signal) / 0.13),
+      hsl(var(--signal) / 0.05) 40%,
+      transparent 70%
+    );
+  }
+
+  .attention-glow[data-glow="on"]::before {
+    opacity: 1;
+  }
+}
+
 
 /* The preloader hands off by diving past the camera while the page pushes
    forward into place behind it. Driven by the data-preloader attribute the

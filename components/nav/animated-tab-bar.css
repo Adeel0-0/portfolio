@@ -1,0 +1,155 @@
+/**
+ * Styling for components/nav/animated-tab-bar.tsx.
+ *
+ * The component as shipped referenced .menu, .menu__item, .menu__border, .icon
+ * and .svg-container without defining any of them, so all of this is authored
+ * rather than pasted. Kept as plain CSS instead of Tailwind utilities because
+ * it is mostly clip-path, custom-property plumbing and a transform the JS
+ * writes directly — none of which utilities express well.
+ *
+ * Co-located rather than dropped into globals.css: Next hoists an imported
+ * stylesheet into the route's CSS bundle, so it loads with the component and
+ * globals.css stays a token file.
+ */
+
+.svg-container {
+  /* Carries only the <clipPath> definition. It must stay in the document for
+     the reference to resolve, but must never occupy space or catch a pointer. */
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.menu {
+  --duration: 0.45s;
+  --ease: cubic-bezier(0.2, 0.8, 0.3, 1);
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0 0.35rem;
+  list-style: none;
+  border-radius: 999px;
+  background-color: hsl(var(--surface) / 0.96);
+  border: 1px solid hsl(var(--border));
+  /* Deliberately not backdrop-blur. A frosted bar over an animating canvas
+     forces a full-viewport backdrop re-sample on every painted frame, which
+     costs 8-16ms on integrated GPUs. Opaque navy reads better here anyway. */
+}
+
+.menu__item {
+  all: unset;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  cursor: pointer;
+  border-radius: 999px;
+  color: hsl(var(--muted-foreground));
+  transition:
+    color var(--duration) var(--ease),
+    transform var(--timeOut, var(--duration)) var(--ease);
+}
+
+.menu__item:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+.menu__item:hover {
+  color: hsl(var(--foreground));
+}
+
+/* The active icon rides up into the bulge the border cuts above the bar. */
+.menu__item.active {
+  color: hsl(var(--brand));
+  transform: translate3d(0, -0.55rem, 0);
+}
+
+/* Soft halo behind the active icon, tinted per item via --bgColorItem. */
+.menu__item::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 999px;
+  background-color: var(--bgColorItem, hsl(var(--brand)));
+  opacity: 0;
+  transform: scale(0.4);
+  transition:
+    opacity var(--duration) var(--ease),
+    transform var(--duration) var(--ease);
+}
+
+.menu__item.active::before {
+  opacity: 0.16;
+  transform: scale(1);
+}
+
+.menu__item .icon {
+  width: 1.35rem;
+  height: 1.35rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/**
+ * The bulge. Same colour as the bar, clipped to the arc, parked just above it,
+ * and slid horizontally by the component so the bar's top edge appears to swell
+ * under whichever icon is active.
+ *
+ * The `var(--timeOut, var(--duration))` pattern is not a typo and not a
+ * fallback for a missing value — it is a switch. The component sets
+ * `--timeOut: none` before a resize re-measure, which makes the transition
+ * shorthand invalid at computed-value time, so it resets to 0s and the border
+ * jumps instead of sliding to its corrected position. Removing the property
+ * restores the animation. Setting it to a real duration would break that.
+ */
+.menu__border {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  width: 7rem;
+  height: 1.55rem;
+  background-color: hsl(var(--surface) / 0.96);
+  clip-path: url(#menu-clip-path);
+  transition: transform var(--timeOut, var(--duration)) var(--ease);
+}
+
+/* Hover label, floated above the bulge. Purely decorative — the accessible
+   name comes from aria-label on the button itself. */
+.menu__tip {
+  position: absolute;
+  bottom: calc(100% + 1.9rem);
+  left: 50%;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.375rem;
+  background-color: hsl(var(--raised));
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--foreground));
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, 0.35rem);
+  pointer-events: none;
+  transition:
+    opacity 180ms ease-out,
+    transform 180ms ease-out;
+}
+
+.menu__item:hover .menu__tip,
+.menu__item:focus-visible .menu__tip {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}

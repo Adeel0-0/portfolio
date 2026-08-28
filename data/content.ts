@@ -29,25 +29,15 @@ export const siteMeta = {
 
 export const nav = {
   brand: "Adeel.",
-  links: [
-    { href: "#projects", label: "Projects" },
-    { href: "#skills", label: "Skills" },
-    { href: "#education", label: "Education" },
-    { href: "#contact", label: "Contact" },
-  ],
 };
 
 /**
- * The old layout numbered its sections 01–04. Kept for reference; a new design
- * that doesn't number its sections can ignore `index`.
+ * Section ids, labels, eyebrows, nav icons and mascot radio lines all live in
+ * lib/sections.ts now — one ordered array consumed by the dock, the scroll
+ * observer, the track map and the mascot alike. A second list of sections here
+ * would be a drift bug waiting to happen, so the old `nav.links` and `sections`
+ * exports are gone rather than duplicated.
  */
-export const sections = {
-  about: { eyebrow: "// About Me" },
-  projects: { index: "01", title: "Projects" },
-  skills: { index: "02", title: "Skills" },
-  education: { index: "03", title: "Education", asideLabel: "Certifications & Activities" },
-  contact: { index: "04", title: "Contact" },
-};
 
 export const about = {
   availability: "Open to opportunities",
@@ -63,7 +53,5 @@ export const contact = {
 export const footer = {
   copyright: (year: number = new Date().getFullYear()) =>
     `© ${year} Syed Mohammad Adeel`,
-  /** Stale on purpose — preserved verbatim. Three.js and shadcn/ui are both
-   *  gone as of the teardown, so update this once the new stack is settled. */
-  builtWith: "Built with Next.js · Three.js · shadcn/ui",
+  builtWith: "Built with Next.js · Tailwind · Framer Motion",
 };

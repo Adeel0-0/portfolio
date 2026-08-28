@@ -1,14 +1,27 @@
+import { About } from "@/components/sections/about";
+import { Contact } from "@/components/sections/contact";
+import { SiteFooter } from "@/components/sections/footer";
+import { Garage } from "@/components/sections/garage";
+import { Hero } from "@/components/sections/hero";
+import { Projects } from "@/components/sections/projects";
+
 /**
- * Placeholder. The old design was torn out ahead of a rebuild; the preloader in
- * app/layout.tsx is the only surviving piece of UI. Sections get built back
- * here one at a time, sourcing their copy from `@/data`.
+ * One page, five sections, in the order lib/sections.ts declares them — the
+ * same array the nav dock and the scroll observer read.
+ *
+ * Every section here is a server component and ships no JavaScript of its own.
+ * The client boundary is <SiteProviders> in app/layout.tsx, which wraps this
+ * tree without becoming part of it.
  */
 export default function Home() {
   return (
-    <main className="flex min-h-screen items-center justify-center">
-      <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">
-        Rebuilding
-      </p>
+    <main>
+      <Hero />
+      <About />
+      <Projects />
+      <Garage />
+      <Contact />
+      <SiteFooter />
     </main>
   );
 }
