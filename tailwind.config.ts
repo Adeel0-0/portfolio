@@ -71,12 +71,6 @@ const config: Config = {
           medium: "hsl(var(--tyre-medium))",
           hard: "hsl(var(--tyre-hard))",
         },
-        led: {
-          1: "hsl(var(--led-1))",
-          2: "hsl(var(--led-2))",
-          3: "hsl(var(--led-3))",
-          flash: "hsl(var(--led-flash))",
-        },
       },
       fontFamily: {
         sans: ["var(--font-space-grotesk)", "system-ui", "sans-serif"],
@@ -126,7 +120,8 @@ const config: Config = {
           "60%": { opacity: "1", filter: "brightness(1.6)" },
           to: { opacity: "1", filter: "brightness(1)" },
         },
-        // Rev strip reaching the end of the lap.
+        // The car marker pulsing on the track map. Opacity only, so it
+        // inherits whatever fill the element already carries.
         "led-flash": {
           "0%, 100%": { opacity: "0.35" },
           "50%": { opacity: "1" },

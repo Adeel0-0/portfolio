@@ -1,40 +1,21 @@
 "use client";
 
-import dynamic from "next/dynamic";
-
 import { CursorGradient } from "@/components/effects/cursor-gradient";
 
 /**
- * Loads the canvas background off the critical path.
+ * The page background.
  *
- * `ssr: false` needs a client component in Next 14, which is the only reason
- * this wrapper exists — app/layout.tsx is a server component and cannot call
- * dynamic() with that option itself.
+ * This used to stack a drifting dot scatter (components/ui/embedding-field.tsx)
+ * over the cursor wash. The scatter is gone: at the density that read as
+ * "embedding space" it also read as a starfield, which pulled the page toward
+ * space-scene and away from pit wall, and it cost a full-viewport canvas
+ * repaint for the whole life of the page to do it.
  *
- * There is nothing to prerender here: the field is decorative, contributes
- * nothing to SEO or LCP, and drawing it costs a canvas context the server
- * doesn't have. Deferring it keeps it out of the initial bundle entirely.
- */
-const EmbeddingField = dynamic(
-  () => import("@/components/ui/embedding-field").then((m) => m.EmbeddingField),
-  { ssr: false }
-);
-
-/**
- * Both background layers, in paint order.
- *
- * The cursor wash is first so it sits behind the scatter — the dots read as
- * catching the light rather than floating over a coloured shape. Both are at
- * z-field, so DOM order is what separates them.
- *
- * The wash is not deferred alongside the canvas: it is a div and a listener,
- * it costs nothing to ship, and it is the layer that should be there first.
+ * What is left is a div and a pointermove listener. There is no canvas here any
+ * more, so nothing needs deferring and this no longer has to be the client
+ * wrapper that a dynamic({ ssr: false }) import required — it stays a component
+ * purely so app/layout.tsx keeps one name for "the background".
  */
 export function SiteBackground() {
-  return (
-    <>
-      <CursorGradient />
-      <EmbeddingField className="pointer-events-none fixed inset-0 z-field h-full w-full" />
-    </>
-  );
+  return <CursorGradient />;
 }

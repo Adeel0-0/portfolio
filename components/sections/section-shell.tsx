@@ -6,8 +6,8 @@ import { SectorSweep } from "./sector-sweep";
  * Shared wrapper for the five page sections.
  *
  * Owns the things every section must get right and none should restate: the id
- * the scroll observer watches, the scroll-margin that keeps the eyebrow clear
- * of the rev strip when the dock jumps here, and the eyebrow itself.
+ * the scroll observer watches, the scroll-margin that keeps the eyebrow off the
+ * very top of the viewport when the dock jumps here, and the eyebrow itself.
  *
  * A server component — sections ship no JavaScript of their own.
  */
@@ -30,8 +30,8 @@ export function SectionShell({
     <section
       id={id}
       aria-label={section.label}
-      // scroll-mt clears the fixed rev strip; without it a dock jump lands the
-      // eyebrow underneath the strip.
+      // scroll-mt gives a dock jump a little breathing room, so the eyebrow
+      // lands just below the top edge rather than flush against it.
       className={cn("scroll-mt-16 py-24 md:py-32", className)}
     >
       <div className="container">

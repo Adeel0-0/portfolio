@@ -1,13 +1,13 @@
 /** The portrait in the Developer Profile section. */
 export type Avatar = {
-  /** Any file in public/. */
-  src: string;
   /**
-   * True for pixel art. Without it the browser smooth-scales the image and a
-   * 64px sprite blown up to 320px turns to mush; with it, every pixel stays a
-   * hard square.
+   * Any file in public/.
+   *
+   * Also the source the scan treatments sample — see
+   * components/portrait/portrait-slideshow.tsx. Swapping this file changes both
+   * the photograph and every treatment drawn from it.
    */
-  pixelated: boolean;
+  src: string;
 };
 
 export type Profile = {
@@ -50,8 +50,7 @@ export const profile: Profile = {
   raceNumber: 22,
 
   avatar: {
-    src: "/profile.jpg",
-    pixelated: false,
+    src: "/portrait.png",
   },
   tagline:
     "I build and ship AI-powered backend systems — embeddings, vector search, RAG pipelines, and production APIs.",

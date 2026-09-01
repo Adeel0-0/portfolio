@@ -17,9 +17,9 @@
      --brand  (red)     interactive only — active nav, CTAs, links, live dots
      --signal (yellow)  measurement only — metrics, hover glow, sector sweeps
      --best   (purple)  ONE job — a number that is a personal best. Nothing else.
-     green              dropped site-wide. Two carve-outs, both functional:
-                        the preloader terminal, and --led-* below (a shift light
-                        is literally green; see components/chrome/rev-strip).
+     green              dropped site-wide. One carve-out, functional: the
+                        preloader terminal. The shift-light strip that held the
+                        other one is gone, and its --led-* tokens with it.
 --------------------------------------------------------------------------- */
 
 @layer base {
@@ -76,13 +76,6 @@
     --best: var(--rb-purple);
     --surface: var(--rb-surface);
     --raised: var(--rb-raised);
-
-    /* Rev-strip shift lights. The ONLY green on the site, isolated here so
-       that carve-out stays a one-line decision rather than a refactor. */
-    --led-1: 145 100% 39%; /* #00C853 green  */
-    --led-2: 42 100% 50%; /* #FFB300 amber  */
-    --led-3: var(--rb-red); /*         red    */
-    --led-flash: 224 100% 65%; /* #4D7CFF blue   */
 
     /* Tyre compounds — how hard a tool actually gets run. */
     --tyre-soft: var(--brand); /* daily driver, current, deep */

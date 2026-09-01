@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { DeferredChrome } from "@/components/chrome/deferred-chrome";
-import { RevStrip } from "@/components/chrome/rev-strip";
 import { SiteBackground } from "@/components/chrome/site-background";
 import { NavDock } from "@/components/nav/nav-dock";
 import { SiteProviders } from "@/components/providers/site-providers";
@@ -78,7 +77,6 @@ export default function RootLayout({
               snap into place at the end of the launch, in full view, because
               the overlay has already faded by then. */}
           <SiteBackground />
-          <RevStrip />
           <NavDock />
           <DeferredChrome />
           {/* Target for the preloader hand-off in globals.css — the page pushes

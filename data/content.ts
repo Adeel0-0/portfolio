@@ -86,11 +86,17 @@ export const contact: ContactContent = {
 
 export type FooterContent = {
   copyright: (year?: number) => string;
-  builtWith: string;
 };
 
+/**
+ * Deliberately just the name.
+ *
+ * The stack credit that used to sit here ("Built with Next.js · Tailwind ·
+ * Framer Motion") told a visitor nothing they could not read off the Network
+ * tab, and told a hiring manager nothing at all — the work above the footer is
+ * the evidence. Anything added back here has to earn the line.
+ */
 export const footer: FooterContent = {
   copyright: (year: number = new Date().getFullYear()) =>
     `© ${year} Syed Mohammad Adeel`,
-  builtWith: "Built with Next.js · Tailwind · Framer Motion",
 };
