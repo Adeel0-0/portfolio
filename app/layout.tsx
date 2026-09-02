@@ -50,13 +50,20 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: "#070B18",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark overflow-x-hidden">
       <body
-        className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans`}
+        className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans overflow-x-hidden`}
       >
         {/* Without JS the prerendered markup would keep the preloader overlay
             up forever — it covers the whole viewport, so the page would read as
