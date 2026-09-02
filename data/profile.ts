@@ -1,12 +1,6 @@
 /** The portrait in the Developer Profile section. */
 export type Avatar = {
-  /**
-   * Any file in public/.
-   *
-   * Also the source the scan treatments sample — see
-   * components/portrait/portrait-slideshow.tsx. Swapping this file changes both
-   * the photograph and every treatment drawn from it.
-   */
+  /** Any file in public/. */
   src: string;
 };
 
@@ -15,9 +9,12 @@ export type Profile = {
   firstName: string;
   role: string;
   /**
-   * Race number, the way drivers carry one. Threads through the pit board, the
-   * nav corner and the footer; every one of those renders conditionally, so
-   * null simply means the number is omitted everywhere.
+   * Race number, the way drivers carry one.
+   *
+   * Currently rendered nowhere: its only reader was the hero's pit board, which
+   * is gone. Kept because the empty hero slot is meant to be filled and this is
+   * the kind of thing that fills it. Anything that picks it up again must
+   * handle null — that is what "no number chosen" means.
    */
   raceNumber: number | null;
   avatar: Avatar;

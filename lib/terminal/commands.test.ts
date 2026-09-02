@@ -67,6 +67,29 @@ describe("runCommand", () => {
     });
   });
 
+  describe("cat resume", () => {
+    it("prints the summary whether or not a PDF is deployed", () => {
+      const contexts = [{ resumeHref: null }, { resumeHref: "/resume.pdf" }];
+      for (const context of contexts) {
+        const out = runCommand("cat resume", context).join("\n");
+        expect(out).toContain(profile.name);
+        expect(out).toContain(profile.summary);
+      }
+    });
+
+    it("offers the PDF path when one is deployed", () => {
+      const out = runCommand("cat resume", { resumeHref: "/resume.pdf" });
+      expect(out.join("\n")).toContain("/resume.pdf");
+    });
+
+    it("mentions no file when none is deployed", () => {
+      // The whole point of gating on the filesystem: a recruiter must never be
+      // handed a path that 404s.
+      const out = runCommand("cat resume", { resumeHref: null }).join("\n");
+      expect(out).not.toContain(".pdf");
+    });
+  });
+
   describe("help", () => {
     it("documents every command the terminal advertises", () => {
       const help = runCommand("help").join("\n");

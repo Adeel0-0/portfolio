@@ -8,6 +8,7 @@ import { SiteProviders } from "@/components/providers/site-providers";
 import { SpatialNeuralPreloader } from "@/components/ui/spatial-neural-preloader";
 import { content } from "@/data";
 import { SITE_URL } from "@/lib/env";
+import { RESUME_HREF, hasResume } from "@/lib/resume";
 
 /**
  * Two faces, one rule: Space Grotesk for anything a human wrote, JetBrains Mono
@@ -78,7 +79,7 @@ export default function RootLayout({
               the overlay has already faded by then. */}
           <SiteBackground />
           <NavDock />
-          <DeferredChrome />
+          <DeferredChrome resumeHref={hasResume ? RESUME_HREF : null} />
           {/* Target for the preloader hand-off in globals.css — the page pushes
               forward into place as the overlay dives past. Left untouched
               whenever the preloader is skipped.

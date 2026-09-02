@@ -29,12 +29,17 @@ const TrackMap = dynamic(
   { ssr: false }
 );
 
-export function DeferredChrome() {
+/**
+ * `resumeHref` is passed through rather than read here: lib/resume.ts is
+ * server-only, and this file is the client boundary. app/layout.tsx resolves it
+ * on the server and hands down a plain string or null.
+ */
+export function DeferredChrome({ resumeHref }: { resumeHref: string | null }) {
   return (
     <>
       <TrackMap />
       <Mascot />
-      <TerminalOverlay />
+      <TerminalOverlay resumeHref={resumeHref} />
     </>
   );
 }

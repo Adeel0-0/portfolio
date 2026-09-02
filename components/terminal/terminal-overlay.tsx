@@ -23,7 +23,11 @@ type Line = { id: number; text: string; kind: "input" | "output" };
 
 const PROMPT = `C:\\Users\\${profile.firstName}>`;
 
-export function TerminalOverlay() {
+export function TerminalOverlay({
+  resumeHref,
+}: {
+  resumeHref: string | null;
+}) {
   const ready = usePreloaderDone();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
@@ -102,7 +106,7 @@ export function TerminalOverlay() {
       return;
     }
 
-    for (const line of runCommand(input)) append(line, "output");
+    for (const line of runCommand(input, { resumeHref })) append(line, "output");
   }
 
   return (

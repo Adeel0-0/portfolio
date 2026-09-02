@@ -1,4 +1,4 @@
-import { PortraitSlideshow } from "@/components/portrait/portrait-slideshow";
+import { Portrait } from "@/components/portrait/portrait";
 import { StatBlock } from "@/components/ui/stat-block";
 import { content, profile, stats } from "@/data";
 import { SectionShell } from "./section-shell";
@@ -30,11 +30,7 @@ export function About() {
           </dl>
         </div>
 
-        {/* The portrait cycles through scan treatments of the same photograph.
-            It used to be a static image here plus a separate /ascii route that
-            nothing linked to; the treatments say more in the slot where a
-            portfolio already puts a face than they ever did on their own page. */}
-        <PortraitSlideshow
+        <Portrait
           src={profile.avatar.src}
           alt={`${profile.name}, ${profile.role}`}
           caption={`${profile.firstName} · ${profile.location.split(",")[0]}`}
