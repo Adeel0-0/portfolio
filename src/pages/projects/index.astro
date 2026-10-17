@@ -2,8 +2,11 @@
 import SiteLayout from "../../layouts/SiteLayout.astro";
 import ProjectCard from "../../components/ProjectCard.astro";
 import { getPublishedProjects } from "../../lib/content";
+import { capabilities } from "../../data/site";
 const projects = await getPublishedProjects();
 const skills = [...new Set(projects.flatMap((p) => p.data.skills))].sort();
+// Skills the home page may link here, including ones no published project uses.
+const linkedSkills = [...new Set(capabilities.flatMap((c) => c.skills))];
 ---
 
 <SiteLayout title="Projects — Mohammad Adeel">
@@ -19,7 +22,11 @@ const skills = [...new Set(projects.flatMap((p) => p.data.skills))].sort();
     <h2 class="sr-only">Project collection</h2>
     <form class="filter-bar" id="project-filter" hidden>
       <label for="skill-filter">Explore a skill</label>
-      <select id="skill-filter" name="skill">
+      <select
+        id="skill-filter"
+        name="skill"
+        data-linked-skills={JSON.stringify(linkedSkills)}
+      >
         <option value="">All skills</option>
         {skills.map((skill) => (
           <option value={skill}>{skill}</option>

@@ -20,9 +20,25 @@ if (form && select) {
     const empty = document.querySelector<HTMLElement>("#filter-empty");
     if (empty) empty.hidden = count !== 0;
   };
+  const linked = JSON.parse(select.dataset.linkedSkills || "[]") as string[];
+  // The server-rendered options only list skills used by a published project,
+  // but the home page also links skills with none yet. The owner chose to keep
+  // those links and show the honest empty state rather than every project.
+  const selectRequestedSkill = (requested: string) => {
+    if (![...select.options].some((option) => option.value === requested)) {
+      if (linked.includes(requested)) {
+        const option = document.createElement("option");
+        option.value = requested;
+        option.textContent = requested;
+        select.appendChild(option);
+      } else {
+        return;
+      }
+    }
+    select.value = requested;
+  };
   const initial = new URL(location.href).searchParams.get("skill");
-  if (initial && [...select.options].some((option) => option.value === initial))
-    select.value = initial;
+  if (initial) selectRequestedSkill(initial);
   select.addEventListener("change", () => {
     const url = new URL(location.href);
     if (select.value) url.searchParams.set("skill", select.value);
