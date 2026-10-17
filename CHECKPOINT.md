@@ -1,11 +1,11 @@
 # Portfolio rebuild checkpoint
 
-Updated: 2026-10-17 18:56 (Asia/Calcutta).
+Updated: 2026-10-17 19:22 (Asia/Calcutta).
 
-**Status: LOCAL WORK COMPLETE, NOT PUSHED OR DEPLOYED. Writer: Claude session `portfolio-19`, now idle and awaiting the owner's push/deploy decision. Another agent should confirm with the owner before claiming.**
+**Status: BRANCH PUSHED TO ORIGIN. Writer: idle (git-vcs-manager pushed rebuild/astro-f1 per owner instruction; writer role released back to idle).**
 
-### Current state (2026-10-17 18:56)
-- Branch `rebuild/astro-f1`, 10 commits ahead of `origin/main` including this checkpoint's docs commit (`cef9d0a7`, old Next app). Branch never pushed; `origin` has only `main`.
+### Current state (2026-10-17 19:22)
+- Branch `rebuild/astro-f1` pushed to `origin` (`https://github.com/Adeel0-0/portfolio`).
 - Vercel account connected to Claude (`theadeel45`, team `team_J8PcAo6Z7lIbJGfkFQq3AUMS`) has 0 projects and 0 deployments. No live URL recorded in the repo. Nothing from the rebuild is live.
 - Verified at `d8eca156` (2026-10-17 18:52): `npm run check` PASS (typecheck 0/0/0, lint, 65/65 unit, build 8 pages / 181 refs); Playwright 34 passed, 2 skipped (WebGL test is Chromium-only by design) across Chromium, Firefox and WebKit.
 - Final route review (read-only, own short-lived preview server): 8 routes x 2 themes x 390/1440 px. All 200 (unknown route 404), no console errors, overflow, broken images or empty links. Canonical/og URLs are localhost only in local builds; Vercel supplies `VERCEL_PROJECT_PRODUCTION_URL`. One finding fixed (`d8eca156`, case-study facts sentence case).
