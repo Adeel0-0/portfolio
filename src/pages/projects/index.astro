@@ -1,0 +1,12 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { getPublishedProjects } from '../../lib/content';
+const projects = await getPublishedProjects();
+const skills = [...new Set(projects.flatMap(p => p.data.skills))].sort();
+---
+<SiteLayout title="Projects — Mohammad Adeel">
+  <section class="container page-intro"><p class="eyebrow">Projects</p><h1>Work with a purpose.</h1><p class="large-copy">A closer look at the problems, the engineering, and the decisions behind each project.</p></section>
+  <section class="container projects-index section"><h2 class="sr-only">Project collection</h2><form class="filter-bar" id="project-filter" hidden><label for="skill-filter">Explore a skill</label><select id="skill-filter" name="skill"><option value="">All skills</option>{skills.map(skill => <option value={skill}>{skill}</option>)}</select><p id="filter-status" aria-live="polite">{projects.length} projects</p></form><div class="project-grid">{projects.map(project => <ProjectCard project={project} />)}</div><p id="filter-empty" hidden>No projects match this skill. Choose “All skills” to see the collection.</p></section>
+  <script>import '../../scripts/filters';</script>
+</SiteLayout>

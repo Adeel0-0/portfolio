@@ -1,0 +1,6 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { person, capabilities } from '../data/site';
+import { education } from '../../data/education';
+---
+<SiteLayout title="About — Mohammad Adeel"><section class="container page-intro"><p class="eyebrow">About</p><h1>Curious by nature.<br />An engineer by practice.</h1></section><section class="container section about-page"><img src="/portrait.png" width="311" height="334" alt="Mohammad Adeel" /><div class="prose"><h2>Hello, I’m Adeel.</h2><p>{person.bio}</p><p>I’m drawn to the parts of a project that connect disciplines: a model and an API, a search query and a ranking system, a sensor and a feedback loop. That is where the interesting engineering questions tend to appear.</p><h2>Education</h2><p><strong>{education.degree}</strong><br />{education.school}<br />{education.period}</p><h2>What I’m focused on</h2><ul>{capabilities.map(capability => <li><strong>{capability.title}.</strong> {capability.description}</li>)}</ul><a class="text-link" href="/projects/">Explore my work ↗</a></div></section></SiteLayout>

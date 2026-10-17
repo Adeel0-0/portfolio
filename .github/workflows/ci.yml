@@ -11,15 +11,19 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: .nvmrc
           cache: npm
 
       # `ci`, not `install`: fails loudly if package-lock.json and package.json
@@ -40,3 +44,19 @@ jobs:
       # failure far better than a build log does.
       - name: Build
         run: npm run build
+
+      - name: Install browser runners
+        run: npx playwright install --with-deps chromium firefox webkit
+
+      - name: Browser journeys and accessibility
+        run: npm run test:browser
+
+      - name: Keep browser failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-results
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7

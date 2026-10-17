@@ -17,8 +17,8 @@ import { fileURLToPath } from "node:url";
 export default defineConfig({
   test: {
     environment: "node",
-    include: ["**/*.test.ts"],
-    exclude: ["node_modules/**", ".next/**"],
+    include: ["lib/**/*.test.ts", "data/**/*.test.ts", "tests/*.test.ts"],
+    exclude: ["node_modules/**", ".next/**", ".tools/**", "tests/browser/**"],
   },
   resolve: {
     // Mirrors the "@/*" path alias in tsconfig.json.

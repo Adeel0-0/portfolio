@@ -63,7 +63,7 @@ export const profile: Profile = {
     "Docker",
     "Next.js",
   ],
-  location: "Ananthapur, Andhra Pradesh, India",
+  location: "Hyderabad, Telangana, India",
   email: "mohammad.adeel.syed@gmail.com",
   phone: "+91 80917 79849",
   github: "https://github.com/Adeel0-0",
