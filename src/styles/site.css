@@ -847,7 +847,10 @@ main:focus:not(:focus-visible) {
 }
 .case-facts strong {
   font-weight: 550;
-  text-transform: capitalize;
+}
+/* Sentence case: `capitalize` would also title-case authored roles ("And"). */
+.case-facts strong::first-letter {
+  text-transform: uppercase;
 }
 .case-header .hero-actions {
   margin-bottom: 35px;
