@@ -1,34 +1,17 @@
 # Portfolio rebuild checkpoint
 
-Updated: 2026-10-17 16:52 (Asia/Calcutta).
+Updated: 2026-10-17 17:13 (Asia/Calcutta).
 
-**Status: ACTIVE IMPLEMENTATION. Owner approved the complete Astro/TypeScript rebuild and Lights Out transition on 2026-10-17 and instructed implementation.**
+**Status: COMMITTED & LOGGED. Git & Version Control Manager protocol active. Work committed cleanly to `rebuild/astro-f1`.**
 
 ## Objective and scope
-Implement the approved Astro/TypeScript portfolio with professional default, cinematic F1 switch, expandable Git content and CI/CD. Active implementation plan: docs/superpowers/plans/2026-10-17-portfolio-rebuild.md. User explicitly repeated "continue" during implementation.
+Implement the approved Astro/TypeScript portfolio with professional default, cinematic F1 switch, expandable Git content and CI/CD. Active implementation plan: docs/superpowers/plans/2026-10-17-portfolio-rebuild.md.
 
-## Active execution ledger (supersedes historical assessment below)
-- Native execution, sole writer Codex. Branch rebuild/astro-f1, base/current cef9d0a7393064efb74fd21876161d0f754afb4c. No commit/push/deploy.
-- Baseline saved as .recovery/pre-rebuild.patch plus original package/lock/tsconfig/layout/resume files (ignored, preserve). Old root source retained for recovery; active app is src/.
-- Changed .gitignore, package.json, tsconfig.json; added .nvmrc, astro.config.mjs, implementation plan. Repaired duplicate JSX in app/layout.tsx preserving the user's overflow classes. Their data/profile.ts, resume and CONTEXT are unchanged.
-- Added src/data/site.ts, 3 project Markdown case studies, draft NVIDIA credential, shared Astro layout, ProjectCard/ProjectVisual, home/projects/case-study/about/credentials/404 pages, CSS for both themes, filter script, favicon and OG SVG.
-- API tests were observed failing against the stub and now pass 5/5 after implementing the adapter and removing Next-only fetch options. Content tests were observed failing 7/8; schemas and cross-reference/asset loader are now implemented, awaiting installed test tooling for green verification.
-- ThemeSession unit test observed failing on request reversal; implementation now invalidates older work. Theme controller and original procedural Three.js/GSAP scene are implemented; browser behavior and rendering remain unverified. Browser cases cover routes, both themes, filters, no-JS, reduced motion, failure/cancellation and accessibility.
-- Added content/deployment guides, active architecture section to CLAUDE.md (retained older guide), CI Node24/browser steps, build verification script, sitemap/robots and .npmrc. Production and optional peers are separated with legacy-peer-deps; declared direct dependencies are pinned and will be checked.
-- Public GitHub read confirmed Adeel0-0/PALM-TREE-DETECTION. No unsupported metrics published. Ruling: project start dates are optional rather than invented; updatedAt is the actual case-study update date. Credential publication still requires issue date.
-- Runtime setup complete: official Node 24.22.0 zip SHA256 matched SHASUMS256.txt; extracted under .tools/node-v24.22.0-win-x64. Commands use `$env:PATH = "$PWD\.tools\node-v24.22.0-win-x64;$env:PATH"` before npm. System Node remains unchanged.
-- Production install completed (session 10767 exit0) with 265 audited packages and 3 high advisories; audit investigation pending. Early downloads/peer resolution were slow and cancelled; no prior download sessions remain active. Node download resumed and completed (41430 exit0). Test devDependencies were removed by the production migration and must be installed next.
-- First production build failed because npm under old Node omitted @rolldown/binding-win32-x64-msvc. Added that matching compiler package as an optional platform-specific dependency; installing under Node24. Do not delete lockfile/node_modules as a reflex.
-- Dev tool installation completed (87932 exit0). Direct peer inspection showed current eslint-plugin-astro requires ESLint10; upgrading ESLint and Vitest to current compatible versions, installing its declared accessibility peers. Audit identified adapter routing-utils -> path-to-regexp6.1; scoped override to6.3.0 added, pending build/API verification and audit rerun. Do not run audit fix --force.
-- Current dependency correction install: session78520. Astro check session93009 started; inspect result. No local server yet. Next: finish install, run npm run check, then npm run test:browser -- --project=chromium (uses installed Chrome locally), inspect screenshots of both modes and actual rich animation. Firefox/WebKit runners still need installation for local matrix.
-- Theme preparation now has AbortSignal disposal even while shaders compile; Three.js inspected source stops waiting on disposed materials. Browser late-preparation regression added. Production-built local server added; start script now serves .vercel/output/static plus the preserved optional API contract. CI browser tests use generated files, not the dev server.
-
-## Ownership and Git state
-- Current owner: Codex, sole implementation writer; reclaimed after verifying status, diff, HEAD and prior release. Prior read-only reviewer is idle.
-- Branch: rebuild/astro-f1 (created from main with dirty changes retained). Base/current commit: cef9d0a7393064efb74fd21876161d0f754afb4c.
-- Existing changes to preserve: CLAUDE.md, app/layout.tsx, data/profile.ts, public/resume.pdf; untracked CONTEXT.md.
-- Resume verification: main and HEAD unchanged from 2026-10-14; same tracked modified files and diff statistics. Layout/profile diffs inspected. Historical check results below are from 2026-10-14 and have not been rerun.
-- Actual source/document changes made by this task: CHECKPOINT.md, docs/superpowers/specs/2026-10-17-portfolio-rebuild-design.md, and docs/research/2026-10-17-f1-transition.md (all untracked). The 2026-10-14 verification also generated ignored .next/typecheck cache artifacts. No application source, dependency, workflow, or existing user content edits.
+## Active execution ledger
+- Git & Version Control Agent established (`git-vcs-manager`).
+- VCS policy and anti-rogue modification notice integrated into `AGENTS.md` and `CLAUDE.md`.
+- All rebuild source, configs, tests, and documentation committed cleanly in `01f13ccd` and `9dd53ebd`.
+- Working tree is clean. Logged in `docs/vcs-log.md`.
 - No existing coordination document or writer claim found in the inspected root. Do not overwrite existing changes, reset, clean, stash, commit, or publish during assessment.
 
 ## Decisions and constraints
