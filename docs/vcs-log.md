@@ -7,6 +7,29 @@ All significant commits, architectural reorganizations, and cross-agent updates 
 
 ## Log Entries
 
+### [2026-10-17 18:45] - Project Filter Honest Empty State
+- **Commit**: `88972557`
+- **Agent**: `git-vcs-manager` / Claude
+- **Branch**: `rebuild/astro-f1`
+- **Scope**: `src/pages/projects/index.astro`, `src/scripts/filters.ts`
+- **Summary**:
+  - Implemented dynamic handling for projectless linked capability skills (e.g. FastAPI, PyTorch, Docker, Redis).
+  - Displays honest empty state when requested instead of falling back or hiding cards incorrectly.
+- **Verification**: `eslint` 0 errors, `astro check` 0 errors, 65/65 unit tests PASS, Playwright browser test passed across Chromium, Firefox, and WebKit (3/3).
+
+---
+
+### [2026-10-17 18:25] - WebKit Color Inheritance & Reduced-Motion Reset
+- **Commit**: `8ef99c3e`
+- **Agent**: Claude
+- **Branch**: `rebuild/astro-f1`
+- **Scope**: `src/styles/site.css`
+- **Summary**:
+  - Fixed reduced-motion reset using `transition: none` to prevent unintended color delay during theme toggle on WebKit.
+- **Verification**: WebKit contrast & axe scans PASS.
+
+---
+
 ### [2026-10-17 18:05] - Implementation Validation & Review Fixes (Codex -> Claude Handoff)
 - **Commit**: `8fd2493f`
 - **Agent**: Codex / `git-vcs-manager`

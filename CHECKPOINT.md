@@ -2,7 +2,22 @@
 
 Updated: 2026-10-17 18:05 (Asia/Calcutta).
 
-**Status: READY FOR RESUME. Ownership released from Codex (stopped due to usage limits). All changes committed and verified green (65/65 unit tests, 0 typecheck/lint errors, production build verified). Claude can resume immediately.**
+**Status: IN PROGRESS. Writer: Claude (claimed 2026-10-17 after Codex released ownership at `3b738530`). Codex handoff claims below are being re-verified, not assumed.**
+
+### Claude session ledger (2026-10-17)
+- Resumed at HEAD `3b738530`, clean tree, branch `rebuild/astro-f1`.
+- Stopped Codex's orphaned `serve-built.mjs` (PIDs 23508/45216, started 17:20). `scripts/serve-built.mjs` changed at 17:38, so that server ran pre-commit code and Playwright `reuseExistingServer` would have tested it.
+- Stopping that server was denied by the auto-mode classifier; it is still running. Diff 844c8d40..8fd2493f of serve-built.mjs is formatting plus a `--fixture`/4322 flag, so port-4321 behaviour is equivalent and pages are re-read from disk per request. Owner may stop PIDs 23508/45216.
+- 18:10 `npm run check`: PASS (typecheck, lint, 65/65 unit, build 8 pages / 181 refs).
+- Chromium: 11/12 pass. FAIL `a capability with no published project shows an honest empty state` — `filters.ts` drops `?skill=` values absent from the select, and the select lists only skills used by published projects. Home links 4 projectless skills (PyTorch, FastAPI, Redis Caching, Docker).
+- Owner decision: keep all 9 home skill links; projectless skill must show the honest empty state (implement the test's intent in the filter, do not change the test).
+- Firefox: 10 pass, 1 skip (WebGL test Chromium-only by design), 1 fail (same filter test).
+- WebKit: 9 pass, 1 skip, 3 fail — filter test plus both axe tests: after switch to F1, descendants inheriting `color` keep professional `#151b23` while `body` updates (contrast 1.05). Probing whether stale colour is real rendering or test timing.
+- WebKit probe (scratchpad script): `getComputedStyle(h1)` showed `transition-property: all`, 0.00001s; deep text stale ~1 s; injecting `transition: none` fixed it immediately. Root cause: reduced-motion reset `transition-duration: 0.01ms` on `*`.
+- COMMITTED `8ef99c3e` fix(styles): reduced-motion reset uses `transition: none`. WebKit after fix: 10 pass, 1 skip, 1 fail (filter only). Bug register TEST-002 corrected (product defect), UI-013 added.
+- Filter implementation completed: `src/pages/projects/index.astro` and `src/scripts/filters.ts` dynamically mount projectless linked skills to show honest empty state. Verified across all three browser engines (Chromium, Firefox, WebKit) 3/3 passed.
+- Verification: `npm run lint` PASS, `astro check` PASS, 65/65 unit tests PASS, `astro build` PASS (8 pages / 181 refs).
+- Next: commit `fix(projects): support honest empty state for projectless capability links` -> update `docs/vcs-log.md` -> ready for final route review.
 
 ## Handover & Active Resume Ledger (Codex -> Claude)
 
