@@ -1,11 +1,95 @@
 ---
-interface Props { visual?: string; diagram: string[]; title: string; }
-const { visual = 'search', diagram, title } = Astro.props;
+interface Props {
+  visual?: string;
+  diagram: string[];
+  title: string;
+}
+const { visual = "search", diagram, title } = Astro.props;
 ---
-<div class:list={['project-visual', `visual-${visual}`]} role="img" aria-label={`${title} architecture: ${diagram.join(' to ')}`}>
-  <div class="diagram-caption"><span>System overview</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 8V3h5m8 0h5v5M3 16v5h5m8 0h5v-5" stroke="currentColor" stroke-width="1.5" /></svg></div>
-  <div class="diagram-art" aria-hidden="true">
-    {visual === 'search' ? <><div class="query-chip"><span class="search-lens"></span>Describe what you want to build</div><div class="connector-line"></div><div class="result-stack"><i></i><i></i><i></i></div></> : visual === 'vision' ? <div class="vision-grid">{Array.from({length: 12}, (_, i) => <span class:list={['tree-dot', { 'detected': [1, 3, 6, 8, 10].includes(i) }]}><svg viewBox="0 0 40 40"><path d="M20 33V18m0 1C11 7 4 14 6 18c4-2 8-1 14 1Zm0 0C29 6 35 12 34 18c-6-3-10-2-14 1Zm0 0C14 3 21 2 24 7l-4 12Z" stroke="currentColor" fill="none" stroke-width="2" /></svg></span>)}</div> : <div class="drone-diagram"><svg viewBox="0 0 240 180"><g fill="none" stroke="currentColor" stroke-width="2"><path d="m70 40 100 100M170 40 70 140" /><rect x="104" y="68" width="32" height="44" rx="9" />{[[70,40],[170,40],[70,140],[170,140]].map(([x,y]) => <><circle cx={x} cy={y} r="27" /><circle cx={x} cy={y} r="5" /><path d={`M${x-19} ${y}h38M${x} ${y-19}v38`} /></>)}</g></svg></div>}
+
+<div
+  class:list={["project-visual", `visual-${visual}`]}
+  role="img"
+  aria-label={`${title} architecture: ${diagram.join(" to ")}`}
+>
+  <div class="diagram-caption">
+    <span>System overview</span>
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M3 8V3h5m8 0h5v5M3 16v5h5m8 0h5v-5"
+        stroke="currentColor"
+        stroke-width="1.5"
+      />
+    </svg>
   </div>
-  <div class="diagram-flow" aria-hidden="true">{diagram.slice(0, 3).map((node, i) => <><span>{node}</span>{i < 2 && <b>›</b>}</>)}</div>
+  <div class="diagram-art" aria-hidden="true">
+    {visual === "search" ? (
+      <>
+        <div class="query-chip">
+          <span class="search-lens"></span>Describe what you want to build
+        </div>
+        <div class="connector-line"></div>
+        <div class="result-stack">
+          <i></i>
+          <i></i>
+          <i></i>
+        </div>
+      </>
+    ) : visual === "vision" ? (
+      <div class="vision-grid">
+        {Array.from({ length: 12 }, (_, i) => (
+          <span
+            class:list={[
+              "tree-dot",
+              { detected: [1, 3, 6, 8, 10].includes(i) },
+            ]}
+          >
+            <svg viewBox="0 0 40 40">
+              <path
+                d="M20 33V18m0 1C11 7 4 14 6 18c4-2 8-1 14 1Zm0 0C29 6 35 12 34 18c-6-3-10-2-14 1Zm0 0C14 3 21 2 24 7l-4 12Z"
+                stroke="currentColor"
+                fill="none"
+                stroke-width="2"
+              />
+            </svg>
+          </span>
+        ))}
+      </div>
+    ) : (
+      <div class="drone-diagram">
+        <svg viewBox="0 0 240 180">
+          <g fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m70 40 100 100M170 40 70 140" />
+            <rect x="104" y="68" width="32" height="44" rx="9" />
+            {[
+              [70, 40],
+              [170, 40],
+              [70, 140],
+              [170, 140],
+            ].map(([x, y]) => (
+              <>
+                <circle cx={x} cy={y} r="27" />
+                <circle cx={x} cy={y} r="5" />
+                <path d={`M${x - 19} ${y}h38M${x} ${y - 19}v38`} />
+              </>
+            ))}
+          </g>
+        </svg>
+      </div>
+    )}
+  </div>
+  <div class="diagram-flow" aria-hidden="true">
+    {diagram.slice(0, 3).map((node, i) => (
+      <>
+        <span>{node}</span>
+        {i < 2 && <b>›</b>}
+      </>
+    ))}
+  </div>
 </div>

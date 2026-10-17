@@ -1,11 +1,16 @@
-import { defineConfig } from 'astro/config';
-import vercel from '@astrojs/vercel';
+import { defineConfig } from "astro/config";
+import vercel from "@astrojs/vercel";
 
-const origin = process.env.SITE_URL || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : 'http://localhost:4321');
+const origin =
+  process.env.SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : "http://localhost:4321");
 
 export default defineConfig({
   site: origin,
   adapter: vercel(),
-  trailingSlash: 'always',
+  trailingSlash: "ignore",
+  prerenderConflictBehavior: "error",
   vite: { css: { postcss: {} } },
 });

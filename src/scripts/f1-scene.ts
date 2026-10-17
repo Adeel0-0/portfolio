@@ -1,24 +1,48 @@
-import * as THREE from 'three';
-import { gsap } from 'gsap';
+import * as THREE from "three";
+import { gsap } from "gsap";
 
-export interface SceneHandle { play(callbacks: { onReveal(): void; onComplete(): void }): void; dispose(): void; }
+export interface SceneHandle {
+  play(callbacks: { onReveal(): void; onComplete(): void }): void;
+  dispose(): void;
+}
 
 /** Original procedural scene. No downloaded model, texture, footage or component code. */
-export async function prepareScene(canvas: HTMLCanvasElement, signal: AbortSignal): Promise<SceneHandle> {
-  if (signal.aborted) throw new DOMException('Preparation cancelled', 'AbortError');
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'high-performance' });
+export async function prepareScene(
+  canvas: HTMLCanvasElement,
+  signal: AbortSignal,
+): Promise<SceneHandle> {
+  if (signal.aborted)
+    throw new DOMException("Preparation cancelled", "AbortError");
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    antialias: false,
+    alpha: false,
+    powerPreference: "high-performance",
+  });
   const world = new THREE.Scene();
-  world.background = new THREE.Color('#090e16');
-  const camera = new THREE.PerspectiveCamera(62, innerWidth / innerHeight, .1, 220);
-  camera.position.set(0, 1.3, 7); camera.lookAt(0, .7, -70);
-  const uniforms = { uTravel: { value: 0 }, uBend: { value: 0 }, uSpeed: { value: 1 } };
+  world.background = new THREE.Color("#090e16");
+  const camera = new THREE.PerspectiveCamera(
+    62,
+    innerWidth / innerHeight,
+    0.1,
+    220,
+  );
+  camera.position.set(0, 1.3, 7);
+  camera.lookAt(0, 0.7, -70);
+  const uniforms = {
+    uTravel: { value: 0 },
+    uBend: { value: 0 },
+    uSpeed: { value: 1 },
+  };
   const resources: (THREE.BufferGeometry | THREE.Material)[] = [];
   let dead = false;
   let timeline: gsap.core.Timeline | undefined;
 
   const roadGeometry = new THREE.PlaneGeometry(28, 200, 20, 80);
-  roadGeometry.rotateX(-Math.PI / 2); roadGeometry.translate(0, -.15, -92);
-  const roadMaterial = new THREE.ShaderMaterial({ uniforms,
+  roadGeometry.rotateX(-Math.PI / 2);
+  roadGeometry.translate(0, -0.15, -92);
+  const roadMaterial = new THREE.ShaderMaterial({
+    uniforms,
     vertexShader: `varying vec2 vUv; varying float vDepth; uniform float uBend;
       void main(){vUv=uv; vec3 p=position; p.x+=pow(max(0.,-p.z)/200.,2.)*uBend;
       vDepth=-p.z; gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);}`,
@@ -34,8 +58,9 @@ export async function prepareScene(canvas: HTMLCanvasElement, signal: AbortSigna
   resources.push(roadGeometry, roadMaterial);
   world.add(new THREE.Mesh(roadGeometry, roadMaterial));
 
-  const geometry = new THREE.BoxGeometry(.045, .045, 3);
-  const material = new THREE.ShaderMaterial({ uniforms,
+  const geometry = new THREE.BoxGeometry(0.045, 0.045, 3);
+  const material = new THREE.ShaderMaterial({
+    uniforms,
     vertexShader: `uniform float uTravel; uniform float uBend; uniform float uSpeed; varying float vSide; varying float vDepth; varying vec2 vUv;
       void main(){vUv=uv; vec3 local=position; local.z*=uSpeed;
       vec4 p=instanceMatrix*vec4(local,1.); p.z=mod(p.z+uTravel,200.)-193.;
@@ -53,28 +78,47 @@ export async function prepareScene(canvas: HTMLCanvasElement, signal: AbortSigna
   // Deterministic distribution avoids rebuilding random textures or particle buffers per frame.
   for (let i = 0; i < count; i++) {
     const side = i % 2 ? 1 : -1;
-    dummy.position.set(side * (5 + (i % 7) * .75), .2 + (i % 9) * .48, -((i * 17.37) % 200));
-    dummy.scale.set(1 + i % 3, 1, 1 + i % 4); dummy.updateMatrix(); trails.setMatrixAt(i, dummy.matrix);
+    dummy.position.set(
+      side * (5 + (i % 7) * 0.75),
+      0.2 + (i % 9) * 0.48,
+      -((i * 17.37) % 200),
+    );
+    dummy.scale.set(1 + (i % 3), 1, 1 + (i % 4));
+    dummy.updateMatrix();
+    trails.setMatrixAt(i, dummy.matrix);
   }
   world.add(trails);
 
   const size = () => {
-    const dpr = Math.min(devicePixelRatio || 1, innerWidth < 600 ? 1 : 1.5, 1920 / innerWidth);
-    renderer.setPixelRatio(dpr); renderer.setSize(innerWidth, innerHeight, false);
-    camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+    const dpr = Math.min(
+      devicePixelRatio || 1,
+      innerWidth < 600 ? 1 : 1.5,
+      1920 / innerWidth,
+    );
+    renderer.setPixelRatio(dpr);
+    renderer.setSize(innerWidth, innerHeight, false);
+    camera.aspect = innerWidth / innerHeight;
+    camera.updateProjectionMatrix();
   };
   const dispose = () => {
-    if (dead) return; dead = true;
-    timeline?.kill(); renderer.setAnimationLoop(null); window.removeEventListener('resize', size);
-    signal.removeEventListener('abort', dispose);
-    resources.forEach(resource => resource.dispose()); world.clear(); renderer.dispose(); renderer.forceContextLoss();
+    if (dead) return;
+    dead = true;
+    timeline?.kill();
+    renderer.setAnimationLoop(null);
+    window.removeEventListener("resize", size);
+    signal.removeEventListener("abort", dispose);
+    resources.forEach((resource) => resource.dispose());
+    world.clear();
+    renderer.dispose();
+    renderer.forceContextLoss();
     canvas.remove();
   };
   try {
-    size(); window.addEventListener('resize', size);
-    signal.addEventListener('abort', dispose, { once: true });
+    size();
+    window.addEventListener("resize", size);
+    signal.addEventListener("abort", dispose, { once: true });
     await renderer.compileAsync(world, camera);
-    if (dead) throw new DOMException('Preparation cancelled', 'AbortError');
+    if (dead) throw new DOMException("Preparation cancelled", "AbortError");
     renderer.render(world, camera);
     return {
       dispose,
@@ -85,18 +129,30 @@ export async function prepareScene(canvas: HTMLCanvasElement, signal: AbortSigna
         renderer.setAnimationLoop(() => {
           if (dead) return;
           const now = performance.now();
-          if (now - start > 1850) { onComplete(); return; }
-          const dt = Math.min((now - previous) / 1000, .06); previous = now;
+          if (now - start > 1850) {
+            onComplete();
+            return;
+          }
+          const dt = Math.min((now - previous) / 1000, 0.06);
+          previous = now;
           uniforms.uTravel.value += dt * (35 + uniforms.uSpeed.value * 30);
-          camera.updateProjectionMatrix(); renderer.render(world, camera);
+          camera.updateProjectionMatrix();
+          renderer.render(world, camera);
         });
-        timeline = gsap.timeline({ defaults: { ease: 'power3.inOut' }, onComplete });
-        timeline.to(uniforms.uSpeed, { value: 5.5, duration: .8 }, 0)
-          .to(camera, { fov: 96, duration: .9 }, 0)
-          .to(uniforms.uBend, { value: -18, duration: 1.2 }, .2)
-          .call(onReveal, [], .95)
-          .to(uniforms.uSpeed, { value: 2, duration: .6 }, .95);
+        timeline = gsap.timeline({
+          defaults: { ease: "power3.inOut" },
+          onComplete,
+        });
+        timeline
+          .to(uniforms.uSpeed, { value: 5.5, duration: 0.8 }, 0)
+          .to(camera, { fov: 96, duration: 0.9 }, 0)
+          .to(uniforms.uBend, { value: -18, duration: 1.2 }, 0.2)
+          .call(onReveal, [], 0.95)
+          .to(uniforms.uSpeed, { value: 2, duration: 0.6 }, 0.95);
       },
     };
-  } catch (error) { dispose(); throw error; }
+  } catch (error) {
+    dispose();
+    throw error;
+  }
 }

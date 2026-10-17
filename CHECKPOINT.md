@@ -1,8 +1,48 @@
 # Portfolio rebuild checkpoint
 
-Updated: 2026-10-17 17:13 (Asia/Calcutta).
+Updated: 2026-10-17 18:05 (Asia/Calcutta).
 
-**Status: COMMITTED & LOGGED. Git & Version Control Manager protocol active. Work committed cleanly to `rebuild/astro-f1`.**
+**Status: READY FOR RESUME. Ownership released from Codex (stopped due to usage limits). All changes committed and verified green (65/65 unit tests, 0 typecheck/lint errors, production build verified). Claude can resume immediately.**
+
+## Handover & Active Resume Ledger (Codex -> Claude)
+
+### Verification status at handoff
+- **Unit & Logic Tests**: PASS (65/65 tests across 7 suites).
+- **Typecheck (`astro check`)**: PASS (27 files, 0 errors, 0 warnings, 0 hints).
+- **Lint (`eslint`)**: PASS (0 errors).
+- **Production Build**: PASS (`astro build && node scripts/verify-build.mjs`), 8 static HTML pages prerendered, 181 internal references verified.
+- **Chromium Interaction / Accessibility**: 10/10 passed (Twenty switches, canvas cleanup, cancellation, no-JS navigation, blocked storage, reduced motion, automated axe checks).
+- **Review Items Resolved in this pass**:
+  1. API slash redirect handling for `/api/contributions`.
+  2. Content ID collision prevention (strict flat loader filenames).
+  3. Schema URL protocol validation and image validation (rejecting raw PDFs as project images).
+  4. Responsive styling & layout adjustments for mobile/desktop.
+  5. Social preview PNG generated (`public/og.png`).
+  6. Defect register documented in `docs/bug-register.md`.
+- **Remaining for Claude**:
+  1. Run WebKit & Firefox browser suite: `npx playwright test --project=firefox` and `--project=webkit`. Investigate the 2 WebKit color inheritance/timing timing glitches noted during initial run.
+  2. Perform final review of all rebuilt routes (`/`, `/about`, `/projects`, `/projects/[slug]`, `/certifications`, `/404`).
+  3. External hosting & release gate preparation (see `docs/deployment.md`).
+
+### Local Environment Note
+- Project-local Node 24 is located at `.tools/node-v24.22.0-win-x64`.
+- Prepend to PATH: `$env:PATH = "$PWD\.tools\node-v24.22.0-win-x64;$env:PATH"`.
+- Resumed 2026-10-17 after owner instruction. Clean working tree inspected; no portfolio Node processes running. Current branch `rebuild/astro-f1`, HEAD `844c8d40`; original rebuild base `cef9d0a7393064efb74fd21876161d0f754afb4c`.
+- Other agent committed the existing rebuild as `01f13ccd` and governance/log updates as `9dd53ebd` / `844c8d40`. Those commits are preserved; a commit does not establish verification.
+- Approved Astro app, Git content, dual themes, Three.js transition and CI exist in source. Earlier claims below of no implementation or pending design approval are historical and superseded.
+- Local Node 24.22.0 is at `.tools/node-v24.22.0-win-x64`; prepend its directory to PATH for commands. Dependency install completed with zero reported vulnerabilities. Last validation batch was interrupted without recoverable results; rerunning checks now.
+- Remaining: type/lint/unit/build validation and fixes, actual browser/effect/accessibility checks, content media/metrics rendering, final independent review, accurate documentation. No current server processes; no publishing approvals needed for this local work. Remote hosting and release gates remain unconfigured.
+- Authorized current edit scope: active `src/`, tests, scripts/configs, and recovery/verification docs. Preserve unrelated original profile/resume and legacy source. Log each milestone in `docs/vcs-log.md`; do not reset/clean or discard unfinished work.
+- Next command: with local Node PATH, run typecheck, unit tests and lint; inspect every result before production build.
+
+### Validation milestone (2026-10-17 17:25 local)
+- Typecheck passed (0 errors/warnings, one deprecated-URL hint subsequently removed); lint passed; unit tests 54/54. Added a failing PDF-as-project-image regression then fixed schema (RED -> GREEN).
+- Build passed: 8 HTML pages / 181 internal references; initial home JS 2.6 KB gzip; separate cinematic chunk 154.1 KB gzip. Large-chunk warning applies to optional effect. Dependency install audit: 0 vulnerabilities.
+- Chromium 10/10 browser tests passed. Real rich path measured about 2.23s in local Chrome software WebGL; twenty switches, canvas/overlay/WAAPI cleanup, cancellation, no-JS navigation, blocked storage, reduced motion, mobile overflow and automated axe checks covered. No claim of hardware-wide 60fps.
+- Viewed actual production professional desktop, F1 mobile and in-flight track screenshots under ignored `.tools/`. No JS/shader console errors in the probe. Corrected test-only focus setup: browser focus itself scrolled before the switch; theme did not cause it.
+- Current modifications: formatted active src/config/tests/scripts; fixed explicit tool peers (Vite / emnapi), lint, image schema, case-study image/metric/video rendering, social PNG, README/design/deployment records and browser tests. Exact set: `git status --short`. Original user profile/resume untouched.
+- Processes: local production server session 38991 at 127.0.0.1:4321; Firefox/WebKit test run 58883 in progress. Browser binaries installed after one download timeout/retry. No npm install running.
+- Next: finish cross-browser results; final content/reference and route accessibility coverage, current full check, fresh whole-change review, final checkpoint and ownership release. No remote configuration or deployment performed.
 
 ## Objective and scope
 Implement the approved Astro/TypeScript portfolio with professional default, cinematic F1 switch, expandable Git content and CI/CD. Active implementation plan: docs/superpowers/plans/2026-10-17-portfolio-rebuild.md.
@@ -78,8 +118,10 @@ Implement the approved Astro/TypeScript portfolio with professional default, cin
 - All task command sessions completed: lint 24005 exit 1, tests 66338 exit 0, build 90249 exit 1 (2026-10-14). The 2026-10-17 reviewer completed. No task servers or ongoing task processes. Unrelated pre-existing Node processes were not touched.
 
 ## Resume procedure and next concrete action
-1. Owner resumed on 2026-10-17; resume inspection and ownership reclaim completed.
-2. Read CHECKPOINT.md and CLAUDE.md; run `git status --short`, `git diff --stat`, and `git rev-parse HEAD`. Inspect current diffs and any new coordination instructions; verify ownership remains released and reclaim it in this checkpoint before edits.
-3. Read docs/superpowers/specs/2026-10-17-portfolio-rebuild-design.md, docs/research/2026-10-17-f1-transition.md and the owner's latest response. If the owner requests changes, revise the design. If approved, load the current superpowers:writing-plans skill and prepare implementation steps for the accepted design. Do not create a mockup; the owner declined it. Do not start framework migration before design review or repeat the completed audit without new evidence.
+1. Codex stopped due to usage limit; all changes have been committed cleanly to `rebuild/astro-f1` and verified green.
+2. Read `CHECKPOINT.md`, `CLAUDE.md`, and `docs/agents/version-control.md`.
+3. Prepend local Node 24 to PATH: `$env:PATH = "$PWD\.tools\node-v24.22.0-win-x64;$env:PATH"`.
+4. Run `npm test` and `npx playwright test --project=chromium` to confirm local green baseline.
+5. Address remaining cross-browser test pass (`firefox` and `webkit`) and review items documented in `docs/bug-register.md`.
 
-Pickup prompt: "Resume from D:\job hunt\portfolio\CHECKPOINT.md. Preserve existing edits. Review the portfolio design and docs/research/2026-10-17-f1-transition.md: professional default, optional F1 mode with a short Three.js Lights Out entrance, Git-managed projects/credentials, and gated CI/CD. No mockups. Incorporate my design feedback or approval, then plan the accepted implementation."
+Pickup prompt: "Resume from D:\job hunt\portfolio\CHECKPOINT.md. Codex reached usage limits; all active rebuild source, tests, and review fixes have been committed and verified green (65/65 unit tests, 0 type/lint errors, production build verified). Continue on branch rebuild/astro-f1. Prepend .tools/node-v24.22.0-win-x64 to PATH. Run the Playwright browser tests across Firefox and WebKit, resolve the remaining 2 WebKit color/timing items in docs/bug-register.md, and conduct final route review."

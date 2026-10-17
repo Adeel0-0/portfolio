@@ -86,4 +86,4 @@ Initial quality targets: cap device pixel ratio around 1.5 on desktop and 1 on s
 | Paste a continuously animated Hyperspeed background | Fast initial demo but different lifecycle, input and rendering needs | Reference implementation only |
 | Pre-rendered video or detailed 3D car flyby | Adds media/model transfer, art direction and asset dependencies | Outside the first version |
 
-No framework migration, animation implementation, dependency installation, preview creation or deployment has occurred. The complete portfolio design remains the review artifact; this research resolves its new motion direction.
+Implementation update (2026-10-17): the owner approved the design and Astro rebuild. The original procedural scene is implemented and exercised in local Chrome software WebGL (~2.23 seconds in an observed warm run). Production arrival JS is 2.6 KB gzip and the separate cinematic is 154.1 KB gzip. Twenty switches and cancellation paths have browser coverage. Real-device frame-time/allocation profiling and live deployment remain unverified; consult CHECKPOINT.md and docs/verification.md for final evidence. No separate mockup was created.

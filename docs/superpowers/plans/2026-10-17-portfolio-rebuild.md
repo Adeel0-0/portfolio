@@ -86,4 +86,16 @@ Interfaces: `Theme = 'professional' | 'f1'`; controller owns committed/desired t
 
 ## Self-review
 
+## Current execution evidence (2026-10-17)
+
+The checkboxes above retain the original plan. Current evidence takes precedence over their initial unchecked state:
+
+- Tasks 1–2 implemented: active Astro tooling, preserved API and original tests, validated Markdown content, responsive pages and both themes. Current unit suite 61/61; typecheck/lint/build pass. Source formatting applied for maintainability.
+- Task 3 implemented: real rich sequence observed in Chrome software WebGL (~2.23s), 20 switches cleaned DOM/WAAPI, blocked storage/reduced motion/late load/no-JS paths tested. Chromium 10/10; Firefox 9/9 applicable cases. WebKit color-scan synchronization corrected, rerun pending. Runtime smoothness across real devices is not established.
+- Task 4 implemented locally: CI, link/asset and separate bundle checks, authoring/deployment docs. Current complete dependency reinstall, expanded route checks and independent review pending. No remote gates configured or deployment performed.
+- Ruling: existing project dates stay optional where source evidence is missing. Requiring invented dates would undermine factual content; cost is fewer timeline fields until the owner supplies them.
+- Ruling: explicit Vite and emnapi tool peers plus a scoped routing-utils/path-to-regexp patch are pinned with the lockfile; legacy peer resolution avoids unrelated optional framework packages. Cost is that future dependency upgrades must review peer compatibility, checked by clean installation and current checks.
+- Ruling: pre-existing commits by the repository VCS agent are preserved. This task still performs no automatic commit/push/deployment; authorization and recovery requirements outweigh a skill's generic commit cadence.
+- Review focus and the original spec remain the acceptance criteria. Final review findings will be recorded in CHECKPOINT.md and docs/verification.md.
+
 All design areas map to tasks above. Shared schemas feed routes and filters; the theme controller alone owns scene lifecycle. Draft filtering and external-data failure are tested separately from decorative rendering. Hosted release gates and actual credential evidence remain external dependencies, explicitly reported at handoff.

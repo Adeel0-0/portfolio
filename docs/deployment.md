@@ -15,7 +15,7 @@ The repository configuration alone does not enable branch protection, automatic 
 5. If Deployment Checks are unavailable for the project, use one CI-owned staged deployment, smoke-test its immutable URL, and promote it only on success. Disable overlapping automatic production promotion. Verify the current CLI/provider behavior before adding that automation.
 6. Keep the previous known-good deployment available. Test a rollback and verify routes, assets, resume and `/api/contributions` after promotion.
 
-No hosted project was configured, committed, pushed or deployed by the local implementation. Deployment authorization should apply to a concrete verified artifact and a confirmed target.
+The repository's version-control agent committed the initial local rebuild. No hosted project was configured, pushed or deployed by this implementation session. Deployment authorization should apply to a concrete verified artifact and a confirmed target.
 
 ## Runtime boundary
 

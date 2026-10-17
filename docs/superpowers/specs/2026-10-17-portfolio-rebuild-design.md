@@ -1,6 +1,6 @@
 # Portfolio rebuild: professional default, optional F1 mode
 
-Date: 2026-10-17. Status: proposed design for owner review; not implemented.
+Date: 2026-10-17. Status: approved by owner; implementation exists and is under final validation. See CHECKPOINT.md for current evidence.
 
 Local review copy. Accepted implementation work belongs in the repository's GitHub issue tracker under its existing conventions. No issue has been published. Independent read-only builder checks completed on 2026-10-17, including the revised cinematic transition: no important unanswered planning questions identified. The owner's framework/design review is still pending.
 
@@ -25,7 +25,7 @@ Build a hiring-focused portfolio that lets a recruiter understand Adeel's focus,
 - Vercel is the initial deployment target proposed from the repository's existing deployment guidance. Actual hosting/project configuration has not been inspected. Keep content and rendering portable; isolate the small server route behind an adapter.
 - No new CMS, database, authentication service, contact-form service, or AI chatbot in the first release. Email and professional links already satisfy contact needs.
 
-This is a substantial rebuild with a written design. Framework migration has not been approved. The existing app and user edits remain untouched.
+The owner approved this design and explicitly requested implementation. Astro is the active application. Original user edits and legacy source are preserved; the checkpoint records the current branch and verification state.
 
 ## 2. What the audit establishes
 
