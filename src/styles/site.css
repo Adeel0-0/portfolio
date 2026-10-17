@@ -1291,7 +1291,9 @@ main:focus:not(:focus-visible) {
   *::before,
   *::after {
     scroll-behavior: auto !important;
-    transition-duration: 0.01ms !important;
+    /* Not a short duration: transition-property defaults to `all`, and WebKit
+       then restarts an inherited colour transition at every tree level. */
+    transition: none !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }

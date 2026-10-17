@@ -19,7 +19,8 @@ Scope: defects found in the retained Next app and the active Astro replacement. 
 | TOOL-001 | Local Node and framework/tooling were incompatible | Project-local Node 24; pinned Astro and explicit testing peers; build/type/lint/unit checks | Fixed locally |
 | TOOL-002 | CI could not demonstrate usable UI | Production link/bundle checks and Chromium/Firefox/WebKit interaction/accessibility jobs | Configured; local evidence in checkpoint |
 | TEST-001 | Scroll assertion measured before the test focused the sticky header | Isolated focus-induced scroll; moved focus before scroll baseline | Fixed test |
-| TEST-002 | WebKit axe run could read the pre-switch inherited text color | Wait for actual rendered body color before scanning the new palette | Under cross-browser verification |
+| TEST-002 | WebKit axe runs read professional text colour on F1 backgrounds after a reduced-motion switch | Product defect, not test timing: the reduced-motion reset set `transition-duration: 0.01ms` on every element, and `transition-property` defaults to `all`, so WebKit restarted the inherited colour transition at each tree level (deep text stale about 1 s). Reset now uses `transition: none`; both WebKit axe tests pass | Fixed locally |
+| UI-013 | Home links four skills with no published project (PyTorch, FastAPI, Redis Caching, Docker); the projects filter ignored them and showed every project | Owner decision: keep all links and show the honest empty state for the requested skill | In progress |
 | RELEASE-001 | No confirmed hosting target, branch protection or release gate | Concrete setup and rollback steps in deployment.md | External setup pending |
 
 No real phone/GPU performance survey, screen-reader audit, live deployment check or confirmed production rollback has been performed. Automated accessibility checks are one layer of verification.
