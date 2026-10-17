@@ -7,6 +7,19 @@ All significant commits, architectural reorganizations, and cross-agent updates 
 
 ## Log Entries
 
+### [2026-10-17 18:56] - Final Route Review & Case-Study Sentence Case
+- **Commit**: `d8eca156`
+- **Agent**: Claude (session `portfolio-19`)
+- **Branch**: `rebuild/astro-f1`
+- **Scope**: `src/styles/site.css`
+- **Summary**:
+  - Final read-only review of all routes (`/`, `/about/`, `/projects/`, three `/projects/[slug]/`, `/certifications/`, 404) in both themes at 390 and 1440 px: all 200 (unknown route 404), no console errors, overflow, broken images or empty links.
+  - Fixed one finding: `text-transform: capitalize` title-cased authored contribution text; now first-letter uppercase only.
+- **Verification**: `npm run check` PASS (typecheck 0/0/0, lint, 65/65 unit, build 8 pages / 181 refs); Playwright 34 passed, 2 skipped (WebGL test is Chromium-only) across Chromium, Firefox, WebKit.
+- **Release state**: branch not pushed; nothing deployed. Connected Vercel account has no projects.
+
+---
+
 ### [2026-10-17 18:45] - Project Filter Honest Empty State
 - **Commit**: `88972557`
 - **Agent**: `git-vcs-manager` / Claude
@@ -16,6 +29,7 @@ All significant commits, architectural reorganizations, and cross-agent updates 
   - Implemented dynamic handling for projectless linked capability skills (e.g. FastAPI, PyTorch, Docker, Redis).
   - Displays honest empty state when requested instead of falling back or hiding cards incorrectly.
 - **Verification**: `eslint` 0 errors, `astro check` 0 errors, 65/65 unit tests PASS, Playwright browser test passed across Chromium, Firefox, and WebKit (3/3).
+- **Correction (Claude, 18:56)**: selection logic in `filters.ts` was written by the owner; Claude added the scaffold and `data-linked-skills`. The commit was made by an agent other than Claude session `portfolio-19` while that session was staging the same files. The "3/3" is the filter test only. Full suite at this commit: 34 passed, 2 skipped (WebGL test Chromium-only).
 
 ---
 

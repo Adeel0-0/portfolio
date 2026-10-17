@@ -1,13 +1,21 @@
 # Portfolio rebuild checkpoint
 
-Updated: 2026-10-17 18:05 (Asia/Calcutta).
+Updated: 2026-10-17 18:56 (Asia/Calcutta).
 
-**Status: IN PROGRESS. Writer: Claude (claimed 2026-10-17 after Codex released ownership at `3b738530`). Codex handoff claims below are being re-verified, not assumed.**
+**Status: LOCAL WORK COMPLETE, NOT PUSHED OR DEPLOYED. Writer: Claude session `portfolio-19`, now idle and awaiting the owner's push/deploy decision. Another agent should confirm with the owner before claiming.**
+
+### Current state (2026-10-17 18:56)
+- Branch `rebuild/astro-f1`, 10 commits ahead of `origin/main` including this checkpoint's docs commit (`cef9d0a7`, old Next app). Branch never pushed; `origin` has only `main`.
+- Vercel account connected to Claude (`theadeel45`, team `team_J8PcAo6Z7lIbJGfkFQq3AUMS`) has 0 projects and 0 deployments. No live URL recorded in the repo. Nothing from the rebuild is live.
+- Verified at `d8eca156` (2026-10-17 18:52): `npm run check` PASS (typecheck 0/0/0, lint, 65/65 unit, build 8 pages / 181 refs); Playwright 34 passed, 2 skipped (WebGL test is Chromium-only by design) across Chromium, Firefox and WebKit.
+- Final route review (read-only, own short-lived preview server): 8 routes x 2 themes x 390/1440 px. All 200 (unknown route 404), no console errors, overflow, broken images or empty links. Canonical/og URLs are localhost only in local builds; Vercel supplies `VERCEL_PROJECT_PRODUCTION_URL`. One finding fixed (`d8eca156`, case-study facts sentence case).
+- Remaining, needs the owner: push branch; create/link Vercel project; production domain + `SITE_URL`; branch protection and required checks; merge to `main`. Content gaps: NVIDIA credential draft details, project dates/metrics/screenshots.
+- Coordination: commits `88972557` and `ccbadb38` (18:46) were made by an agent other than this session, staging the same files concurrently. The only peer Claude session (`sefgh-nextjs-main-fa`) confirmed it was not it. OpenAI Codex runtime processes started 17:58 were running. Owner should confirm which agent it was.
+- Owner ran `npm install` under system Node 21.7.1, which rewrote `package-lock.json` metadata (dropped `libc`, added `dev` flags). Restored the committed lockfile. Always prepend `.tools/node-v24.22.0-win-x64` to PATH.
 
 ### Claude session ledger (2026-10-17)
 - Resumed at HEAD `3b738530`, clean tree, branch `rebuild/astro-f1`.
-- Stopped Codex's orphaned `serve-built.mjs` (PIDs 23508/45216, started 17:20). `scripts/serve-built.mjs` changed at 17:38, so that server ran pre-commit code and Playwright `reuseExistingServer` would have tested it.
-- Stopping that server was denied by the auto-mode classifier; it is still running. Diff 844c8d40..8fd2493f of serve-built.mjs is formatting plus a `--fixture`/4322 flag, so port-4321 behaviour is equivalent and pages are re-read from disk per request. Owner may stop PIDs 23508/45216.
+- Codex's orphaned `serve-built.mjs` (PIDs 23508/45216, started 17:20) held port 4321. Claude's attempt to stop it was denied by the auto-mode classifier. Diff 844c8d40..8fd2493f of serve-built.mjs is formatting plus a `--fixture`/4322 flag, so port-4321 behaviour was equivalent and pages are re-read from disk per request. The server was gone by 18:50 (stopped outside this session).
 - 18:10 `npm run check`: PASS (typecheck, lint, 65/65 unit, build 8 pages / 181 refs).
 - Chromium: 11/12 pass. FAIL `a capability with no published project shows an honest empty state` — `filters.ts` drops `?skill=` values absent from the select, and the select lists only skills used by published projects. Home links 4 projectless skills (PyTorch, FastAPI, Redis Caching, Docker).
 - Owner decision: keep all 9 home skill links; projectless skill must show the honest empty state (implement the test's intent in the filter, do not change the test).
@@ -17,7 +25,9 @@ Updated: 2026-10-17 18:05 (Asia/Calcutta).
 - COMMITTED `8ef99c3e` fix(styles): reduced-motion reset uses `transition: none`. WebKit after fix: 10 pass, 1 skip, 1 fail (filter only). Bug register TEST-002 corrected (product defect), UI-013 added.
 - Filter implementation completed: `src/pages/projects/index.astro` and `src/scripts/filters.ts` dynamically mount projectless linked skills to show honest empty state. Verified across all three browser engines (Chromium, Firefox, WebKit) 3/3 passed.
 - Verification: `npm run lint` PASS, `astro check` PASS, 65/65 unit tests PASS, `astro build` PASS (8 pages / 181 refs).
-- Next: commit `fix(projects): support honest empty state for projectless capability links` -> update `docs/vcs-log.md` -> ready for final route review.
+- Filter selection logic was written by the owner (learning-mode contribution); scaffold and `data-linked-skills` by Claude. Committed as `88972557` by another agent (see Coordination above).
+- COMMITTED `d8eca156` style(projects): case-study facts use sentence case.
+- Next concrete action: owner decides whether to push `rebuild/astro-f1` (`git push -u origin rebuild/astro-f1`) and set up the Vercel project per `docs/deployment.md`. No push or deployment without explicit owner approval.
 
 ## Handover & Active Resume Ledger (Codex -> Claude)
 
