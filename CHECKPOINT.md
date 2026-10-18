@@ -2,7 +2,16 @@
 
 Updated: 2026-10-18 (Asia/Calcutta).
 
-**Status: BRANCH PUSHED TO ORIGIN; Vercel hosting diagnosis in progress. Writer: Claude session `portfolio-19` (claimed from idle at `1091b62c` to add a Vercel framework pin per owner request). Other agents read-only until released.**
+**Status: VERCEL FIX COMMITTED LOCALLY (`be7d6b26`), NOT PUSHED. Writer: idle (released by Claude session `portfolio-19`). Hosting is blocked by account setup the owner must do.**
+
+### Vercel hosting diagnosis (2026-10-18)
+- Code is deployable: fresh clone of `origin/rebuild/astro-f1` -> `npm ci` -> `npm run build` passes on Node 24. `npm audit` (all and production-only): 0 vulnerabilities. Lockfile includes Linux native binaries (rolldown, sharp, lightningcss). Every file in `public/` is tracked. Function runtime `nodejs24.x`.
+- Blocker 1 (owner): Vercel account `theadeel45` has no Git connection (`git_namespaces` empty), 0 projects, 0 deployments. It cannot see `Adeel0-0/portfolio`, which is private (unauthenticated GitHub API returns 404).
+- Blocker 2 (fixed in `be7d6b26`, push pending): Vercel detects the preset from the default branch `main` (legacy Next 14.2.5), so a new project would preset Next.js and fail on this branch. `vercel.json` pins `astro`, `npm ci`, `npm run build`.
+- Vulnerability warnings come from `main`: `npm audit --package-lock-only` on `cef9d0a7` shows 25 (3 critical, 18 high, 4 moderate). `next` 14.2.5 alone has 35 advisories. They disappear when the rebuild is merged into `main`.
+- Possible risk, not verified: Hobby plan and a private repo with commits authored `sefgh-ai <mohammad.adeel.syed@gmail.com>`. If Vercel blocks a deployment over the commit author, that email must be verified on the GitHub account connected to Vercel.
+- CI (`.github/workflows/ci.yml`) runs only on push to `main` and on pull requests, so the branch push did not run it. `gh` CLI is not installed on this machine.
+- Next concrete actions (owner): connect GitHub `Adeel0-0` to Vercel and import the repo; approve `git push origin rebuild/astro-f1` for `be7d6b26`; check the preview; then open a PR into `main` (runs CI) and merge it to make the rebuild production.
 
 ### Current state (2026-10-17 19:22)
 - Branch `rebuild/astro-f1` pushed to `origin` (`https://github.com/Adeel0-0/portfolio`).

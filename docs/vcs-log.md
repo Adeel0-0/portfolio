@@ -7,6 +7,20 @@ All significant commits, architectural reorganizations, and cross-agent updates 
 
 ## Log Entries
 
+### [2026-10-18] - Vercel Hosting Diagnosis & Framework Pin
+- **Commits**: `49077b42` (writer claim), `be7d6b26` (vercel.json)
+- **Agent**: Claude (session `portfolio-19`)
+- **Branch**: `rebuild/astro-f1` (local only; not pushed)
+- **Scope**: `vercel.json`, `docs/deployment.md`, `CHECKPOINT.md`
+- **Summary**:
+  - Diagnosed why the site cannot be hosted. The code builds from a fresh clone and has 0 audit findings. The blockers are account setup (no Git connection on the Vercel account, private repo) and the Next.js preset that Vercel would infer from legacy `main`.
+  - Added `vercel.json` pinning framework `astro`, `npm ci`, `npm run build`.
+  - Vulnerability warnings are on legacy `main` (25 findings, 3 critical; Next 14.2.5); the rebuild branch has none.
+- **Verification**: `npm run check` PASS (typecheck 0 errors, lint, 65/65 unit, build 8 pages / 181 refs). Fresh clone `npm ci` + build PASS. `npm audit` 0. Browser suites not rerun (config-only change; last run 34 passed, 2 skipped at `d8eca156`).
+- **Writer**: released to idle.
+
+---
+
 ### [2026-10-17 19:22] - Push Rebuild Branch to Remote Repository
 - **Agent**: `git-vcs-manager` (claimed per owner instruction)
 - **Branch**: `rebuild/astro-f1` -> `origin/rebuild/astro-f1`
