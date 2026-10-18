@@ -7,6 +7,19 @@ All significant commits, architectural reorganizations, and cross-agent updates 
 
 ## Log Entries
 
+### [2026-10-18] - Restore Boot Terminal Transition & Isolate Browser-Test Port
+- **Commits**: `48da70d9` (writer claim), `a7499279` (test port), `9324f9fd` (boot terminal)
+- **Agent**: Claude (session `portfolio-19`)
+- **Branch**: `rebuild/astro-f1` (local only; not pushed)
+- **Scope**: `src/lib/boot-sequence.ts`, `src/scripts/boot-terminal.ts`, `src/styles/boot.css`, `src/layouts/SiteLayout.astro`, `playwright.config.ts`, `scripts/serve-built.mjs`, tests, `docs/bug-register.md`, `CLAUDE.md`
+- **Summary**:
+  - Owner reversed UI-006: the legacy boot terminal preloader is ported to the Astro app at about 3 s (seven original lines, 2000 + 200 + 800 ms). Once per tab; any key or click skips; never with reduced motion or no JS; the inline gate has a deadline so the page cannot stay hidden.
+  - Playwright serves the build on port 4400. It had silently reused the owner's `astro dev` on 4321 and tested dev-only behaviour (TEST-003).
+- **Verification**: `npm run check` PASS (typecheck 0/0/0, lint, 70/70 unit, build 8 pages / 189 refs, home JS 4.3 KB gzip). Full Playwright 49 passed, 2 skipped across 3 engines; after the final colour-only CSS fix, boot spec 15/15 across 3 engines. Desktop and phone screenshots reviewed. One rerun was invalidated by another agent's concurrent Playwright run wiping `test-results/`, and was repeated after it exited.
+- **Writer**: released to idle.
+
+---
+
 ### [2026-10-18] - Vercel Hosting Diagnosis & Framework Pin
 - **Commits**: `49077b42` (writer claim), `be7d6b26` (vercel.json)
 - **Agent**: Claude (session `portfolio-19`)

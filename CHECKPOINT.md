@@ -2,7 +2,18 @@
 
 Updated: 2026-10-18 (Asia/Calcutta).
 
-**Status: RESTORING BOOT TERMINAL TRANSITION (owner request 2026-10-18). Writer: Claude session `portfolio-19` (claimed from idle at `c9d5acd1`). Other agents read-only until released. Vercel fix `be7d6b26` still not pushed.**
+**Status: BOOT TERMINAL RESTORED AND COMMITTED (`a7499279`, `9324f9fd`), NOT PUSHED. Writer: idle (released by Claude session `portfolio-19`). Branch is 7 commits ahead of `origin/rebuild/astro-f1`, including the unpushed Vercel fix `be7d6b26`. Push needs owner approval.**
+
+### Boot terminal restore (2026-10-18)
+- Committed: `a7499279` test(browser) own port 4400; `9324f9fd` feat(boot). Clean rerun after the other agent's run exited: boot spec 15/15 across Chromium, Firefox, WebKit.
+- Owner: "bring back the terminal transition", then "make it slower, 3 secs". Ported the legacy `components/ui/spatial-neural-preloader.tsx` + particle field to vanilla TS: `src/lib/boot-sequence.ts` (7 original lines; 2000 typing + 200 hold + 800 dive = 3000 ms; failsafe 5000), `src/scripts/boot-terminal.ts`, `src/styles/boot.css`, inline gate + `#site-shell` in `SiteLayout.astro` (ceiling failsafe + 650 ms). Once per tab (sessionStorage `preloader:seen`), dev replays every load, skipped by any key/click, never with reduced motion or no JS.
+- Tests: `tests/boot-sequence.test.ts` (5), `tests/browser/boot-terminal.spec.ts` (5); `portfolio.spec.ts` beforeEach marks the boot seen.
+- Test infra: Playwright now serves the build on port 4400 (`PORT` env in `serve-built.mjs`), because it had silently reused the owner's `astro dev` on 4321 (dev replays the boot every load).
+- Verified: `npm run check` PASS (70/70 unit, build 8 pages / 189 refs, home JS 4.3 KB gzip); full Playwright 49 passed, 2 skipped across 3 engines (before the green-text CSS fix). Screenshots reviewed desktop/phone.
+- A later boot-spec rerun was corrupted by another agent's concurrent `playwright test tests/browser/portfolio.spec.ts --project=chromium` (started 20:01:47, wiped test-results). Rerun queued after it exits.
+- Docs: bug-register UI-006 (owner reversal), TEST-003 (port); CLAUDE.md notes on boot terminal and port 4400.
+- Owner to confirm who ran that concurrent Playwright run during the writer lock (Antigravity or owner).
+- Next concrete action (owner): review the boot terminal in `npm run dev`; approve `git push origin rebuild/astro-f1`; connect GitHub to Vercel (see Vercel hosting diagnosis below).
 
 ### Vercel hosting diagnosis (2026-10-18)
 - Code is deployable: fresh clone of `origin/rebuild/astro-f1` -> `npm ci` -> `npm run build` passes on Node 24. `npm audit` (all and production-only): 0 vulnerabilities. Lockfile includes Linux native binaries (rolldown, sharp, lightningcss). Every file in `public/` is tracked. Function runtime `nodejs24.x`.
