@@ -1,7 +1,9 @@
 ---
 import "../styles/site.css";
 import "../styles/transition.css";
+import "../styles/boot.css";
 import { person } from "../data/site";
+import { BOOT } from "../lib/boot-sequence";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 
@@ -47,106 +49,142 @@ const links = [
         /* Storage is optional. */
       }
     </script>
+    <script
+      is:inline
+      define:vars={{
+        bootKey: BOOT.sessionKey,
+        replay: import.meta.env.DEV,
+        ceiling: BOOT.failsafe + 650,
+      }}
+    >
+      // Boot terminal gate: decide before first paint so the page never flashes
+      // in first. boot-terminal.ts builds the sequence; the ceiling hands the
+      // page back even if that script never arrives. Dev replays every load.
+      const root = document.documentElement;
+      let seen = false;
+      try {
+        seen = !replay && sessionStorage.getItem(bootKey) === "1";
+      } catch {
+        /* Unreadable storage means not seen: it plays. */
+      }
+      if (!seen && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        root.dataset.preloader = "running";
+        setTimeout(() => {
+          if (!root.dataset.preloader) return;
+          document
+            .querySelectorAll(".boot-terminal")
+            .forEach((n) => n.remove());
+          delete root.dataset.preloader;
+          root.style.removeProperty("--pl-launch");
+        }, ceiling);
+      }
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#main">
       Skip to content
     </a>
-    <header class="site-header">
-      <div class="header-inner">
-        <a class="wordmark" href="/" aria-label="Mohammad Adeel, home">
-          adeel<span aria-hidden="true">.</span>
-        </a>
-        <nav class="desktop-nav" aria-label="Main navigation">
-          {links.map((link) => (
-            <a
-              href={link.href}
-              aria-current={path.startsWith(link.href) ? "page" : undefined}
-            >
-              {link.text}
-            </a>
-          ))}
-          <a href="/#contact">Contact</a>
-        </nav>
-        <div class="header-actions">
-          <button
-            class="theme-toggle"
-            id="theme-toggle"
-            type="button"
-            aria-pressed="false"
-            hidden
-          >
-            <svg
-              viewBox="0 0 24 24"
-              width="18"
-              height="18"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                d="M3 17 9 7h5l-6 10H3Zm9 0 6-10h3l-6 10h-3Z"
-                fill="currentColor"
-              />
-            </svg>
-            <span>F1 mode</span>
-          </button>
-          <details class="mobile-menu">
-            <summary>
-              Menu <span aria-hidden="true">+</span>
-            </summary>
-            <nav aria-label="Mobile navigation">
-              {links.map((link) => (
-                <a href={link.href}>{link.text}</a>
-              ))}
-              <a href="/#contact">Contact</a>
-            </nav>
-          </details>
-        </div>
-      </div>
-    </header>
-    <main id="main" tabindex="-1">
-      <slot />
-    </main>
-    <footer id="contact" class="site-footer">
-      <div class="container contact-grid">
-        <div>
-          <p class="eyebrow">Let’s build something useful</p>
-          <h2>
-            Good work starts
-            <br />
-            with a conversation.
-          </h2>
-        </div>
-        <div class="contact-actions">
-          <a class="contact-email" href={`mailto:${person.email}`}>
-            Send me an email <span aria-hidden="true">↗</span>
+    <!-- Fixed chrome stays outside: the boot hand-off transforms this shell. -->
+    <div id="site-shell">
+      <header class="site-header">
+        <div class="header-inner">
+          <a class="wordmark" href="/" aria-label="Mohammad Adeel, home">
+            adeel<span aria-hidden="true">.</span>
           </a>
-          <p>Based in {person.location}.</p>
-          <div class="footer-links">
-            <a href={person.github} target="_blank" rel="noreferrer">
-              GitHub
-            </a>
-            <a href={person.linkedin} target="_blank" rel="noreferrer">
-              LinkedIn
-            </a>
-            {hasResume && <a href="/resume.pdf">Resume PDF</a>}
+          <nav class="desktop-nav" aria-label="Main navigation">
+            {links.map((link) => (
+              <a
+                href={link.href}
+                aria-current={path.startsWith(link.href) ? "page" : undefined}
+              >
+                {link.text}
+              </a>
+            ))}
+            <a href="/#contact">Contact</a>
+          </nav>
+          <div class="header-actions">
+            <button
+              class="theme-toggle"
+              id="theme-toggle"
+              type="button"
+              aria-pressed="false"
+              hidden
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M3 17 9 7h5l-6 10H3Zm9 0 6-10h3l-6 10h-3Z"
+                  fill="currentColor"
+                />
+              </svg>
+              <span>F1 mode</span>
+            </button>
+            <details class="mobile-menu">
+              <summary>
+                Menu <span aria-hidden="true">+</span>
+              </summary>
+              <nav aria-label="Mobile navigation">
+                {links.map((link) => (
+                  <a href={link.href}>{link.text}</a>
+                ))}
+                <a href="/#contact">Contact</a>
+              </nav>
+            </details>
           </div>
         </div>
-      </div>
-      <div class="container footer-base">
-        <a class="wordmark" href="/">
-          adeel<span>.</span>
-        </a>
-        <p>Thoughtful software. A little racing spirit.</p>
-        <a href="#main">Back to top ↑</a>
-      </div>
-    </footer>
+      </header>
+      <main id="main" tabindex="-1">
+        <slot />
+      </main>
+      <footer id="contact" class="site-footer">
+        <div class="container contact-grid">
+          <div>
+            <p class="eyebrow">Let’s build something useful</p>
+            <h2>
+              Good work starts
+              <br />
+              with a conversation.
+            </h2>
+          </div>
+          <div class="contact-actions">
+            <a class="contact-email" href={`mailto:${person.email}`}>
+              Send me an email <span aria-hidden="true">↗</span>
+            </a>
+            <p>Based in {person.location}.</p>
+            <div class="footer-links">
+              <a href={person.github} target="_blank" rel="noreferrer">
+                GitHub
+              </a>
+              <a href={person.linkedin} target="_blank" rel="noreferrer">
+                LinkedIn
+              </a>
+              {hasResume && <a href="/resume.pdf">Resume PDF</a>}
+            </div>
+          </div>
+        </div>
+        <div class="container footer-base">
+          <a class="wordmark" href="/">
+            adeel<span>.</span>
+          </a>
+          <p>Thoughtful software. A little racing spirit.</p>
+          <a href="#main">Back to top ↑</a>
+        </div>
+      </footer>
+    </div>
     <div
       id="theme-announcement"
       class="sr-only"
       aria-live="polite"
       aria-atomic="true"
     ></div>
+    <script>
+      import "../scripts/boot-terminal";
+    </script>
     <script>
       import "../scripts/theme";
     </script>

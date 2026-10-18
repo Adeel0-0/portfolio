@@ -7,7 +7,8 @@ Astro + TypeScript portfolio with a professional default and optional F1 mode.
 - The active app is `src/`: Astro pages/layouts/components, shared CSS tokens,
   typed Markdown collections, and small progressive browser scripts.
 - Use Node 24 and npm. Run `npm run check` and `npm run test:browser`.
-  Browser runners are installed with `npx playwright install`.
+  Browser runners are installed with `npx playwright install`. Browser tests
+  serve the build on port 4400, so a running `astro dev` (4321) is never tested.
 - `src/content/projects/` and `src/content/certifications/` hold entries;
   `src/lib/content-schema.ts` validates them, and `src/lib/content.ts` excludes
   drafts and validates references/assets for every public route.
@@ -19,6 +20,10 @@ Astro + TypeScript portfolio with a professional default and optional F1 mode.
   `src/scripts/f1-scene.ts` is a separate, intent-loaded Three.js/GSAP module.
   Reduced motion never imports the optional effect. Every exit must dispose
   rendering resources, timers and temporary DOM. Preserve route, scroll and focus.
+- `src/scripts/boot-terminal.ts` owns the once-per-tab boot terminal (~3 s,
+  restored by the owner 2026-10-18). An inline gate in `SiteLayout.astro`
+  decides before first paint and has its own deadline. Keep fixed chrome
+  outside `#site-shell`, which the hand-off transforms.
 - Styling tokens live in `src/styles/site.css`; transition-only CSS is separate.
   Keep identical content/layout geometry across both visual modes.
 - Pages are prerendered; only `/api/contributions` renders on demand through

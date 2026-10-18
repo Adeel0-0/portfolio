@@ -1,6 +1,18 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
+// The boot terminal plays once per tab (see boot-terminal.spec.ts). These
+// journeys start after it, as every page after the first one in a tab does.
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    try {
+      sessionStorage.setItem("preloader:seen", "1");
+    } catch {
+      /* Without session storage the boot plays; no journey here needs that. */
+    }
+  });
+});
+
 test('a capability with no published project shows an honest empty state', async ({page}) => {
   await page.goto('/');
   await page.getByRole('link', {name:'FastAPI',exact:true}).click();
