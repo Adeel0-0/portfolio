@@ -1,4 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
+// Not 4321: `astro dev` uses that, and reusing a dev server would test dev-only
+// behaviour (the boot terminal replays every load there) instead of the build.
+const port = 4400;
 export default defineConfig({
   testDir: "./tests/browser",
   fullyParallel: false,
@@ -8,13 +11,14 @@ export default defineConfig({
   workers: process.env.CI ? 2 : 1,
   reporter: [["list"], ["html", { open: "never" }]],
   use: {
-    baseURL: "http://127.0.0.1:4321",
+    baseURL: `http://127.0.0.1:${port}`,
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
   },
   webServer: {
     command: "npm run start",
-    url: "http://127.0.0.1:4321",
+    env: { PORT: String(port) },
+    url: `http://127.0.0.1:${port}`,
     reuseExistingServer: !process.env.CI,
     timeout: 60000,
   },

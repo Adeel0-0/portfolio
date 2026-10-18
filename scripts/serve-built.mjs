@@ -5,7 +5,8 @@ import { fetchContributions } from "../lib/contributions.ts";
 import { profile } from "../data/profile.ts";
 
 const fixture = process.argv.includes('--fixture');
-const port = fixture ? 4322 : 4321;
+// PORT lets browser tests run beside the owner's `astro dev` on 4321.
+const port = Number(process.env.PORT) || (fixture ? 4322 : 4321);
 const root = resolve(fixture ? '.tools/content-fixture/.vercel/output/static' : '.vercel/output/static');
 if (!existsSync(join(root, "index.html")))
   throw new Error("Run npm run build first");
