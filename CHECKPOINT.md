@@ -2,7 +2,7 @@
 
 Updated: 2026-10-18 (Asia/Calcutta).
 
-**Status: VERCEL FIX COMMITTED LOCALLY (`be7d6b26`), NOT PUSHED. Writer: idle (released by Claude session `portfolio-19`). Hosting is blocked by account setup the owner must do.**
+**Status: RESTORING BOOT TERMINAL TRANSITION (owner request 2026-10-18). Writer: Claude session `portfolio-19` (claimed from idle at `c9d5acd1`). Other agents read-only until released. Vercel fix `be7d6b26` still not pushed.**
 
 ### Vercel hosting diagnosis (2026-10-18)
 - Code is deployable: fresh clone of `origin/rebuild/astro-f1` -> `npm ci` -> `npm run build` passes on Node 24. `npm audit` (all and production-only): 0 vulnerabilities. Lockfile includes Linux native binaries (rolldown, sharp, lightningcss). Every file in `public/` is tracked. Function runtime `nodejs24.x`.
