@@ -8,7 +8,7 @@ The repository configuration alone does not enable branch protection, automatic 
 
 ## Vercel Git workflow
 
-1. Confirm the intended repository, Vercel project and production domain. Configure framework Astro, build `npm run build`, install `npm ci`, Node 24, and the repository root directory.
+1. Confirm the intended repository, Vercel project and production domain. `vercel.json` pins framework Astro, install `npm ci` and build `npm run build`, because Vercel otherwise detects the preset from the default branch, which may still be the legacy Next app. Node 24 comes from `engines` in `package.json`. Use the repository root directory.
 2. Connect Git to create a preview deployment for every pull request. Set the canonical `SITE_URL` to the real production origin; the config also accepts Vercel's production-domain environment value. Do not use a per-preview URL as canonical.
 3. Protect `main` with the CI status checks required. Confirm the names against an actual CI run.
 4. Configure Deployment Checks so required production checks pass before assigning the production domain. Test this with a deliberately failing check before relying on it.
