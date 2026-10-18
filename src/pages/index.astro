@@ -1,0 +1,182 @@
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import { getPublishedProjects, getPublishedCredentials } from "../lib/content";
+import { person, capabilities } from "../data/site";
+import { existsSync } from "node:fs";
+const projects = (await getPublishedProjects())
+  .filter((p) => p.data.featuredOrder !== undefined)
+  .slice(0, 3);
+const credentials = await getPublishedCredentials();
+---
+
+<SiteLayout>
+  <section class="hero container" id="hero" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <p class="intro-line">
+        <span class="availability-dot"></span>
+        {person.displayName}
+        <span class="intro-divider">/</span>AI & software engineer
+      </p>
+      <h1 id="hero-title">
+        Engineering
+        <br />
+        useful intelligence.
+      </h1>
+      <p class="hero-description">{person.introduction}</p>
+      <div class="hero-actions">
+        <a class="button primary" href="#projects">
+          Explore my work <span aria-hidden="true">↗</span>
+        </a>
+        {existsSync("public/resume.pdf") && (
+          <a class="button secondary" href="/resume.pdf">
+            View resume
+          </a>
+        )}
+      </div>
+      <p class="hero-location">
+        {person.location} <span aria-hidden="true">·</span> VIT-AP, Computer
+        Science ’26
+      </p>
+    </div>
+    <div class="hero-portrait">
+      <div class="portrait-frame">
+        <img
+          src={person.avatar.src}
+          alt="Mohammad Adeel"
+          width="311"
+          height="334"
+          fetchpriority="high"
+        />
+        <div class="portrait-label">
+          <span>Curiosity into capability.</span>
+          {person.raceNumber !== null && (
+            <span class="race-number" aria-hidden="true">
+              {person.raceNumber}
+            </span>
+          )}
+        </div>
+      </div>
+      <div class="portrait-note">
+        <span class="tiny-square" aria-hidden="true"></span>
+        <p>
+          Models are the beginning.
+          <br />
+          <strong>The system makes them useful.</strong>
+        </p>
+      </div>
+    </div>
+  </section>
+  <section
+    id="projects"
+    class="section container"
+    aria-labelledby="projects-title"
+  >
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Selected work</p>
+        <h2 id="projects-title">Ideas, made tangible.</h2>
+      </div>
+      <a class="text-link" href="/projects/">
+        All projects <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+    <div class="project-grid">
+      {projects.map((project, i) => (
+        <ProjectCard project={project} featured={i === 0} />
+      ))}
+    </div>
+  </section>
+  <section
+    id="garage"
+    class="capabilities-section"
+    aria-labelledby="capabilities-title"
+  >
+    <div class="container">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">How I work</p>
+          <h2 id="capabilities-title">
+            From a question
+            <br />
+            to a working system.
+          </h2>
+        </div>
+        <p class="section-description">
+          Engineering is the connective tissue between a promising idea and
+          something useful.
+        </p>
+      </div>
+      <div class="capabilities-grid">
+        {capabilities.map((capability, i) => (
+          <article>
+            <svg
+              class="capability-icon"
+              viewBox="0 0 32 32"
+              fill="none"
+              aria-hidden="true"
+            >
+              <rect
+                x="4"
+                y="4"
+                width="24"
+                height="24"
+                rx={i === 0 ? 12 : 5}
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+              <path
+                d={
+                  i === 0
+                    ? "M4 16h24M16 4v24M8 8l16 16M8 24 24 8"
+                    : i === 1
+                      ? "m11 10-5 6 5 6m10-12 5 6-5 6M18 9l-4 14"
+                      : "m9 16 5 5 9-11"
+                }
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+            </svg>
+            <h3>{capability.title}</h3>
+            <p>{capability.description}</p>
+            <div class="capability-links">
+              {capability.skills.slice(0, 3).map((skill) => (
+                <a href={`/projects/?skill=${encodeURIComponent(skill)}`}>
+                  {skill}
+                </a>
+              ))}
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+  <section id="about" class="section container about-strip">
+    <div>
+      <p class="eyebrow">A little about me</p>
+      <h2>
+        Always learning.
+        <br />
+        Always building.
+      </h2>
+    </div>
+    <div>
+      <p class="large-copy">{person.bio}</p>
+      <a class="text-link" href="/about/">
+        More about me <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </section>
+  {credentials.length > 0 && (
+    <section class="section container">
+      <h2>Learning, put into practice.</h2>
+      <p>
+        {credentials.length} published credential
+        {credentials.length === 1 ? "" : "s"}, connected to my work.
+      </p>
+      <a class="text-link" href="/certifications/">
+        Explore credentials
+      </a>
+    </section>
+  )}
+</SiteLayout>

@@ -1,0 +1,94 @@
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+import { getPublishedCredentials } from "../lib/content";
+const credentials = await getPublishedCredentials();
+const kinds = {
+  certification: "Certification",
+  "course-completion": "Course completion",
+  badge: "Badge",
+};
+---
+
+<SiteLayout title="Credentials — Mohammad Adeel">
+  <section class="container page-intro">
+    <p class="eyebrow">Credentials</p>
+    <h1>
+      Learning that
+      <br />
+      supports the work.
+    </h1>
+    <p class="large-copy">
+      Courses and certifications, with their issuer, dates, and supporting
+      details.
+    </p>
+  </section>
+  <section class="container section credential-section">
+    <h2>Published credentials</h2>
+    {credentials.length ? (
+      <div class="credential-grid">
+        {credentials.map(({ data: c }) => (
+          <article class="credential-card">
+            <p class="eyebrow">{kinds[c.kind]}</p>
+            <h3>{c.title}</h3>
+            <p>{c.issuer}</p>
+            <p>
+              Issued <time datetime={c.issuedAt}>{c.issuedAt}</time>
+              {c.expiresAt &&
+                ` · ${new Date(c.expiresAt) < new Date() ? "Expired" : "Expires"} ${c.expiresAt}`}
+            </p>
+            {c.credentialId && <p>Credential ID: {c.credentialId}</p>}
+            {c.verificationUrl && (
+              <a
+                class="text-link"
+                href={c.verificationUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                View issuer record ↗
+              </a>
+            )}
+            {c.asset && <a href={c.asset}>View certificate</a>}
+            {c.relatedProjects.map((slug) => (
+              <a href={`/projects/${slug}/`}>
+                Related project: {slug.replaceAll("-", " ")}
+              </a>
+            ))}
+          </article>
+        ))}
+      </div>
+    ) : (
+      <div class="empty-state">
+        <svg
+          width="40"
+          height="40"
+          viewBox="0 0 40 40"
+          fill="none"
+          aria-hidden="true"
+        >
+          <rect
+            x="8"
+            y="4"
+            width="24"
+            height="30"
+            rx="3"
+            stroke="currentColor"
+            stroke-width="1.5"
+          />
+          <path
+            d="M14 12h12m-12 6h8m0 9 4-3 4 3v10l-4-3-4 3V27Z"
+            stroke="currentColor"
+            stroke-width="1.5"
+          />
+        </svg>
+        <h3>More to share soon.</h3>
+        <p>
+          My project case studies are the best place to explore how I put my
+          skills into practice.
+        </p>
+        <a class="text-link" href="/projects/">
+          Explore the projects ↗
+        </a>
+      </div>
+    )}
+  </section>
+</SiteLayout>

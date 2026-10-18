@@ -93,7 +93,6 @@ export async function fetchContributions(
     const response = await fetch(
       `${UPSTREAM}/${encodeURIComponent(username)}?y=last`,
       {
-        next: { revalidate: CONTRIBUTIONS_REVALIDATE },
         headers: { accept: "application/json" },
         signal: AbortSignal.timeout(TIMEOUT_MS),
       }

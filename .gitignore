@@ -34,3 +34,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Astro output, local recovery and verification artifacts
+/.astro/
+/dist/
+/.recovery/
+/.tools/
+/test-results/
+/playwright-report/

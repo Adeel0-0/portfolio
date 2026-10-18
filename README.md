@@ -1,83 +1,51 @@
-# Adeel — Portfolio
+﻿# Adeel — Portfolio
 
-An ML engineer's portfolio wearing F1 instrumentation. Built with **Next.js 14**
-(App Router), **Tailwind v3**, and **Framer Motion**.
+An Astro + TypeScript portfolio with a quiet professional default and an optional F1 theme. The F1 button runs a brief, original Three.js/GSAP starting-light and track sequence. The scene loads on intent, respects reduced motion, and is disposed when the switch ends. Ordinary navigation never replays it.
 
-The design brief and build plan live in [REDESIGN.md](./REDESIGN.md).
+## Develop
 
-## Run locally
+Use Node 24 (see `.nvmrc`), then:
 
-```bash
-npm install
+```sh
+npm ci
 npm run dev
 ```
 
-Open http://localhost:3000
+Open the local URL printed by Astro, normally `http://127.0.0.1:4321`.
 
-## Deploy
-
-Push to GitHub, then import the repo at [vercel.com](https://vercel.com) — zero
-config needed.
-
-`metadataBase` reads `siteMeta.url` from `data/content.ts`; point it at the real
-production domain so social share cards resolve.
-
-## Customize
-
-Content lives in `data/`, split by concern:
-
-| File | Holds |
-|---|---|
-| `data/profile.ts` | name, role, tagline, contact links, race number, headline stats |
-| `data/projects.ts` | the three projects — copy, stack, architecture flow, metrics, media slot |
-| `data/skills.ts` | skills grouped and graded by tyre compound (`soft` / `medium` / `hard`) |
-| `data/education.ts` | degree and certifications |
-| `data/content.ts` | site metadata and section prose |
-
-Structure lives in `lib/`:
-
-- `lib/sections.ts` — the five sections in order. Single source of truth for the
-  nav dock, the scroll observer, the track map and the mascot's radio lines.
-- `lib/motion.ts` — the only file that imports `framer-motion`, plus the shared
-  spring presets.
-- `lib/tokens.ts` — reads CSS custom properties at runtime for `<canvas>` code.
-
-### Theme
-
-The palette is defined once in `app/globals.css` as a `--rb-*` tier, with
-semantic aliases layered on top. **Three other files hold hardcoded copies**
-because they cannot read CSS variables — recolouring is a four-file edit:
-
-- `app/globals.css` (source of truth)
-- `app/opengraph-image.tsx`
-- `app/icon.svg`
-- `lib/tokens.ts` bridges the rest into canvas
-
-Colour discipline is documented at the top of `globals.css` and is load-bearing:
-red is interactive-only, yellow is measurement-only, purple marks exactly one
-personal-best number, and green is dropped everywhere except the preloader
-terminal and the rev-strip shift lights.
-
-### Adding project media
-
-Projects render a code-drawn telemetry panel by default. To swap in a real
-screenshot or clip, drop the file in `public/projects/` and add one line to the
-project in `data/projects.ts`:
-
-```ts
-media: { kind: "image", src: "/projects/sefgh.png", alt: "SEFGH search results" }
-// or
-media: { kind: "video", src: "/projects/sefgh.mp4" }
+```sh
+npm run check
+npx playwright install
+npm run test:browser
 ```
 
-### Intro animation
+On Windows this checkout also has an ignored task-local runtime. In PowerShell:
 
-`components/ui/spatial-neural-preloader.tsx`. Plays once per tab
-(`sessionStorage`), skippable with any click or keypress, and bypassed entirely
-for `prefers-reduced-motion`. `LOADER_DURATION` sets its length.
+```powershell
+$env:PATH = "$PWD\.tools\node-v24.22.0-win-x64;$env:PATH"
+npm run dev
+```
 
-Its hand-off choreography lives in `app/globals.css` and is coupled to
-`LAUNCH_DURATION` in the component — the two must agree. Note that
-`#site-shell` is a containing block while the hand-off runs, which is why all
-fixed chrome (nav dock, rev strip, mascot) mounts as its sibling rather than
-inside it.
+The local runtime is not part of Git. Other machines should install Node 24 normally. Local Chromium tests use installed Chrome; CI installs its browser runners. `npm run start` serves the built Vercel static output for local verification after `npm run build`; production uses the Astro adapter.
+
+## Add work and credentials
+
+- Projects: `src/content/projects/*.md` become `/projects/<filename>/` case studies.
+- Credentials: `src/content/certifications/*.md` support issuer, kind, issue/expiry dates, credential ID, verification link, asset and related projects.
+- Profile/contact: `data/profile.ts`; editorial copy: `src/data/site.ts`.
+- Resume: replace `public/resume.pdf` without changing its URL.
+- Styles: `src/styles/site.css`; animation: `src/scripts/theme.ts` and `f1-scene.ts`.
+
+[Content authoring](docs/content-authoring.md) includes templates and publication rules. Drafts never appear in public pages or previews. Unknown dates, metrics, credentials and project URLs are not invented. Optional metrics need a measurement method, date and evidence; images need descriptive alternative text.
+
+## Delivery
+
+GitHub CI checks types, content, lint, unit contracts, build output, internal links, arrival-JavaScript budget, and browser journeys in Chromium, Firefox and WebKit. [Deployment setup](docs/deployment.md) describes Git previews, production checks and rollback. Connecting a hosting project and protecting its production branch are separate setup steps; this repository alone does not activate them.
+
+Set `SITE_URL` to the actual production origin. Pages are prerendered; `/api/contributions` is the only on-demand endpoint and preserves its existing JSON/cache/failure contract. The local default origin is for development only.
+
+The Vercel CLI is not installed on the implementation machine. `npm i -g vercel` is strongly recommended to enable `vercel env pull`, `vercel deploy`, and `vercel logs` once the target account/project is confirmed.
+
+## Project records
+
+[CHECKPOINT.md](CHECKPOINT.md) holds recovery status. [CLAUDE.md](CLAUDE.md) is the canonical agent guide. The approved design and plan are in `docs/superpowers/`. Root `app/`, `components/` and Next/Tailwind configs are retained legacy recovery source, excluded from the active Astro app; do not edit them to change the current site.
