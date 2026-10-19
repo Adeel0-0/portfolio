@@ -1,6 +1,7 @@
 import { writeStorage } from "../../lib/storage";
-import { parseTheme, ThemeSession } from "../lib/theme-state";
+import { parseTheme, ThemeSession, THEME_COLORS } from "../lib/theme-state";
 import type { SceneHandle } from "./f1-scene";
+import { BOOT } from "../lib/boot-sequence";
 
 const root = document.documentElement;
 const toggle = document.querySelector<HTMLButtonElement>("#theme-toggle");
@@ -35,7 +36,7 @@ if (toggle) {
     toggle!.setAttribute("aria-pressed", String(state.desired === "f1"));
     document
       .querySelector('meta[name="theme-color"]')
-      ?.setAttribute("content", state.desired === "f1" ? "#10151e" : "#f7f8fa");
+      ?.setAttribute("content", THEME_COLORS[state.desired]);
     writeStorage("local", "portfolio-theme", state.desired);
   }
   function settle() {
@@ -112,6 +113,7 @@ if (toggle) {
     later(id, settle, duration);
   }
   async function request() {
+    document.dispatchEvent(new Event(BOOT.cancelEvent));
     const { id, target, interrupted } = state.request();
     if (interrupted) {
       path = "interrupted";

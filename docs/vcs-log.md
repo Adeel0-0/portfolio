@@ -7,6 +7,43 @@ All significant commits, architectural reorganizations, and cross-agent updates 
 
 ## Log Entries
 
+### [2026-10-19] - Portfolio Presentation, Lifecycle Fixes & Asset Verification
+- **Commit**: `538420fa`
+- **Agent**: `git-vcs-manager` (Antigravity)
+- **Branch**: `fix/portfolio-presentation-20261019`
+- **Scope**: `src/components/{ProjectCard,ProjectMedia,ProjectMetrics}.astro`, `src/pages/{index,projects/[slug]}.astro`, `src/layouts/SiteLayout.astro`, `src/{data/site,lib/content,lib/boot-sequence,lib/theme-state,scripts/boot-terminal,scripts/theme}.ts`, `src/styles/site.css`, `scripts/{build-assets.ts,verify-build.mjs,verify-content-build.mjs}`, `tests/build-assets.test.ts`, `tests/browser/{boot-terminal,presentation}.spec.ts`, `data/data.test.ts`, `lib/terminal/commands.ts`, `lib/terminal/commands.test.ts`, `vitest.config.ts`, `playwright.config.ts`, `package.json`, `docs/design/2026-10-19-editorial-engineering.md`, `CHECKPOINT.md`.
+- **Summary**:
+  - Implemented shared `ProjectMedia` and `ProjectMetrics` components, resolving layout clipping, aspect-ratio skew, and missing figure captions.
+  - Rendered multi-paragraph project descriptions and team roles on project case study pages.
+  - Hardened boot terminal lifecycle against premature reactivation, keyboard skipping defects, and uncaught async rejections; persisted F1 theme metadata synchronously before enhancement scripts execute.
+  - Migrated emitted static script accounting to TypeScript AST analysis in `scripts/build-assets.ts` with unit test coverage.
+  - Corrected legacy module alias references (`@legacy/data`) in `lib/terminal/commands.ts` and unified Vitest alias mappings.
+  - Added permanent automated Playwright browser suites for presentation (`tests/browser/presentation.spec.ts`, 4 tests) and boot terminal (`tests/browser/boot-terminal.spec.ts`, 9 tests).
+  - Documented 60-component catalog and design research in `docs/design/2026-10-19-editorial-engineering.md`.
+- **Verification Status**:
+  - `astro check`: PASS (35 files, 0 errors, 0 warnings, 0 hints).
+  - `eslint`: PASS (0 errors).
+  - `vitest run`: PASS (73/73 tests across 9 test files).
+  - `astro build && node scripts/verify-build.mjs`: PASS (8 static pages, 189 internal references; home JS 4.6 KB gzip).
+  - `node scripts/verify-content-build.mjs`: PASS (fixture collisions rejected; evidence layout verified).
+  - Playwright Chromium (`presentation.spec.ts`): PASS (4/4 passed).
+  - Playwright Chromium (`boot-terminal.spec.ts`): PASS (9/9 passed).
+
+
+### [2026-10-19] - Complete portfolio architecture and UI assessment
+- **Agent**: Codex; three skill-requested read-only reviewers. Final requirements reviewer checked the report and register.
+- **Branch/base**: `docs/portfolio-architecture-audit-20261019`, application `b638d49d`; claim commit `208c5c69`; final review documents and this log are committed together.
+- **Files**: `CHECKPOINT.md`, `docs/vcs-log.md`, `docs/bug-register.md`, `docs/reviews/2026-10-19-portfolio-architecture.md`. Application/content/dependencies/tests unchanged. HTML report and reproducible probes remain in OS temp; fixture build in existing ignored `.tools/content-fixture`.
+- **Results**: full check PASS (70 unit tests); existing browser suite 49 passed/2 expected skips; 80 current route/theme/width checks PASS; existing content-fixture build PASS; four targeted Chromium assertions FAIL and reproduce boot, theme metadata, caption and metric-inset defects. Screenshot evidence inspected. Eight audit rows recorded as OPEN; no fixes claimed.
+- **Validation**: document links/encoding, HTML structure/section anchors, source references and `git diff --check` PASS. No production or real-device performance verification. Browser UI connector unavailable at resume; report saved, automatic opening not verified.
+- **Handoff**: assessment complete; implementation remains incomplete pending candidate selection. Documentation writer released. No task servers running; no push/deployment or external communications.
+
+### [2026-10-19] - Portfolio architecture and UI audit writer claim
+- **Agent**: Codex, documentation writer; skill-requested reviewers read-only.
+- **Branch/base**: `docs/portfolio-architecture-audit-20261019`, `b638d49d`.
+- **Scope**: `CHECKPOINT.md`, this log and final review documentation only. Audit active Astro code, retained legacy duplication, build output and browser behavior against the owner's current requirements.
+- **Status**: in progress; initial working tree clean; product checks pending. No implementation, push or deployment. Historical checkpoint verified against actual main merge before proceeding.
+
 ### [2026-10-18 20:21] - Push 7 Commits (Boot Terminal & Vercel Fix) to Origin
 - **Agent**: `git-vcs-manager` (Antigravity)
 - **Branch**: `rebuild/astro-f1` -> `origin/rebuild/astro-f1`

@@ -1,5 +1,48 @@
 # Portfolio rebuild checkpoint
 
+## Active implementation and design research: 2026-10-19
+
+- Objective: implement the approved architecture/correctness improvements from the audit, preserve all portfolio content, and research the owner's reference sites to recommend at least 50 suitable UI components. Discuss typography, imagery, colors, cards and motion before selecting a new visual system.
+- Status: committed at `538420fa`. Writer: `git-vcs-manager` (Antigravity). Branch `fix/portfolio-presentation-20261019`, base `b638d49d`.
+- Authorized scope: active presentation/lifecycle/content/tooling fixes, meaningful regressions, bug register, research and recovery documentation. Preserve legacy recovery source, original content, routes, resume and contribution endpoint. Current professional/F1 styling and three-second intro preserved.
+- Implemented milestones:
+  - Shared `ProjectMedia` and `ProjectMetrics` components replacing duplicated markup and fixed-height clipping.
+  - Multi-paragraph descriptions and roles properly rendered on project detail pages.
+  - Homepage collection/resume reads consolidated and capability skills typed.
+  - Boot terminal cancellation, exception handling, keyboard navigation, and persisted theme metadata patched.
+  - Emitted static-import graph analyzed via TypeScript AST in `scripts/build-assets.ts`.
+  - Vitest alias resolution unified (`@/*` pointing to `./src/*`, `@legacy/*` for legacy data).
+  - Permanent browser presentation tests (`tests/browser/presentation.spec.ts`) and boot terminal tests (`tests/browser/boot-terminal.spec.ts`).
+  - Isolated test content fixture rebuilt and verified via `scripts/verify-content-build.mjs`.
+- Verification results:
+  - `astro check`: PASS (35 Astro files, 0 errors, 0 warnings, 0 hints).
+  - `eslint`: PASS (0 errors).
+  - `vitest run`: PASS (73/73 tests passed across 9 test files).
+  - `astro build && node scripts/verify-build.mjs`: PASS (8 static pages, 189 internal references, home JS 4.6 KB gzip).
+  - `playwright test tests/browser/presentation.spec.ts --project=chromium`: PASS (4/4 passed).
+  - `playwright test tests/browser/boot-terminal.spec.ts --project=chromium`: PASS (9/9 passed).
+- Research deliverable: `docs/design/2026-10-19-editorial-engineering.md` cataloging 60 components and design directions.
+- Next step: push `fix/portfolio-presentation-20261019` to origin and open pull request into `main`.
+
+
+## Current review: 2026-10-19 (Asia/Calcutta)
+
+- Objective: audit the current portfolio for architecture simplicity, redundant code, content preservation, runtime efficiency, visual consistency and smooth interaction. Produce an evidence-backed review and visual architecture report before selecting a refactor.
+- Status: assessment complete; proposed refactors and bug fixes remain unimplemented/incomplete. Writer: released/idle. Three skill-requested reviewers finished. Application source and content were preserved.
+- Branch: `docs/portfolio-architecture-audit-20261019`; base/current application commit: `b638d49d880a04c48a76d08e9fb49cb616ed2c7a` (main). Initial working tree clean. Older branch/deployment statements below are historical.
+- Constraints: preserve all content and legacy recovery source, professional default plus optional F1, owner-restored boot terminal. No reset/clean/stash, push, deployment or external messages. Use project-local Node 24. Keep audit scratch/report files in OS temp and existing ignored test-output directories.
+- Actual tracked changes: `CHECKPOINT.md`, `docs/vcs-log.md`, `docs/bug-register.md`, `docs/reviews/2026-10-19-portfolio-architecture.md`. No source, content, dependency or test files changed. Read repository rules and requested skills; completed source, architecture and requirements review.
+- Resumed 2026-10-19 after owner said continue. HEAD `208c5c69`, application source unchanged, working tree clean; same Codex documentation writer reclaimed. Prior exec handles and browser connection no longer available; no servers listen on 4400/4401.
+- Completed milestone: `npm run check` PASS on local Node 24.22.0 (31 Astro files, zero errors/warnings/hints; lint; 70 tests across 8 files; build 8 pages, 189 references; home JS 4.3 KB gzip, optional cinematic 154.1 KB gzip). Three read-only reviews completed. Browser runner report saved at 12:30:25 has status passed; extracting detailed counts next.
+- Browser milestone: extracted existing report: 49 passed / 2 expected skips / 0 failed, across Chromium/Firefox/WebKit. Existing isolated content fixture build PASS. Extra Chromium audit in OS temp: 80 current route/theme/width combinations PASS for document overflow, headings and broken images. Four targeted assertions FAIL, reproducing late-boot reactivation (release 5676 ms, relaunch 6757 ms), persisted F1 theme-color mismatch, clipped image caption (caption bottom 1130.7 vs figure bottom 912.2 px), and 320px metrics grid exceeding its content box by 14 px (no document overflow). Actual published entries currently have no media/metrics; those defects were reproduced in the existing isolated fixture.
+- Inspected saved production screenshots: home desktop professional, home mobile both modes, projects tablet F1, SEFGH mobile F1, and fixture desktop/mobile. No broad current-page overlap reproduced. The potential theme-related card height difference was NOT reproduced at tested widths. No application fixes applied.
+- Completed deliverables: source-backed review at `docs/reviews/2026-10-19-portfolio-architecture.md`; eight open audit rows in bug register; visual report at `C:/Users/Windows/AppData/Local/Temp/architecture-review-20261019-portfolio.html`; reproducible audit harness/results/screenshots at `C:/Users/Windows/AppData/Local/Temp/portfolio-audit-20261019/`. Temporary Playwright tests are intentionally failing reproductions outside repository/CI. HTML structure/anchors, document links/encoding and git whitespace checks PASS. Read-only reviewer checked the final report; corrected the older UI-006 absolute cleanup guarantee.
+- Efficiency correction: emitted static imports include a shared 150-byte gzip storage module missed by the verifier's spacing-sensitive regex; explicit arrival total is 4.4 KiB, while build verification reports 4.3 KiB (TEST-005). No frame-rate/field performance claim.
+- Remaining work/dependencies: owner selects the first architecture candidate per the explicitly invoked skill (recommended: consistent project presentation, followed by animation lifecycle); fix open audit rows with permanent regression coverage. Zoom, real-phone/GPU performance, screen-reader and live-site verification not run. Current remote hosting state is unverified. No push/deployment performed; all review commits local.
+- Processes: focused test run completed exit 1 (four reproduced defects); its two local servers stopped with runner. Reviewers finished. Browser UI connector inventory empty at resume. No active implementation/remote work.
+- Next concrete action: read the review and select candidate 1 (presentation) or another candidate; inspect `git status --short` and this released writer claim before implementation. Do not count this review as a fixed application or production sign-off.
+- Pickup prompt: "Resume from CHECKPOINT.md and docs/reviews/2026-10-19-portfolio-architecture.md on docs/portfolio-architecture-audit-20261019. The audit is complete; fixes are not implemented. Start with consistent project presentation (UI-016/UI-017), preserve all content, reclaim writer ownership, and convert the isolated failing probes into permanent regressions alongside fixes."
+
 Updated: 2026-10-18 (Asia/Calcutta).
 
 **Status: ALL COMMITS PUSHED TO ORIGIN. Branch `rebuild/astro-f1` is up to date with `origin/rebuild/astro-f1`. Writer: idle (git-vcs-manager maintaining repo synchronization per owner directive).**

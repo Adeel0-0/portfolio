@@ -24,6 +24,7 @@ export const BOOT = {
   /** Hard ceiling: the overlay covers the page, so a stuck one is a dead site. */
   failsafe: 5000,
   sessionKey: "preloader:seen",
+  cancelEvent: "portfolio:boot-cancel",
 } as const;
 
 /** Share of each line's slot spent typing; the rest shows it complete. */

@@ -1,6 +1,7 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
-import { resolve, dirname, join, sep } from "node:path";
+import { resolve, join, sep } from "node:path";
 import { gzipSync } from "node:zlib";
+import { collectStaticScripts } from "./build-assets.ts";
 
 const root = resolve(
   existsSync(".vercel/output/static/index.html")
@@ -15,13 +16,20 @@ function walk(dir) {
   );
 }
 const files = walk(root);
-if (existsSync('.vercel/output/config.json')) {
-  const config = JSON.parse(readFileSync('.vercel/output/config.json', 'utf8'));
-  const api = '/api/contributions';
-  const matched = config.routes.filter(route => route.src && new RegExp(route.src).test(api));
-  const redirect = matched.find(route => route.status >= 300 && route.status < 400);
-  if (redirect) throw new Error('Legacy /api/contributions must not redirect');
-  if (!matched.some(route => route.dest === '_render')) throw new Error('Legacy contribution API does not reach the server function');
+if (existsSync(".vercel/output/config.json")) {
+  const config = JSON.parse(readFileSync(".vercel/output/config.json", "utf8"));
+  const api = "/api/contributions";
+  const matched = config.routes.filter(
+    (route) => route.src && new RegExp(route.src).test(api),
+  );
+  const redirect = matched.find(
+    (route) => route.status >= 300 && route.status < 400,
+  );
+  if (redirect) throw new Error("Legacy /api/contributions must not redirect");
+  if (!matched.some((route) => route.dest === "_render"))
+    throw new Error(
+      "Legacy contribution API does not reach the server function",
+    );
 }
 const htmlFiles = files.filter((file) => file.endsWith(".html"));
 let links = 0;
@@ -55,21 +63,11 @@ for (const page of htmlFiles) {
   }
 }
 
-const initial = new Set();
-function follow(file) {
-  if (initial.has(file)) return;
-  initial.add(file);
-  const source = readFileSync(file, "utf8");
-  // Only static imports: dynamic imports remain outside the arrival bundle.
-  for (const [, specifier] of source.matchAll(
-    /\b(?:import|export)\s*(?:[^('"`;]*?\s+from\s*)?["']([^"']+)["']/g,
-  )) {
-    if (specifier.startsWith(".")) follow(resolve(dirname(file), specifier));
-  }
-}
 const home = readFileSync(join(root, "index.html"), "utf8");
-for (const [, src] of home.matchAll(/<script\b[^>]*\bsrc="([^"]+)"/g))
-  follow(resolve(root, "." + src));
+const entries = [...home.matchAll(/<script\b[^>]*\bsrc="([^"]+)"/g)].map(
+  ([, src]) => resolve(root, "." + src),
+);
+const initial = collectStaticScripts(entries, root);
 const gzip = (file) => gzipSync(readFileSync(file)).length;
 const core = [...initial].reduce((sum, file) => sum + gzip(file), 0);
 if (core > 75 * 1024)

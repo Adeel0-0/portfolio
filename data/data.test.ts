@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { SECTIONS } from "@/lib/sections";
+import { SECTIONS } from "@legacy/lib/sections";
 import { projects } from "./projects";
 import { skills } from "./skills";
 import { stats } from "./profile";
@@ -37,10 +37,9 @@ describe("projects", () => {
     // data/projects.ts documents description as [what it is, how it works],
     // and project-row.tsx indexes [0] and [1] blindly.
     for (const project of projects) {
-      expect(
-        project.description,
-        `${project.title} description`
-      ).toHaveLength(2);
+      expect(project.description, `${project.title} description`).toHaveLength(
+        2,
+      );
       for (const part of project.description) {
         expect(part.trim().length).toBeGreaterThan(0);
       }
@@ -57,13 +56,13 @@ describe("projects", () => {
     // The tightest cross-module coupling in the app: these strings drive the
     // attention connectors, and a typo produces silent no-op highlighting.
     const known = new Set(
-      skills.flatMap((group) => group.items.map((item) => item.name))
+      skills.flatMap((group) => group.items.map((item) => item.name)),
     );
 
     for (const project of projects) {
       for (const name of project.skills ?? []) {
         expect(known, `${project.title} names an unknown skill`).toContain(
-          name
+          name,
         );
       }
     }

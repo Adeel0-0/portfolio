@@ -1,13 +1,13 @@
 ---
 import SiteLayout from "../layouts/SiteLayout.astro";
 import ProjectCard from "../components/ProjectCard.astro";
-import { getPublishedProjects, getPublishedCredentials } from "../lib/content";
+import { getPublishedPortfolio, resumeHref } from "../lib/content";
 import { person, capabilities } from "../data/site";
-import { existsSync } from "node:fs";
-const projects = (await getPublishedProjects())
+const portfolio = await getPublishedPortfolio();
+const projects = portfolio.projects
   .filter((p) => p.data.featuredOrder !== undefined)
   .slice(0, 3);
-const credentials = await getPublishedCredentials();
+const credentials = portfolio.credentials;
 ---
 
 <SiteLayout>
@@ -19,17 +19,20 @@ const credentials = await getPublishedCredentials();
         <span class="intro-divider">/</span>AI & software engineer
       </p>
       <h1 id="hero-title">
-        Engineering
-        <br />
-        useful intelligence.
+        {person.headline.map((line, index) => (
+          <>
+            {index > 0 && <br />}
+            {line}
+          </>
+        ))}
       </h1>
       <p class="hero-description">{person.introduction}</p>
       <div class="hero-actions">
         <a class="button primary" href="#projects">
           Explore my work <span aria-hidden="true">↗</span>
         </a>
-        {existsSync("public/resume.pdf") && (
-          <a class="button secondary" href="/resume.pdf">
+        {resumeHref && (
+          <a class="button secondary" href={resumeHref}>
             View resume
           </a>
         )}

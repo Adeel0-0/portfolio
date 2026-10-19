@@ -112,12 +112,24 @@ function play() {
     stopParticles();
     removeSkip();
     reduced.removeEventListener("change", finish);
+    document.removeEventListener(BOOT.cancelEvent, finish);
+    window.removeEventListener("pagehide", finish);
     release();
   }
   // Natural end and the skip share one path: write the flag, then dive.
-  function dismiss() {
+  function dismiss(event?: Event) {
     if (phase !== "running") return;
+    if (root.dataset.preloader !== "running") {
+      finish();
+      return;
+    }
     writeStorage("session", BOOT.sessionKey, "1");
+    // Reveal before normal Tab navigation; never activate an obscured link.
+    if (event instanceof KeyboardEvent) {
+      if (event.key !== "Tab") event.preventDefault();
+      finish();
+      return;
+    }
     phase = "launching";
     stopCounter();
     removeSkip();
@@ -126,86 +138,89 @@ function play() {
   }
 
   // Ceiling first, so nothing below can leave the page hidden.
-  timers.push(setTimeout(finish, BOOT.failsafe));
-  window.addEventListener("pointerdown", dismiss);
-  window.addEventListener("keydown", dismiss);
-  reduced.addEventListener("change", finish);
-  root.style.setProperty("--pl-launch", `${BOOT.launch}ms`);
+  try {
+    timers.push(setTimeout(finish, BOOT.failsafe));
+    document.addEventListener(BOOT.cancelEvent, finish);
+    window.addEventListener("pagehide", finish);
+    window.addEventListener("pointerdown", dismiss);
+    window.addEventListener("keydown", dismiss);
+    reduced.addEventListener("change", finish);
+    root.style.setProperty("--pl-launch", `${BOOT.launch}ms`);
 
-  const overlay = el("div", "boot-terminal");
-  overlay.setAttribute("role", "status");
-  overlay.setAttribute("aria-label", "Loading portfolio");
-  const canvas = el("canvas", "boot-particles");
-  canvas.setAttribute("aria-hidden", "true");
+    const overlay = el("div", "boot-terminal");
+    overlay.setAttribute("role", "status");
+    overlay.setAttribute("aria-label", "Loading portfolio");
+    const canvas = el("canvas", "boot-particles");
+    canvas.setAttribute("aria-hidden", "true");
 
-  const titlebar = el("div", "boot-titlebar");
-  titlebar.append(
-    el("i", "boot-dot red"),
-    el("i", "boot-dot amber"),
-    el("i", "boot-dot green"),
-    el("span", "boot-title", "sys_init.sh"),
-  );
-  const banner = el("p", "boot-banner");
-  banner.append(
-    "Syed Mohammad Adeel OS [Version 10.0.22631.3880]",
-    el("br"),
-    "(c) 2026. All rights reserved.",
-  );
-  const typed = el("span");
-  const promptLine = el("p", "boot-line");
-  promptLine.append(
-    el("span", "boot-prompt", "C:\\Users\\Adeel>"),
-    typed,
-    el("span", "boot-cursor"),
-  );
-  const body = el("div", "boot-body");
-  body.append(banner, promptLine);
-  const percent = el("span", "boot-percent", "0%");
-  const counter = el("div", "boot-counter");
-  counter.append(el("span", "boot-label", "SYSTEM_BOOT"), percent);
-  const fill = el("div", "boot-fill");
-  const track = el("div", "boot-track");
-  track.append(fill);
-
-  const terminal = el("div", "boot-window");
-  terminal.append(
-    titlebar,
-    body,
-    counter,
-    track,
-    el("p", "boot-hint", "Click anywhere to skip"),
-  );
-  overlay.append(canvas, el("div", "boot-frost"), terminal);
-  document.body.append(overlay);
-  stopParticles = particles(canvas);
-
-  const render = (progress: number) => {
-    typed.textContent = lineFor(progress);
-    percent.textContent = `${progress}%`;
-    fill.style.width = `${progress}%`;
-  };
-  // Counter and typing pace off the same clock, so they cannot drift apart.
-  const step = 30;
-  let ticks = 0;
-  render(0);
-  interval = setInterval(() => {
-    ticks++;
-    const progress = Math.min(
-      Math.round(((ticks * step) / BOOT.loader) * 100),
-      100,
+    const titlebar = el("div", "boot-titlebar");
+    titlebar.append(
+      el("i", "boot-dot red"),
+      el("i", "boot-dot amber"),
+      el("i", "boot-dot green"),
+      el("span", "boot-title", "sys_init.sh"),
     );
-    render(progress);
-    if (progress === 100) {
-      stopCounter();
-      timers.push(setTimeout(dismiss, BOOT.hold));
-    }
-  }, step);
+    const banner = el("p", "boot-banner");
+    banner.append(
+      "Syed Mohammad Adeel OS [Version 10.0.22631.3880]",
+      el("br"),
+      "(c) 2026. All rights reserved.",
+    );
+    const typed = el("span");
+    const promptLine = el("p", "boot-line");
+    promptLine.append(
+      el("span", "boot-prompt", "C:\\Users\\Adeel>"),
+      typed,
+      el("span", "boot-cursor"),
+    );
+    const body = el("div", "boot-body");
+    body.append(banner, promptLine);
+    const percent = el("span", "boot-percent", "0%");
+    const counter = el("div", "boot-counter");
+    counter.append(el("span", "boot-label", "SYSTEM_BOOT"), percent);
+    const fill = el("div", "boot-fill");
+    const track = el("div", "boot-track");
+    track.append(fill);
+
+    const terminal = el("div", "boot-window");
+    terminal.append(
+      titlebar,
+      body,
+      counter,
+      track,
+      el("p", "boot-hint", "Click or press any key to skip"),
+    );
+    overlay.append(canvas, el("div", "boot-frost"), terminal);
+    document.body.append(overlay);
+    stopParticles = particles(canvas);
+
+    const render = (progress: number) => {
+      typed.textContent = lineFor(progress);
+      percent.textContent = `${progress}%`;
+      fill.style.width = `${progress}%`;
+    };
+    // Counter and typing pace off the same clock, so they cannot drift apart.
+    const step = 30;
+    let ticks = 0;
+    render(0);
+    interval = setInterval(() => {
+      ticks++;
+      const progress = Math.min(
+        Math.round(((ticks * step) / BOOT.loader) * 100),
+        100,
+      );
+      render(progress);
+      if (progress === 100) {
+        stopCounter();
+        timers.push(setTimeout(dismiss, BOOT.hold));
+      }
+    }, step);
+  } catch {
+    // Initialization can fail after listeners/timers have been installed.
+    finish();
+  }
 }
 
 if (root.dataset.preloader === "running") {
-  try {
-    play();
-  } catch {
-    release();
-  }
+  play();
 }

@@ -1,7 +1,8 @@
 ---
 import { render } from "astro:content";
 import SiteLayout from "../../layouts/SiteLayout.astro";
-import ProjectVisual from "../../components/ProjectVisual.astro";
+import ProjectMedia from "../../components/ProjectMedia.astro";
+import ProjectMetrics from "../../components/ProjectMetrics.astro";
 import { getPublishedProjects } from "../../lib/content";
 export async function getStaticPaths() {
   return (await getPublishedProjects()).map((project) => ({
@@ -76,19 +77,7 @@ const p = project.data;
         )}
       </div>
     </header>
-    {p.media ? (
-      <figure class="case-visual">
-        <img src={p.media.src} alt={p.media.alt} />
-        <figcaption class="figure-caption">{p.media.alt}</figcaption>
-      </figure>
-    ) : (
-      <>
-        <ProjectVisual visual={p.visual} diagram={p.diagram} title={p.title} />
-        <p class="figure-caption">
-          Architecture illustration · {p.diagram.join(" → ")}
-        </p>
-      </>
-    )}
+    <ProjectMedia project={p} />
     <div class="case-body">
       <aside>
         <h2>Built with</h2>
@@ -103,24 +92,13 @@ const p = project.data;
         </ul>
       </aside>
       <div class="prose">
+        <h2>Project overview</h2>
+        {p.description.map((paragraph) => (
+          <p>{paragraph}</p>
+        ))}
         <Content />
       </div>
     </div>
   </article>
-  {p.metrics.length > 0 && (
-    <section class="container metrics-panel" aria-label="Measured results">
-      {p.metrics.map((metric) => (
-        <article>
-          <strong>{metric.value}</strong>
-          <h2>{metric.label}</h2>
-          <p>{metric.method}</p>
-          <p>
-            Measured{" "}
-            <time datetime={metric.measuredAt}>{metric.measuredAt}</time>
-          </p>
-          <a href={metric.evidence}>View supporting evidence</a>
-        </article>
-      ))}
-    </section>
-  )}
+  <ProjectMetrics metrics={p.metrics} />
 </SiteLayout>
