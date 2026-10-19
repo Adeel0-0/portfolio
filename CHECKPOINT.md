@@ -1,5 +1,12 @@
 # Portfolio rebuild checkpoint
 
+## Verification of merged main: 2026-10-20
+
+- Objective (owner: "continue where codex left"): verify `main` at `6da43246` (rebuild `b638d49d` + presentation fixes `538420fa`, both merged and pushed), confirm each claimed fix against the 2026-10-19 audit rows, and update the stale bug register (all eight audit rows still say Open).
+- Writer: Claude session `portfolio-19`, claimed at `6da43246` after Antigravity's presentation task was merged and pushed. Branch `docs/verify-main-20261020`. Other agents read-only until released.
+- Global Node is now 24.22.0 (owner installed it); the `.tools` PATH workaround is no longer needed.
+- Vercel (2026-10-20): connected account still has 0 projects and no Git connection. `main` now holds the Astro site, but nothing is live.
+
 ## Active implementation and design research: 2026-10-19
 
 - Objective: implement the approved architecture/correctness improvements from the audit, preserve all portfolio content, and research the owner's reference sites to recommend at least 50 suitable UI components. Discuss typography, imagery, colors, cards and motion before selecting a new visual system.
