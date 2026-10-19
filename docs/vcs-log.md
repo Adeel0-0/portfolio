@@ -7,6 +7,20 @@ All significant commits, architectural reorganizations, and cross-agent updates 
 
 ## Log Entries
 
+### [2026-10-20] - Verify Merged Main & Update Bug Register
+- **Commits**: `4aaa5c1c` (writer claim), `4164dfb7` (description regression test), plus this docs commit
+- **Agent**: Claude (session `portfolio-19`)
+- **Branch**: `docs/verify-main-20261020` from `main` `6da43246` (local only; not pushed or merged)
+- **Scope**: `tests/browser/presentation.spec.ts`, `docs/bug-register.md`, `CHECKPOINT.md`
+- **Summary**:
+  - Verified the merged `main`: the audit's eight open rows are backed by passing tests in three engines and are now marked fixed with evidence.
+  - Added the missing regression test for CONTENT-001 (fails when description rendering is removed).
+  - Recorded UI-018: the boot swallows browser shortcuts during its 3 s window. Open for the owner to decide.
+- **Verification**: `npm run check` PASS (73/73 unit); content-fixture build PASS; Playwright 73 passed, 2 skipped across Chromium, Firefox, WebKit at `6da43246`; new test 3/3 engines plus mutation check.
+- **Writer**: released to idle.
+
+---
+
 ### [2026-10-19] - Portfolio Presentation, Lifecycle Fixes & Asset Verification
 - **Commit**: `538420fa`
 - **Agent**: `git-vcs-manager` (Antigravity)

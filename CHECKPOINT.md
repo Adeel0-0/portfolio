@@ -3,7 +3,12 @@
 ## Verification of merged main: 2026-10-20
 
 - Objective (owner: "continue where codex left"): verify `main` at `6da43246` (rebuild `b638d49d` + presentation fixes `538420fa`, both merged and pushed), confirm each claimed fix against the 2026-10-19 audit rows, and update the stale bug register (all eight audit rows still say Open).
-- Writer: Claude session `portfolio-19`, claimed at `6da43246` after Antigravity's presentation task was merged and pushed. Branch `docs/verify-main-20261020`. Other agents read-only until released.
+- Writer: idle (released by Claude session `portfolio-19`; claimed at `6da43246` after Antigravity's presentation task was merged and pushed). Branch `docs/verify-main-20261020`, local only, not pushed or merged.
+- Verified `main` at `6da43246` (2026-10-20 00:10): `npm run check` PASS (typecheck 0/0/0, lint, 73/73 unit, build 8 pages / 189 refs, arrival JS 4.6 KB gzip); content-fixture build PASS; Playwright 73 passed, 2 skipped (WebGL test is Chromium-only) across Chromium, Firefox, WebKit. All 13 new presentation/boot tests passed in all three engines.
+- Bug register: UI-014, UI-015, UI-016, UI-017, CONTENT-001, TEST-004, TEST-005, TOOL-003 marked fixed with evidence. CONTENT-001 had no test; added `4164dfb7` (reads copy from content files; mutation-checked). New UI-018 (boot swallows browser shortcuts), open for owner decision.
+- Remaining, owner decisions: visual system in `docs/design/2026-10-19-editorial-engineering.md` (Instrument Sans + Newsreader accent, paper palette); one play component (55 SEFGH, 56 detections needs images, 57 drone diagram); next architecture candidate (2 lifecycle owner, 3 content authority); UI-018; merging this branch.
+- Remaining, owner setup: Vercel GitHub connection and project (still 0 projects); NVIDIA credential details; real project screenshots.
+- Not verified: GitHub Actions result for the push to `main` (no Actions tool available here); real devices; screen readers.
 - Global Node is now 24.22.0 (owner installed it); the `.tools` PATH workaround is no longer needed.
 - Vercel (2026-10-20): connected account still has 0 projects and no Git connection. `main` now holds the Astro site, but nothing is live.
 
