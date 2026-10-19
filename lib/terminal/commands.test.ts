@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { profile, projects } from "@/data";
+import { profile, projects } from "@legacy/data";
 import { COMMAND_NAMES, runCommand } from "./commands";
 
 describe("runCommand", () => {
@@ -105,7 +105,7 @@ describe("runCommand", () => {
       // `clear` and `exit` are handled by the terminal component, not the
       // table, so they are expected to fall through to not-found here.
       const dispatched = COMMAND_NAMES.filter(
-        (name) => name !== "clear" && name !== "exit"
+        (name) => name !== "clear" && name !== "exit",
       );
       for (const name of dispatched) {
         expect(runCommand(name).join("\n")).not.toContain("Command not found");

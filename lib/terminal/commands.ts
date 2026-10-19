@@ -4,7 +4,7 @@ import {
   profile,
   projects,
   skills,
-} from "@/data";
+} from "@legacy/data";
 
 /**
  * Commands for the backtick terminal.

@@ -1,4 +1,8 @@
 export type Theme = "professional" | "f1";
+export const THEME_COLORS: Record<Theme, string> = {
+  professional: "#f7f8fa",
+  f1: "#10151e",
+};
 export function parseTheme(value: string | null): Theme {
   return value === "f1" ? "f1" : "professional";
 }

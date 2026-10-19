@@ -1,7 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
 // Not 4321: `astro dev` uses that, and reusing a dev server would test dev-only
 // behaviour (the boot terminal replays every load there) instead of the build.
-const port = 4400;
+const port = Number(process.env.PORTFOLIO_TEST_PORT) || 4400;
+const fixturePort = Number(process.env.PORTFOLIO_FIXTURE_PORT) || 4402;
 export default defineConfig({
   testDir: "./tests/browser",
   fullyParallel: false,
@@ -15,13 +16,22 @@ export default defineConfig({
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
   },
-  webServer: {
-    command: "npm run start",
-    env: { PORT: String(port) },
-    url: `http://127.0.0.1:${port}`,
-    reuseExistingServer: !process.env.CI,
-    timeout: 60000,
-  },
+  webServer: [
+    {
+      command: "npm run start",
+      env: { PORT: String(port) },
+      url: `http://127.0.0.1:${port}`,
+      reuseExistingServer: false,
+      timeout: 60000,
+    },
+    {
+      command: "node scripts/serve-built.mjs --fixture",
+      env: { PORT: String(fixturePort) },
+      url: `http://127.0.0.1:${fixturePort}`,
+      reuseExistingServer: false,
+      timeout: 60000,
+    },
+  ],
   projects: [
     {
       name: "chromium",

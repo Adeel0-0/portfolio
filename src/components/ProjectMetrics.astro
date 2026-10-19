@@ -1,0 +1,47 @@
+---
+import type { CollectionEntry } from "astro:content";
+interface Props {
+  metrics: CollectionEntry<"projects">["data"]["metrics"];
+}
+const { metrics } = Astro.props;
+---
+
+{metrics.length > 0 && (
+  <section class="container metrics-panel" aria-label="Measured results">
+    {metrics.map((metric) => (
+      <article>
+        <strong>{metric.value}</strong>
+        <h2>{metric.label}</h2>
+        <p>{metric.method}</p>
+        <p>
+          Measured <time datetime={metric.measuredAt}>{metric.measuredAt}</time>
+        </p>
+        <a href={metric.evidence}>View supporting evidence</a>
+      </article>
+    ))}
+  </section>
+)}
+
+<style>
+  .metrics-panel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: 30px;
+    padding: clamp(20px, 4vw, 30px);
+    margin-bottom: 50px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  article {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  h2 {
+    font-size: 32px;
+  }
+  a {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+</style>

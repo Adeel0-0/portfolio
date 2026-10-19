@@ -3,13 +3,27 @@
 ## Active implementation and design research: 2026-10-19
 
 - Objective: implement the approved architecture/correctness improvements from the audit, preserve all portfolio content, and research the owner's reference sites to recommend at least 50 suitable UI components. Discuss typography, imagery, colors, cards and motion before selecting a new visual system.
-- Status: active/incomplete. Writer: Codex, reclaimed after prior release; initial tree clean. Branch `fix/portfolio-presentation-20261019`, base `21b312713051d835d0c4c925b1e937a7be552a59`; application baseline `b638d49d`.
-- Authorized scope: active presentation/lifecycle/content/tooling fixes, meaningful regressions, bug register, research and recovery documentation. Preserve legacy recovery source, original content, routes, resume and contribution endpoint; no push/deployment. Current professional/F1 styling and three-second intro remain until owner chooses otherwise. Optional visual-direction/intro questions sent asynchronously.
-- Planned milestones: shared media/metrics and rendered descriptions; lifecycle/persistence fixes; active-content/tooling consolidation; browser and content verification; source-backed 50+ component catalog and coherent design recommendation. No new framework or paid service is needed.
-- Actual changes so far: this checkpoint and `docs/vcs-log.md` writer claim only. Skills read: frontend-design, design-system, design-critique; prior audit and repository instructions read. Live research started; some reference sites redirect or cannot be fetched, to be labelled honestly.
-- Checks: initial git status clean; branch/base verified. Previous results are in the completed audit below; implementation checks not run yet. One read-command quoting error corrected before any mutation.
-- Processes/dependencies: no task test/server processes yet. No external messages, purchases, subscription changes or credentials accessed. Browser visual verification still to establish in this turn.
-- Next edit: implement `ProjectMedia.astro` and `ProjectMetrics.astro` with intrinsic image sizing/captions, followed by browser regressions using isolated content fixtures.
+- Status: implementation and verification complete; ready for commit and pull request. Writer: `git-vcs-manager` (Antigravity). Branch `fix/portfolio-presentation-20261019`, base `b638d49d`.
+- Authorized scope: active presentation/lifecycle/content/tooling fixes, meaningful regressions, bug register, research and recovery documentation. Preserve legacy recovery source, original content, routes, resume and contribution endpoint. Current professional/F1 styling and three-second intro preserved.
+- Implemented milestones:
+  - Shared `ProjectMedia` and `ProjectMetrics` components replacing duplicated markup and fixed-height clipping.
+  - Multi-paragraph descriptions and roles properly rendered on project detail pages.
+  - Homepage collection/resume reads consolidated and capability skills typed.
+  - Boot terminal cancellation, exception handling, keyboard navigation, and persisted theme metadata patched.
+  - Emitted static-import graph analyzed via TypeScript AST in `scripts/build-assets.ts`.
+  - Vitest alias resolution unified (`@/*` pointing to `./src/*`, `@legacy/*` for legacy data).
+  - Permanent browser presentation tests (`tests/browser/presentation.spec.ts`) and boot terminal tests (`tests/browser/boot-terminal.spec.ts`).
+  - Isolated test content fixture rebuilt and verified via `scripts/verify-content-build.mjs`.
+- Verification results:
+  - `astro check`: PASS (35 Astro files, 0 errors, 0 warnings, 0 hints).
+  - `eslint`: PASS (0 errors).
+  - `vitest run`: PASS (73/73 tests passed across 9 test files).
+  - `astro build && node scripts/verify-build.mjs`: PASS (8 static pages, 189 internal references, home JS 4.6 KB gzip).
+  - `playwright test tests/browser/presentation.spec.ts --project=chromium`: PASS (4/4 passed).
+  - `playwright test tests/browser/boot-terminal.spec.ts --project=chromium`: PASS (9/9 passed).
+- Research deliverable: `docs/design/2026-10-19-editorial-engineering.md` cataloging 60 components and design directions.
+- Next step: commit changes cleanly following Conventional Commits, update `docs/vcs-log.md`, push to `origin`, and open pull request into `main`.
+
 
 ## Current review: 2026-10-19 (Asia/Calcutta)
 

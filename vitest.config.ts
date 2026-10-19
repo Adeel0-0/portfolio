@@ -1,19 +1,8 @@
 import { defineConfig } from "vitest/config";
 import { fileURLToPath } from "node:url";
 
-/**
- * Node environment only — no jsdom, no Testing Library, no browser runner.
- *
- * This is a deliberate scoping decision, not an omission. The client surface
- * here is decorative animation: canvas fields, rAF loops, framer transitions.
- * Rendering those into jsdom would mostly assert that framer-motion emits a
- * <div>, at the cost of a dependency tree larger than the app.
- *
- * What is worth testing is pure: the terminal's command table, and the
- * cross-module invariants in data/ that are currently documented in prose and
- * enforced nowhere. Those are Node tests. If a genuinely stateful component
- * ever appears, add jsdom then — as a second project, not by widening this.
- */
+// Pure content, state and build contracts run in Node. Playwright separately
+// exercises the production pages, interaction lifecycle and accessibility.
 export default defineConfig({
   test: {
     environment: "node",
@@ -23,7 +12,8 @@ export default defineConfig({
   resolve: {
     // Mirrors the "@/*" path alias in tsconfig.json.
     alias: {
-      "@": fileURLToPath(new URL(".", import.meta.url)),
+      "@legacy": fileURLToPath(new URL(".", import.meta.url)),
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
 });

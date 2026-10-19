@@ -10,7 +10,11 @@ function checkAsset(asset: string) {
     throw new Error(`Missing or invalid content asset: ${asset}`);
 }
 
-async function loadContent() {
+export const resumeHref = existsSync(resolve("public/resume.pdf"))
+  ? "/resume.pdf"
+  : undefined;
+
+export async function getPublishedPortfolio() {
   const [projects, credentials] = await Promise.all([
     getCollection("projects"),
     getCollection("certifications"),
@@ -53,8 +57,8 @@ async function loadContent() {
 }
 
 export async function getPublishedProjects() {
-  return (await loadContent()).projects;
+  return (await getPublishedPortfolio()).projects;
 }
 export async function getPublishedCredentials() {
-  return (await loadContent()).credentials;
+  return (await getPublishedPortfolio()).credentials;
 }

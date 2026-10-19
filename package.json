@@ -14,7 +14,7 @@
     "typecheck": "astro check",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:browser": "playwright test",
+    "test:browser": "node scripts/verify-content-build.mjs && playwright test",
     "check": "npm run typecheck && npm run lint && npm test && npm run build"
   },
   "dependencies": {

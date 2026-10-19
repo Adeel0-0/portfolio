@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import ProjectVisual from "./ProjectVisual.astro";
+import ProjectMedia from "./ProjectMedia.astro";
 interface Props {
   project: CollectionEntry<"projects">;
   featured?: boolean;
@@ -21,11 +21,7 @@ const p = project.data;
     tabindex="-1"
     aria-hidden="true"
   >
-    {p.media ? (
-      <img class="project-photo" src={p.media.src} alt="" loading="lazy" />
-    ) : (
-      <ProjectVisual visual={p.visual} diagram={p.diagram} title={p.title} />
-    )}
+    <ProjectMedia project={p} variant="card" />
   </a>
   <div class="project-copy">
     <div class="project-meta">
@@ -42,6 +38,7 @@ const p = project.data;
       <a href={`/projects/${project.id}/`}>{p.title}</a>
     </h3>
     <p>{p.summary}</p>
+    <p class="project-role">{p.role}</p>
     <ul class="skill-list" aria-label="Technologies">
       {p.skills.slice(0, 3).map((skill) => (
         <li>{skill}</li>

@@ -4,8 +4,8 @@ import "../styles/transition.css";
 import "../styles/boot.css";
 import { person } from "../data/site";
 import { BOOT } from "../lib/boot-sequence";
-import { existsSync } from "node:fs";
-import { join } from "node:path";
+import { THEME_COLORS } from "../lib/theme-state";
+import { resumeHref } from "../lib/content";
 
 interface Props {
   title?: string;
@@ -17,7 +17,6 @@ const {
 } = Astro.props;
 const path = Astro.url.pathname;
 const canonical = new URL(path, Astro.site);
-const hasResume = existsSync(join(process.cwd(), "public/resume.pdf"));
 const links = [
   { href: "/projects/", text: "Projects" },
   { href: "/about/", text: "About" },
@@ -30,7 +29,7 @@ const links = [
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#f7f8fa" />
+    <meta name="theme-color" content={THEME_COLORS.professional} />
     <meta name="description" content={description} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -41,10 +40,14 @@ const links = [
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{title}</title>
-    <script is:inline>
+    <script is:inline define:vars={{ themeColors: THEME_COLORS }}>
       try {
-        if (localStorage.getItem("portfolio-theme") === "f1")
+        if (localStorage.getItem("portfolio-theme") === "f1") {
           document.documentElement.dataset.theme = "f1";
+          document
+            .querySelector('meta[name="theme-color"]')
+            ?.setAttribute("content", themeColors.f1);
+        }
       } catch {
         /* Storage is optional. */
       }
@@ -55,6 +58,7 @@ const links = [
         bootKey: BOOT.sessionKey,
         replay: import.meta.env.DEV,
         ceiling: BOOT.failsafe + 650,
+        cancelEvent: BOOT.cancelEvent,
       }}
     >
       // Boot terminal gate: decide before first paint so the page never flashes
@@ -71,6 +75,9 @@ const links = [
         root.dataset.preloader = "running";
         setTimeout(() => {
           if (!root.dataset.preloader) return;
+          // Cancel an already-running controller before the fallback releases
+          // the page. Its delayed callbacks must never hide the page again.
+          document.dispatchEvent(new Event(cancelEvent));
           document
             .querySelectorAll(".boot-terminal")
             .forEach((n) => n.remove());
@@ -163,7 +170,7 @@ const links = [
               <a href={person.linkedin} target="_blank" rel="noreferrer">
                 LinkedIn
               </a>
-              {hasResume && <a href="/resume.pdf">Resume PDF</a>}
+              {resumeHref && <a href={resumeHref}>Resume PDF</a>}
             </div>
           </div>
         </div>

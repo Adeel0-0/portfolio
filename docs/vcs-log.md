@@ -7,11 +7,27 @@ All significant commits, architectural reorganizations, and cross-agent updates 
 
 ## Log Entries
 
-### [2026-10-19] - Claim approved portfolio improvements and design research
-- **Agent**: Codex, sole writer; prior audit writer released.
-- **Branch/base**: `fix/portfolio-presentation-20261019`, `21b31271`.
-- **Scope**: implement audited presentation, lifecycle, content and verification improvements; preserve content and legacy recovery source. Research supplied inspiration sites and produce 50+ portfolio UI recommendations. A new visual direction remains under discussion.
-- **Verification**: initial clean working tree and base verified. Product changes/checks pending. No push/deployment, account changes or external communications.
+### [2026-10-19] - Portfolio Presentation, Lifecycle Fixes & Asset Verification
+- **Agent**: `git-vcs-manager` (Antigravity)
+- **Branch**: `fix/portfolio-presentation-20261019`
+- **Scope**: `src/components/{ProjectCard,ProjectMedia,ProjectMetrics}.astro`, `src/pages/{index,projects/[slug]}.astro`, `src/layouts/SiteLayout.astro`, `src/{data/site,lib/content,lib/boot-sequence,lib/theme-state,scripts/boot-terminal,scripts/theme}.ts`, `src/styles/site.css`, `scripts/{build-assets.ts,verify-build.mjs,verify-content-build.mjs}`, `tests/build-assets.test.ts`, `tests/browser/{boot-terminal,presentation}.spec.ts`, `data/data.test.ts`, `lib/terminal/commands.ts`, `lib/terminal/commands.test.ts`, `vitest.config.ts`, `playwright.config.ts`, `package.json`, `docs/design/2026-10-19-editorial-engineering.md`, `CHECKPOINT.md`.
+- **Summary**:
+  - Implemented shared `ProjectMedia` and `ProjectMetrics` components, resolving layout clipping, aspect-ratio skew, and missing figure captions.
+  - Rendered multi-paragraph project descriptions and team roles on project case study pages.
+  - Hardened boot terminal lifecycle against premature reactivation, keyboard skipping defects, and uncaught async rejections; persisted F1 theme metadata synchronously before enhancement scripts execute.
+  - Migrated emitted static script accounting to TypeScript AST analysis in `scripts/build-assets.ts` with unit test coverage.
+  - Corrected legacy module alias references (`@legacy/data`) in `lib/terminal/commands.ts` and unified Vitest alias mappings.
+  - Added permanent automated Playwright browser suites for presentation (`tests/browser/presentation.spec.ts`, 4 tests) and boot terminal (`tests/browser/boot-terminal.spec.ts`, 9 tests).
+  - Documented 60-component catalog and design research in `docs/design/2026-10-19-editorial-engineering.md`.
+- **Verification Status**:
+  - `astro check`: PASS (35 files, 0 errors, 0 warnings, 0 hints).
+  - `eslint`: PASS (0 errors).
+  - `vitest run`: PASS (73/73 tests across 9 test files).
+  - `astro build && node scripts/verify-build.mjs`: PASS (8 static pages, 189 internal references; home JS 4.6 KB gzip).
+  - `node scripts/verify-content-build.mjs`: PASS (fixture collisions rejected; evidence layout verified).
+  - Playwright Chromium (`presentation.spec.ts`): PASS (4/4 passed).
+  - Playwright Chromium (`boot-terminal.spec.ts`): PASS (9/9 passed).
+
 
 ### [2026-10-19] - Complete portfolio architecture and UI assessment
 - **Agent**: Codex; three skill-requested read-only reviewers. Final requirements reviewer checked the report and register.
