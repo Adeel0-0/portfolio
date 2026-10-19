@@ -1,5 +1,16 @@
 # Portfolio rebuild checkpoint
 
+## Active implementation and design research: 2026-10-19
+
+- Objective: implement the approved architecture/correctness improvements from the audit, preserve all portfolio content, and research the owner's reference sites to recommend at least 50 suitable UI components. Discuss typography, imagery, colors, cards and motion before selecting a new visual system.
+- Status: active/incomplete. Writer: Codex, reclaimed after prior release; initial tree clean. Branch `fix/portfolio-presentation-20261019`, base `21b312713051d835d0c4c925b1e937a7be552a59`; application baseline `b638d49d`.
+- Authorized scope: active presentation/lifecycle/content/tooling fixes, meaningful regressions, bug register, research and recovery documentation. Preserve legacy recovery source, original content, routes, resume and contribution endpoint; no push/deployment. Current professional/F1 styling and three-second intro remain until owner chooses otherwise. Optional visual-direction/intro questions sent asynchronously.
+- Planned milestones: shared media/metrics and rendered descriptions; lifecycle/persistence fixes; active-content/tooling consolidation; browser and content verification; source-backed 50+ component catalog and coherent design recommendation. No new framework or paid service is needed.
+- Actual changes so far: this checkpoint and `docs/vcs-log.md` writer claim only. Skills read: frontend-design, design-system, design-critique; prior audit and repository instructions read. Live research started; some reference sites redirect or cannot be fetched, to be labelled honestly.
+- Checks: initial git status clean; branch/base verified. Previous results are in the completed audit below; implementation checks not run yet. One read-command quoting error corrected before any mutation.
+- Processes/dependencies: no task test/server processes yet. No external messages, purchases, subscription changes or credentials accessed. Browser visual verification still to establish in this turn.
+- Next edit: implement `ProjectMedia.astro` and `ProjectMetrics.astro` with intrinsic image sizing/captions, followed by browser regressions using isolated content fixtures.
+
 ## Current review: 2026-10-19 (Asia/Calcutta)
 
 - Objective: audit the current portfolio for architecture simplicity, redundant code, content preservation, runtime efficiency, visual consistency and smooth interaction. Produce an evidence-backed review and visual architecture report before selecting a refactor.
