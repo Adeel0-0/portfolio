@@ -7,6 +7,12 @@ All significant commits, architectural reorganizations, and cross-agent updates 
 
 ## Log Entries
 
+### [2026-10-19] - Portfolio architecture and UI audit writer claim
+- **Agent**: Codex, documentation writer; skill-requested reviewers read-only.
+- **Branch/base**: `docs/portfolio-architecture-audit-20261019`, `b638d49d`.
+- **Scope**: `CHECKPOINT.md`, this log and final review documentation only. Audit active Astro code, retained legacy duplication, build output and browser behavior against the owner's current requirements.
+- **Status**: in progress; initial working tree clean; product checks pending. No implementation, push or deployment. Historical checkpoint verified against actual main merge before proceeding.
+
 ### [2026-10-18 20:21] - Push 7 Commits (Boot Terminal & Vercel Fix) to Origin
 - **Agent**: `git-vcs-manager` (Antigravity)
 - **Branch**: `rebuild/astro-f1` -> `origin/rebuild/astro-f1`

@@ -1,5 +1,17 @@
 # Portfolio rebuild checkpoint
 
+## Current review: 2026-10-19 (Asia/Calcutta)
+
+- Objective: audit the current portfolio for architecture simplicity, redundant code, content preservation, runtime efficiency, visual consistency and smooth interaction. Produce an evidence-backed review and visual architecture report before selecting a refactor.
+- Status: review in progress. Writer: Codex (documentation only); three skill-requested reviewers are read-only. Previous writer was idle. No application implementation is being changed.
+- Branch: `docs/portfolio-architecture-audit-20261019`; base/current application commit: `b638d49d880a04c48a76d08e9fb49cb616ed2c7a` (main). Initial working tree clean. Older branch/deployment statements below are historical.
+- Constraints: preserve all content and legacy recovery source, professional default plus optional F1, owner-restored boot terminal. No reset/clean/stash, push, deployment or external messages. Use project-local Node 24. Keep audit scratch/report files in OS temp and existing ignored test-output directories.
+- Changed files so far: `CHECKPOINT.md`, `docs/vcs-log.md` (review coordination). Completed: read repository rules, current status, recovery log and the three requested skills; located architecture skill at user path; confirmed active Astro app.
+- Unfinished: current build/check suite, browser interaction/visual inspection, source findings and architecture candidates/report. Checks run: git status clean before claim; branch and HEAD read. Product checks not yet run; no failures yet.
+- Dependencies/approvals: architecture choice follows the requested architecture skill's report; no approval needed for this audit. Remote hosting state is unverified.
+- Processes: no task servers/tests started yet; three read-only review agents active.
+- Next command: prepend `.tools/node-v24.22.0-win-x64` to PATH, run `npm run check`, then built-site Playwright and focused UI inspection.
+
 Updated: 2026-10-18 (Asia/Calcutta).
 
 **Status: ALL COMMITS PUSHED TO ORIGIN. Branch `rebuild/astro-f1` is up to date with `origin/rebuild/astro-f1`. Writer: idle (git-vcs-manager maintaining repo synchronization per owner directive).**
