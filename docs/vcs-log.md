@@ -10,7 +10,7 @@ All significant commits, architectural reorganizations, and cross-agent updates 
 ### [2026-10-24] - Retire Legacy Next.js App & Unused Contributions API
 - **Commits**: `96e92d01` (writer claim), `54a012d3` (legacy content inventory), `9f0a68f6` (remove `/api/contributions`), `ad465ce7` (delete 70 legacy files), `68b88ff9` (move data/storage into `src/`), `e3420624` (drop Next-era anchors), `1a3d292b` (docs, ADR 0001, bug register), `5b3c6e92` (content fixture copies `src/` only), plus this log/release commit
 - **Agent**: Claude (worktree `global-skills-install-d3c01d`), owner-approved plan
-- **Branch**: `rebuild/retire-legacy-next` (base `ea196d5a`, the tip of `docs/verify-main-20261020`); local, not pushed
+- **Branch**: `rebuild/retire-legacy-next` (base `ea196d5a`, the tip of `docs/verify-main-20261020`); pushed to origin on 2026-10-25 at the owner's request; PR opened by the owner (no `gh` CLI)
 - **Recovery**: local tag `legacy-next-final` -> `6da43246`, not pushed
 - **Summary**:
   - Deleted `app/`, `components/`, the unused parts of `lib/` and `data/`, the Next/Tailwind/PostCSS/legacy-ESLint configs and `REDESIGN.md`. None of it could build any more.

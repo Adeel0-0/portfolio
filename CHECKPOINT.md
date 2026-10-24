@@ -4,7 +4,7 @@
 
 - Objective (owner-approved plan, 2026-10-24): make the repository Astro-only with no visible site change. Delete the retained Next.js app (`app/`, `components/`, the unused parts of `lib/` and `data/`, Next/Tailwind/PostCSS configs, `REDESIGN.md`). Remove the unused `/api/contributions` route; no page calls it. Move the active data (`profile`, `skills`, `education`) and `storage` into `src/`. Drop the Next-era hash anchors (`legacyId`, `#garage`). Update the docs.
 - Owner choices: base on `ea196d5a` (this branch includes `docs/verify-main-20261020`); remove the anchors; keep the Vercel adapter; leave `package.json` and the lockfile unchanged.
-- Status: COMPLETE locally, not pushed or merged. Writer: idle (released by the Claude session in worktree `global-skills-install-d3c01d`). Branch `rebuild/retire-legacy-next`.
+- Status: COMPLETE. Branch `rebuild/retire-legacy-next` pushed to origin on 2026-10-25 at the owner's "Create PR" request. The PR is not opened yet: `gh` is not installed, and the browser pane is not signed in to GitHub, so the owner opens it from the compare page. Not merged. Writer: idle (released by the Claude session in worktree `global-skills-install-d3c01d`).
 - Recovery: local tag `legacy-next-final` -> `6da43246` holds the full legacy app. Restore any file with `git checkout legacy-next-final -- <path>`. The tag is not pushed.
 - Baseline at `ea196d5a`: `npm run check` PASS. 35 Astro files with 0 errors, lint clean, 73/73 unit tests in 9 files, and a build of 8 pages with 189 refs. Home JS is 4.6 KB gzip; cinematic 154.1 KB gzip. Built HTML is saved outside the repo for a parity diff.
 - Commits: `96e92d01` writer claim, `54a012d3` inventory, `9f0a68f6` API removed (no server function), `ad465ce7` 70 legacy files deleted, `68b88ff9` data/storage moved to `src/`, `e3420624` anchors dropped, `1a3d292b` docs/ADR/bug register, `5b3c6e92` fixture fix, plus the log/release commit. The legacy deletion was done before the data move (plan order swapped) so that every commit's unit suite passes.
@@ -13,7 +13,7 @@
 - Deviations from plan: `.gitignore` keeps `/.next/` and `next-env.d.ts` (with a comment), because existing checkouts still hold those files. The empty inline PostCSS config stays, with a comment: without it, Vite could find the parent checkout's Tailwind config. The fixture-script fix was not in the plan.
 - Not run: GitHub Actions (nothing pushed), real devices, screen readers.
 - Outstanding owner actions: (1) approve pushing `rebuild/retire-legacy-next`, and optionally the tag `legacy-next-final`, then open the PR. `gh` is not installed, so use the GitHub compare page. (2) Mark the claims in `docs/legacy-content-inventory.md`. (3) The branch also carries the unmerged `docs/verify-main-20261020` commits, which merge with it.
-- Next concrete step: `git push -u origin rebuild/retire-legacy-next`, after owner approval.
+- Next concrete step: the owner opens the PR at https://github.com/Adeel0-0/portfolio/compare/main...rebuild/retire-legacy-next, CI runs on it, and the owner merges. The tag `legacy-next-final` is still local only.
 
 ## Verification of merged main: 2026-10-20
 
