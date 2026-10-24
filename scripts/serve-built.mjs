@@ -1,8 +1,6 @@
 import { createServer } from "node:http";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { resolve, join, extname, sep } from "node:path";
-import { fetchContributions } from "../lib/contributions.ts";
-import { profile } from "../data/profile.ts";
 
 const fixture = process.argv.includes('--fixture');
 // PORT lets browser tests run beside the owner's `astro dev` on 4321.
@@ -26,7 +24,7 @@ const mime = {
   ".woff2": "font/woff2",
 };
 
-createServer(async (req, res) => {
+createServer((req, res) => {
   if (!["GET", "HEAD"].includes(req.method)) {
     res.writeHead(405, { Allow: "GET, HEAD" });
     res.end();
@@ -34,17 +32,6 @@ createServer(async (req, res) => {
   }
   try {
     const url = new URL(req.url, "http://localhost");
-    if (url.pathname.replace(/\/$/, "") === "/api/contributions") {
-      const body = JSON.stringify({
-        contributions: await fetchContributions(profile.githubUsername),
-      });
-      res.writeHead(200, {
-        "content-type": "application/json",
-        "cache-control": "public, s-maxage=3600, stale-while-revalidate",
-      });
-      res.end(req.method === "HEAD" ? undefined : body);
-      return;
-    }
     let file = resolve(root, "." + decodeURIComponent(url.pathname));
     if (file !== root && !file.startsWith(root + sep)) {
       res.writeHead(400);
