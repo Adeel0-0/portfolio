@@ -8,9 +8,10 @@
 # testing
 /coverage
 
-# next.js
+# Leftovers the retired Next.js app may have left in existing checkouts
 /.next/
 /out/
+next-env.d.ts
 
 # production
 /build
@@ -33,7 +34,6 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
 
 # Astro output, local recovery and verification artifacts
 /.astro/
