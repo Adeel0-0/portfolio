@@ -7,6 +7,25 @@ All significant commits, architectural reorganizations, and cross-agent updates 
 
 ## Log Entries
 
+### [2026-10-24] - Retire Legacy Next.js App & Unused Contributions API
+- **Commits**: `96e92d01` (writer claim), `54a012d3` (legacy content inventory), `9f0a68f6` (remove `/api/contributions`), `ad465ce7` (delete 70 legacy files), `68b88ff9` (move data/storage into `src/`), `e3420624` (drop Next-era anchors), `1a3d292b` (docs, ADR 0001, bug register), `5b3c6e92` (content fixture copies `src/` only), plus this log/release commit
+- **Agent**: Claude (worktree `global-skills-install-d3c01d`), owner-approved plan
+- **Branch**: `rebuild/retire-legacy-next` (base `ea196d5a`, the tip of `docs/verify-main-20261020`); local, not pushed
+- **Recovery**: local tag `legacy-next-final` -> `6da43246`, not pushed
+- **Summary**:
+  - Deleted `app/`, `components/`, the unused parts of `lib/` and `data/`, the Next/Tailwind/PostCSS/legacy-ESLint configs and `REDESIGN.md`. None of it could build any more.
+  - Removed `/api/contributions` (no caller), its helper, its tests and its copy in `scripts/serve-built.mjs`. The build emits no server function.
+  - Moved `profile`, `skills` and `education` into `src/data/` and `storage` into `src/lib/`. The whole app now lives under `src/`.
+  - Removed the `legacyId` anchors and `id="garage"` (renamed to `capabilities`).
+  - Recorded legacy-only content as unverified in `docs/legacy-content-inventory.md`; rewrote the agent and project docs; added ADR 0001 and bug-register rows TOOL-004/005.
+  - `package.json` and the lockfile are unchanged.
+- **Verification Status**:
+  - Baseline `ea196d5a`: `npm run check` PASS (35 Astro files, 73/73 unit, 8 pages / 189 refs, home JS 4.6 KB gzip).
+  - Each code commit: `npm run check` PASS. Final: 38 Astro files, 0 errors; lint clean; 32/32 unit in 6 files; 8 pages / 189 refs; home JS 4.6 KB gzip; cinematic 154.1 KB gzip.
+  - Built HTML vs baseline: 8 of 10 files byte-identical. `index.html` and `projects/index.html` differ only by the removed `project-01..03` ids and `garage` -> `capabilities`. Asset references are identical.
+  - `npm run test:browser`: the first run FAILED. `scripts/verify-content-build.mjs` still copied the deleted `data/` and `lib/` (ENOENT); fixed in `5b3c6e92`. The rerun PASSED: content fixture OK; Playwright 76 passed, 2 skipped (the WebGL test is Chromium-only by design), 0 failed, across Chromium, Firefox and WebKit. Between `68b88ff9` and `5b3c6e92`, `test:browser` fails at the fixture step; `npm run check` passes throughout.
+  - Not run: GitHub Actions (nothing pushed), real devices, screen readers.
+
 ### [2026-10-20] - Verify Merged Main & Update Bug Register
 - **Commits**: `4aaa5c1c` (writer claim), `4164dfb7` (description regression test), plus this docs commit
 - **Agent**: Claude (session `portfolio-19`)
