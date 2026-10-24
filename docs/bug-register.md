@@ -43,3 +43,10 @@ Baseline `b638d49d`; application source unchanged. Full evidence, source locatio
 | UI-018 | During the ~3 s boot, every key except Tab is swallowed (`preventDefault`), including browser shortcuts such as F5, Ctrl+R, Ctrl+F and Alt+Left | Found 2026-10-20 in `src/scripts/boot-terminal.ts`. The intent (never activate an obscured link) needs only Enter/Space blocked; modifier and function-key shortcuts could pass through. Minor, 3-second window | Open, owner decision |
 
 Potential F1 card-height changes were not reproduced at 320/390/768/1024/1440 and are not recorded as a confirmed bug. No bugs above are fixed or approved for deferral by this review.
+
+## 2026-10-24 legacy retirement
+
+| ID | Finding | Evidence / resolution | Status |
+|---|---|---|---|
+| TOOL-004 | The retained Next.js app (70 files, about 5,700 lines) could no longer build: `package.json` had dropped React, Next, Framer Motion and Tailwind, and `@/` pointed at `src/`. It still ran 25 unit tests and needed config workarounds | Deleted on branch `rebuild/retire-legacy-next`; recoverable from tag `legacy-next-final`. Legacy-only content listed in `docs/legacy-content-inventory.md`. Decision: `docs/adr/0001-retire-legacy-next-app.md` | Fixed locally |
+| TOOL-005 | `/api/contributions` had no caller after the React contribution graph was dropped, yet it was the only reason the build emitted a server function | Route, helper, tests and the copy in `serve-built.mjs` removed; the build now emits no function. Built HTML differs from the baseline only by the removed legacy anchor ids | Fixed locally |
