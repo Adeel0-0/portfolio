@@ -1,5 +1,15 @@
 # Portfolio rebuild checkpoint
 
+## Retire legacy Next app: 2026-10-24
+
+- Objective (owner-approved plan, 2026-10-24): make the repository Astro-only with no visible site change. Delete the retained Next.js app (`app/`, `components/`, the unused parts of `lib/` and `data/`, Next/Tailwind/PostCSS configs, `REDESIGN.md`). Remove the unused `/api/contributions` route; no page calls it. Move the active data (`profile`, `skills`, `education`) and `storage` into `src/`. Drop the Next-era hash anchors (`legacyId`, `#garage`). Update the docs.
+- Owner choices: base on `ea196d5a` (this branch includes `docs/verify-main-20261020`); remove the anchors; keep the Vercel adapter; leave `package.json` and the lockfile unchanged.
+- Writer: Claude session (worktree `global-skills-install-d3c01d`), claimed 2026-10-24. Branch `rebuild/retire-legacy-next`, local and not pushed. Antigravity: do not commit to these paths until this lock is released.
+- Recovery: local tag `legacy-next-final` -> `6da43246` holds the full legacy app. Restore any file with `git checkout legacy-next-final -- <path>`. The tag is not pushed.
+- Baseline at `ea196d5a`: `npm run check` PASS. 35 Astro files with 0 errors, lint clean, 73/73 unit tests in 9 files, and a build of 8 pages with 189 refs. Home JS is 4.6 KB gzip; cinematic 154.1 KB gzip. Built HTML is saved outside the repo for a parity diff.
+- Planned commits: content inventory -> API removal -> data move -> legacy deletion -> anchor removal -> docs/ADR/logs. Every commit must pass `npm run check`; Playwright runs at the end.
+- Next concrete step: commit `docs/legacy-content-inventory.md`.
+
 ## Verification of merged main: 2026-10-20
 
 - Objective (owner: "continue where codex left"): verify `main` at `6da43246` (rebuild `b638d49d` + presentation fixes `538420fa`, both merged and pushed), confirm each claimed fix against the 2026-10-19 audit rows, and update the stale bug register (all eight audit rows still say Open).
