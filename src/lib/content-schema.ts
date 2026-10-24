@@ -51,7 +51,6 @@ export const projectSchema = z
     repositoryUrl: webUrl.optional(),
     liveUrl: webUrl.optional(),
     videoUrl: webUrl.optional(),
-    legacyId: z.enum(["project-01", "project-02", "project-03"]).optional(),
     visual: z.enum(["search", "vision", "control"]).default("search"),
     diagram: z.array(text).min(2).max(8),
     media: z

@@ -22,17 +22,11 @@ export async function getPublishedPortfolio() {
   const publishedProjects = projects.filter((project) => !project.data.draft);
   const publishedIds = new Set(publishedProjects.map((project) => project.id));
   const allIds = new Set(projects.map((project) => project.id));
-  const legacyIds = new Set<string>();
   for (const project of projects) {
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(project.id))
       throw new Error(`Use a flat lowercase slug for project ${project.id}`);
     if (project.data.media) checkAsset(project.data.media.src);
     project.data.metrics.forEach((metric) => checkAsset(metric.evidence));
-    if (project.data.legacyId) {
-      if (legacyIds.has(project.data.legacyId))
-        throw new Error(`Duplicate legacy anchor ${project.data.legacyId}`);
-      legacyIds.add(project.data.legacyId);
-    }
   }
   for (const credential of credentials) {
     if (credential.data.asset) checkAsset(credential.data.asset);

@@ -45,15 +45,6 @@ describe("public collection boundary", () => {
     certifications = [credential(["private"])];
     await expect(getPublishedCredentials()).rejects.toThrow("links to draft");
   });
-  it("rejects duplicate legacy anchors", async () => {
-    projects = [
-      project("one", false, { legacyId: "project-01" }),
-      project("two", false, { legacyId: "project-01" }),
-    ];
-    await expect(getPublishedProjects()).rejects.toThrow(
-      "Duplicate legacy anchor",
-    );
-  });
   it.each([
     { media: { src: "/projects/does-not-exist.png" } },
     { metrics: [{ evidence: "/evidence/does-not-exist.pdf" }] },
