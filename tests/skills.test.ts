@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { skills } from "../data/skills";
+import { skills } from "../src/data/skills";
 
 // The skill list is the vocabulary content-schema.ts validates against, so a
 // duplicate or an empty group would let content drift without an error.

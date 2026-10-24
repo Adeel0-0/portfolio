@@ -1,5 +1,5 @@
-import { profile } from "../../data/profile";
-import type { SkillName } from "../../data/skills";
+import { profile } from "./profile";
+import type { SkillName } from "./skills";
 
 export const person = {
   ...profile,

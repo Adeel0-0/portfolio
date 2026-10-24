@@ -1,4 +1,4 @@
-/** The portrait in the Developer Profile section. */
+/** The portrait on the home page and the About page. */
 export type Avatar = {
   /** Any file in public/. */
   src: string;
@@ -9,33 +9,25 @@ export type Profile = {
   firstName: string;
   role: string;
   /**
-   * Race number, the way drivers carry one.
-   *
-   * Currently rendered nowhere: its only reader was the hero's pit board, which
-   * is gone. Kept because the empty hero slot is meant to be filled and this is
-   * the kind of thing that fills it. Anything that picks it up again must
-   * handle null — that is what "no number chosen" means.
+   * Race number, the way drivers carry one. Shown on the hero portrait label;
+   * null means no number chosen, and the label then omits it.
    */
   raceNumber: number | null;
   avatar: Avatar;
+  /** Not rendered by the current site. Listed in docs/legacy-content-inventory.md. */
   tagline: string;
+  /** Not rendered by the current site. Listed in docs/legacy-content-inventory.md. */
   summary: string;
   /**
-   * The sponsor bar along the base of the hero — your tools as livery decals.
-   *
-   * Short wordmarks only. Deliberately a hand-picked subset rather than a slice
-   * of data/skills.ts, because the headline skills there are phrases
-   * ("Embeddings & Vector Search") and a decal has to read at a glance.
+   * Short tool wordmarks, a hand-picked subset of src/data/skills.ts. Not
+   * rendered by the current site.
    */
   toolbelt: string[];
   location: string;
   email: string;
   phone: string;
   github: string;
-  /**
-   * Held separately from the URL: the contributions API wants the bare handle,
-   * and slicing it back out of a URL breaks the first time the URL changes.
-   */
+  /** The bare handle, held separately from the URL. Not currently read. */
   githubUsername: string;
   linkedin: string;
 };
@@ -71,15 +63,14 @@ export const profile: Profile = {
   linkedin: "https://www.linkedin.com/in/syed-mohammad-adeel-397b4b263/",
 };
 
+/**
+ * Headline numbers from the resume. Not rendered by the current site; each
+ * needs its method and date before it is shown (docs/content-authoring.md).
+ */
 export type Stat = {
   value: string;
   label: string;
-  /**
-   * Renders in timing purple — F1's session-best colour.
-   *
-   * Exactly one stat may carry this. Purple only reads as "personal best"
-   * while it stays rare; marking two makes it just another accent colour.
-   */
+  /** Marks the single strongest number, if it is ever highlighted. */
   best?: boolean;
 };
 

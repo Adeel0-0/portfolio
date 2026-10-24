@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { skills } from "../../data/skills";
+import { skills } from "../data/skills";
 
 const text = z.string().trim().min(1);
 const knownSkills = new Set<string>(
@@ -7,7 +7,7 @@ const knownSkills = new Set<string>(
 );
 const skill = text.refine(
   (value) => knownSkills.has(value),
-  "Unknown skill; add it to data/skills.ts first",
+  "Unknown skill; add it to src/data/skills.ts first",
 );
 const date = z
   .string()
