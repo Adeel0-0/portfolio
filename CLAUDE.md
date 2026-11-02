@@ -52,6 +52,28 @@ The five canonical triage roles, each label string equal to its name. See `docs/
 
 Single-context: one `CONTEXT.md` and one `docs/adr/` at the repo root. See `docs/agents/domain.md`.
 
+### UI/UX design skill
+
+`.claude/skills/ui-ux-pro-max/` is a vendored copy of the `ui-ux-pro-max` skill
+from `nextlevelbuilder/ui-ux-pro-max-skill`, pinned in `skills-lock.json`. Use
+it for frontend and redesign work. Do not hand-edit it; refresh it by re-running
+`npx skills add nextlevelbuilder/ui-ux-pro-max-skill --skill ui-ux-pro-max --agent claude-code --copy -y`.
+
+Its search tool is local, standard-library Python over bundled CSV data. Run it
+from the repository root by relative path (`python3`, or `py -3` on Windows):
+the `${CLAUDE_PLUGIN_ROOT}` prefix in the skill's examples is unset for a
+project install.
+
+```bash
+python3 .claude/skills/ui-ux-pro-max/scripts/search.py "<query>" --stack astro
+```
+
+Its output is a recommendation. The rules in this file take precedence: the
+Astro stack, tokens in `src/styles/site.css`, identical geometry across both
+visual modes, the motion, reduced-motion and cleanup contract, and no
+fabricated content. `--persist` writes `design-system/<project>/`; use it only
+for a direction the owner has approved.
+
 ### Version control & Git management
 
 Strict zero-tolerance policy for all agents (ChatGPT, Claude, Codex, Copilot, Cursor, etc.). Uncoordinated, untracked, uncommitted, or broken changes will be **IMMEDIATELY REVERTED AND REMOVED** via `git restore` and clean resets. All git operations, commit standards, and changelog updates must follow `docs/agents/version-control.md` and log into `docs/vcs-log.md`.
