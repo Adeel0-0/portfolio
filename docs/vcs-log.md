@@ -7,6 +7,25 @@ All significant commits, architectural reorganizations, and cross-agent updates 
 
 ## Log Entries
 
+### [2026-11-02] - UI/UX Pro Max Skill for the Frontend Redesign
+- **Commit**: `8656b19f`
+- **Agent**: Claude (Claude Code cloud session)
+- **Branch**: `claude/funny-keller-d5643u`
+- **Scope**: `.claude/skills/ui-ux-pro-max/` (73 vendored files), `skills-lock.json`, `CLAUDE.md`, `.gitignore`.
+- **Summary**:
+  - Installed the `ui-ux-pro-max` skill from `nextlevelbuilder/ui-ux-pro-max-skill` at the owner's request, ahead of the frontend redesign: `npx skills add nextlevelbuilder/ui-ux-pro-max-skill --skill ui-ux-pro-max --agent claude-code --copy -y`. Pinned by `skills-lock.json`. Copy mode avoids git symlinks on Windows. The package's six sibling skills were not installed.
+  - Reviewed the vendored scripts before use: standard-library Python, no network, subprocess or eval use. Only the opt-in `--persist` flag writes files, and it refuses to overwrite without `--force`.
+  - Registered the skill in `CLAUDE.md` with the working invocation path (its `${CLAUDE_PLUGIN_ROOT}` examples do not resolve for a project install) and repository-rule precedence.
+  - Ignored the Python bytecode (`__pycache__/`, `*.py[cod]`) that the skill's search tool writes on every run.
+- **Verification Status**:
+  - `npm run check`: PASS, on Node 22.23.4 (the repository requires Node 24; `npm ci` warned `EBADENGINE`).
+  - `astro check`: PASS (35 files, 0 errors, 0 warnings, 0 hints).
+  - `eslint`: PASS (0 errors).
+  - `vitest run`: PASS (73/73 across 9 files).
+  - `astro build && node scripts/verify-build.mjs`: PASS (8 pages, 189 internal references; home JS 4.6 KB gzip, cinematic 154.1 KB gzip).
+  - Skill search smoke tests (`--stack astro`, `--domain ux`, `--domain landing`): PASS.
+  - `npm run test:browser`: not run; no application source or interaction changed.
+
 ### [2026-10-19] - Portfolio Presentation, Lifecycle Fixes & Asset Verification
 - **Commit**: `538420fa`
 - **Agent**: `git-vcs-manager` (Antigravity)

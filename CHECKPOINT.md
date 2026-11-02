@@ -1,5 +1,13 @@
 # Portfolio rebuild checkpoint
 
+## Frontend redesign tooling: 2026-11-02
+
+- Objective: install and enable the `ui-ux-pro-max` UI/UX skill before the owner's frontend redesign starts.
+- Status: committed at `8656b19f`. Writer: Claude (Claude Code cloud session). Branch `claude/funny-keller-d5643u`, base `6da4324`.
+- Scope: agent tooling and docs only (`.claude/skills/ui-ux-pro-max/`, `skills-lock.json`, `CLAUDE.md`, `.gitignore`). No application source, content, dependency or test changes.
+- Verification: `npm run check` PASS on Node 22.23.4 (35 Astro files with zero errors/warnings/hints; lint; 73/73 tests; build 8 pages, 189 references). Browser journeys not run. Details in `docs/vcs-log.md`.
+- Next step: the owner sets the redesign direction. Then generate a design system with the skill (`--design-system`, stack `astro`) and weigh it against `docs/design/2026-10-19-editorial-engineering.md` and the repository's styling rules.
+
 ## Active implementation and design research: 2026-10-19
 
 - Objective: implement the approved architecture/correctness improvements from the audit, preserve all portfolio content, and research the owner's reference sites to recommend at least 50 suitable UI components. Discuss typography, imagery, colors, cards and motion before selecting a new visual system.
