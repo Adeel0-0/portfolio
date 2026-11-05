@@ -101,6 +101,18 @@
 .case-contents a:hover {
   color: var(--text);
 }
+/* Phones: the index sits before the story, so keep it short (two columns). */
+@media (max-width: 760px) {
+  .case-contents ol {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 16px;
+  }
+  .case-contents a {
+    min-height: 40px;
+    line-height: 1.3;
+  }
+}
 .prose h2[id],
 .project-gallery h2 {
   scroll-margin-top: 110px;
@@ -949,5 +961,24 @@ kbd {
   [data-theme="f1"] .site-footer[data-finish="true"]::before {
     animation: none;
     transform: none;
+  }
+}
+
+/* F1 facts strip on phones: a tidy grid instead of a wrapped row. */
+@media (max-width: 760px) {
+  [data-theme="f1"] .case-facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+  [data-theme="f1"] .case-facts > div {
+    border-right: 0;
+  }
+  [data-theme="f1"] .case-facts > div:first-child {
+    grid-column: 1 / -1;
+    border-bottom: 1px solid var(--line);
+  }
+  [data-theme="f1"] .case-facts > div:nth-child(2) {
+    border-right: 1px solid var(--line);
   }
 }

@@ -37,8 +37,9 @@ const linkedSkills = [...new Set(capabilities.flatMap((c) => c.skills))];
       </p>
     </form>
     <div class="project-grid">
-      {projects.map((project) => (
-        <ProjectCard project={project} />
+      {/* The lead project spans the row, so an odd count never leaves an orphan. */}
+      {projects.map((project, i) => (
+        <ProjectCard project={project} featured={i === 0 && projects.length % 2 === 1} />
       ))}
     </div>
     <p id="filter-empty" hidden>
