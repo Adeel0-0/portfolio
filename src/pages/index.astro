@@ -1,6 +1,7 @@
 ---
 import SiteLayout from "../layouts/SiteLayout.astro";
 import ProjectCard from "../components/ProjectCard.astro";
+import F1PitWall from "../components/F1PitWall.astro";
 import { getPublishedPortfolio, resumeHref } from "../lib/content";
 import { person, capabilities } from "../data/site";
 const portfolio = await getPublishedPortfolio();
@@ -11,7 +12,13 @@ const credentials = portfolio.credentials;
 ---
 
 <SiteLayout>
-  <section class="hero container" id="hero" aria-labelledby="hero-title">
+  <F1PitWall projects={projects} resumeHref={resumeHref} />
+  <section
+    class="hero container mode-minimal"
+    id="hero"
+    data-section="intro"
+    aria-labelledby="hero-title"
+  >
     <div class="hero-copy">
       <p class="intro-line">
         <span class="availability-dot"></span>
@@ -22,7 +29,7 @@ const credentials = portfolio.credentials;
         {person.headline.map((line, index) => (
           <>
             {index > 0 && <br />}
-            {line}
+            {index > 0 ? <span class="hero-accent">{line}</span> : line}
           </>
         ))}
       </h1>
@@ -72,7 +79,8 @@ const credentials = portfolio.credentials;
   </section>
   <section
     id="projects"
-    class="section container"
+    class="section container mode-minimal"
+    data-section="work"
     aria-labelledby="projects-title"
   >
     <div class="section-heading">
@@ -93,6 +101,7 @@ const credentials = portfolio.credentials;
   <section
     id="garage"
     class="capabilities-section"
+    data-section="skills"
     aria-labelledby="capabilities-title"
   >
     <div class="container">
@@ -154,7 +163,7 @@ const credentials = portfolio.credentials;
       </div>
     </div>
   </section>
-  <section id="about" class="section container about-strip">
+  <section id="about" class="section container about-strip" data-section="about">
     <div>
       <p class="eyebrow">A little about me</p>
       <h2>

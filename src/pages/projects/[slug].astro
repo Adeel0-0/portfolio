@@ -3,6 +3,7 @@ import { render } from "astro:content";
 import SiteLayout from "../../layouts/SiteLayout.astro";
 import ProjectMedia from "../../components/ProjectMedia.astro";
 import ProjectMetrics from "../../components/ProjectMetrics.astro";
+import ProjectGallery from "../../components/ProjectGallery.astro";
 import { getPublishedProjects } from "../../lib/content";
 export async function getStaticPaths() {
   return (await getPublishedProjects()).map((project) => ({
@@ -11,8 +12,15 @@ export async function getStaticPaths() {
   }));
 }
 const { project } = Astro.props;
-const { Content } = await render(project);
+const { Content, headings } = await render(project);
 const p = project.data;
+// One contents index from the real Markdown headings. Minimal shows it as a
+// quiet list; F1 restyles the same list as a numbered sector rail.
+const contents = [
+  { slug: "overview", text: "Project overview" },
+  ...headings.filter((h) => h.depth === 2),
+  ...(p.gallery.length ? [{ slug: "gallery-title", text: "Screenshots and video" }] : []),
+];
 ---
 
 <SiteLayout title={`${p.title} — Mohammad Adeel`} description={p.summary}>
@@ -79,7 +87,17 @@ const p = project.data;
     </header>
     <ProjectMedia project={p} />
     <div class="case-body">
-      <aside>
+      <aside class="case-aside">
+        <nav class="case-contents" aria-labelledby="contents-title">
+          <h2 id="contents-title">On this page</h2>
+          <ol>
+            {contents.map((item) => (
+              <li>
+                <a href={`#${item.slug}`}>{item.text}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
         <h2>Built with</h2>
         <ul class="case-skills">
           {p.skills.map((skill) => (
@@ -92,11 +110,12 @@ const p = project.data;
         </ul>
       </aside>
       <div class="prose">
-        <h2>Project overview</h2>
+        <h2 id="overview">Project overview</h2>
         {p.description.map((paragraph) => (
           <p>{paragraph}</p>
         ))}
         <Content />
+        <ProjectGallery project={p} />
       </div>
     </div>
   </article>

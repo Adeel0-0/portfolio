@@ -25,7 +25,9 @@ Astro + TypeScript portfolio with a professional default and optional F1 mode.
   decides before first paint and has its own deadline. Keep fixed chrome
   outside `#site-shell`, which the hand-off transforms.
 - Styling tokens live in `src/styles/site.css`; transition-only CSS is separate.
-  Keep identical content/layout geometry across both visual modes.
+  Both modes share content, routes and links. Owner decision 2026-11-05:
+  F1 may use its own composition (home pit wall, case-study rail); keep
+  the single toggle and its transition. See `docs/design/DESIGN.md`.
 - Pages are prerendered; only `/api/contributions` renders on demand through
   the hosting adapter. Preserve its response, timeout and cache contract.
 - Read `docs/content-authoring.md`, `docs/deployment.md`, and `CHECKPOINT.md`.
@@ -69,8 +71,8 @@ python3 .claude/skills/ui-ux-pro-max/scripts/search.py "<query>" --stack astro
 ```
 
 Its output is a recommendation. The rules in this file take precedence: the
-Astro stack, tokens in `src/styles/site.css`, identical geometry across both
-visual modes, the motion, reduced-motion and cleanup contract, and no
+Astro stack, tokens in `src/styles/site.css`, shared content and links across
+both modes, the motion, reduced-motion and cleanup contract, and no
 fabricated content. `--persist` writes `design-system/<project>/`; use it only
 for a direction the owner has approved.
 

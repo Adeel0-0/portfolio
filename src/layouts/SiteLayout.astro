@@ -1,5 +1,6 @@
 ---
 import "../styles/site.css";
+import "../styles/modes.css";
 import "../styles/transition.css";
 import "../styles/boot.css";
 import { person } from "../data/site";
@@ -41,9 +42,38 @@ const links = [
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{title}</title>
     <script is:inline define:vars={{ themeColors: THEME_COLORS }}>
+      // Mode precedence: an explicit ?mode=f1|minimal URL choice, then the
+      // remembered choice, then Minimal. A URL choice is also remembered.
+      let mode = null;
       try {
-        if (localStorage.getItem("portfolio-theme") === "f1") {
+        const param = new URLSearchParams(location.search).get("mode");
+        if (param === "f1" || param === "minimal") {
+          mode = param === "f1" ? "f1" : "professional";
+          try {
+            localStorage.setItem("portfolio-theme", mode);
+          } catch {
+            /* Storage is optional; the URL still applies to this page. */
+          }
+        }
+      } catch {
+        /* Unusual URL APIs: fall back to the remembered choice. */
+      }
+      try {
+        if (mode === null) mode = localStorage.getItem("portfolio-theme");
+      } catch {
+        /* Storage is optional. */
+      }
+      try {
+        if (mode === "f1") {
           document.documentElement.dataset.theme = "f1";
+          // F1 text uses Saira from the first paint.
+          const font = document.createElement("link");
+          font.rel = "preload";
+          font.as = "font";
+          font.type = "font/woff2";
+          font.href = "/fonts/saira-var.woff2";
+          font.crossOrigin = "anonymous";
+          document.head.append(font);
           document
             .querySelector('meta[name="theme-color"]')
             ?.setAttribute("content", themeColors.f1);
@@ -108,6 +138,7 @@ const links = [
               </a>
             ))}
             <a href="/#contact">Contact</a>
+            {resumeHref && <a href={resumeHref}>Resume</a>}
           </nav>
           <div class="header-actions">
             <button
@@ -130,6 +161,7 @@ const links = [
                 />
               </svg>
               <span>F1 mode</span>
+              <span class="toggle-state" aria-hidden="true"></span>
             </button>
             <details class="mobile-menu">
               <summary>
@@ -140,6 +172,7 @@ const links = [
                   <a href={link.href}>{link.text}</a>
                 ))}
                 <a href="/#contact">Contact</a>
+                {resumeHref && <a href={resumeHref}>Resume</a>}
               </nav>
             </details>
           </div>
@@ -162,7 +195,13 @@ const links = [
             <a class="contact-email" href={`mailto:${person.email}`}>
               Send me an email <span aria-hidden="true">↗</span>
             </a>
-            <p>Based in {person.location}.</p>
+            <p>
+              Based in {person.location}.{" "}
+              <button type="button" class="copy-email" data-email={person.email} hidden>
+                Copy email address
+              </button>
+              <span class="copy-status" role="status"></span>
+            </p>
             <div class="footer-links">
               <a href={person.github} target="_blank" rel="noreferrer">
                 GitHub
@@ -183,6 +222,8 @@ const links = [
         </div>
       </footer>
     </div>
+    <!-- Fixed chrome stays outside #site-shell (the boot hand-off transforms it). -->
+    <div id="f1-backdrop" class="f1-backdrop" aria-hidden="true" data-state="static"></div>
     <div
       id="theme-announcement"
       class="sr-only"
@@ -194,6 +235,8 @@ const links = [
     </script>
     <script>
       import "../scripts/theme";
+      import "../scripts/copy-email";
+      import "../scripts/f1-backdrop";
     </script>
   </body>
 </html>

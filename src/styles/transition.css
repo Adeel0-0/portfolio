@@ -80,7 +80,7 @@
   border-radius: 6px;
   background: #141d2b;
   color: #fff;
-  font-size: 12px;
+  font-size: var(--text-xs);
   padding: 12px 18px;
   min-height: 44px;
 }

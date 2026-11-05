@@ -47,7 +47,7 @@ test("secondary pages remain accessible in both modes and at mobile width", asyn
     for (const theme of ["professional", "f1"]) {
       await expect(page.locator("body")).toHaveCSS(
         "color",
-        theme === "f1" ? "rgb(237, 241, 247)" : "rgb(21, 27, 35)",
+        theme === "f1" ? "rgb(244, 245, 247)" : "rgb(29, 38, 44)",
       );
       const results = await new AxeBuilder({ page }).analyze();
       expect(results.violations, route).toEqual([]);
@@ -192,11 +192,32 @@ test("reduced-motion switch preserves filter, scroll and preference across pages
   await expect(page.locator("[data-project]:visible")).toHaveCount(1);
   await page.locator("#theme-toggle").focus();
   await page.evaluate(() => window.scrollTo(0, 120));
-  const y = await page.evaluate(() => scrollY);
+  // The modes have different compositions, so the raw offset changes. The
+  // contract: the element at the reading line stays where the visitor saw it.
+  const pin = () =>
+    page.evaluate(() => {
+      const line = 120;
+      const el = [
+        ...document.querySelectorAll("main :is([data-project], h1, h2, h3, figure)"),
+      ]
+        .filter((e) => (e as HTMLElement).offsetParent !== null && e.getBoundingClientRect().bottom > line)
+        .sort(
+          (x, y) =>
+            Math.abs(x.getBoundingClientRect().top - line) -
+            Math.abs(y.getBoundingClientRect().top - line),
+        )[0];
+      el?.setAttribute("data-test-pin", "");
+      return el?.getBoundingClientRect().top;
+    });
+  const before = await pin();
+  expect(before).toBeDefined();
   await page.keyboard.press("Enter");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "f1");
   await expect(page.locator("#theme-toggle")).toBeFocused();
-  expect(await page.evaluate(() => scrollY)).toBe(y);
+  const after = await page
+    .locator("[data-test-pin]")
+    .evaluate((el) => el.getBoundingClientRect().top);
+  expect(Math.abs(after - before!)).toBeLessThanOrEqual(2);
   await expect(page.locator("[data-project]:visible")).toHaveCount(1);
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "f1");
@@ -277,7 +298,7 @@ test("both modes fit narrow screens and pass automated accessibility checks", as
     if (theme === "f1") await page.locator("#theme-toggle").click();
     await expect(page.locator("body")).toHaveCSS(
       "color",
-      theme === "f1" ? "rgb(237, 241, 247)" : "rgb(21, 27, 35)",
+      theme === "f1" ? "rgb(244, 245, 247)" : "rgb(29, 38, 44)",
     );
     const results = await new AxeBuilder({ page }).analyze();
     expect(results.violations).toEqual([]);

@@ -28,11 +28,80 @@ if (toggle) {
     return sceneModule;
   }
   function prepareIntent() {
-    if (!reduced.matches && state.desired === "professional" && !state.active)
-      void load().catch(() => {});
+    if (state.desired !== "professional" || state.active) return;
+    // Fetch the F1 face before the switch so its text does not re-flow later.
+    void document.fonts?.load('800 16px "Saira"').catch(() => {});
+    if (!reduced.matches) void load().catch(() => {});
+  }
+  // The two modes have different compositions, so a pixel offset means
+  // nothing after a switch. Keep the visitor on the matching section instead.
+  type Anchor =
+    | { key: string; offset: number; element?: undefined }
+    | { element: Element; offset: number; key?: undefined };
+  const visible = (el: Element) => (el as HTMLElement).offsetParent !== null;
+  function sectionInView(): Anchor | undefined {
+    if (scrollY < 40) return undefined;
+    const line = 120;
+    const sections = [...document.querySelectorAll<HTMLElement>("[data-section]")]
+      .filter(visible);
+    if (sections.length) {
+      // Home: the two modes show different sections, matched by key.
+      let current: HTMLElement | undefined;
+      for (const section of sections)
+        if (section.getBoundingClientRect().top <= line) current = section;
+      if (!current) return undefined;
+      return {
+        key: current.dataset.section!.split(" ")[0],
+        offset: current.getBoundingClientRect().top,
+      };
+    }
+    // Other pages show the same elements in both modes: keep the first
+    // project or heading that is on screen exactly where it is.
+    const element = [
+      ...document.querySelectorAll("main :is([data-project], h1, h2, h3, figure)"),
+    ]
+      .filter((el) => visible(el) && el.getBoundingClientRect().bottom > line)
+      .sort(
+        (a, b) =>
+          Math.abs(a.getBoundingClientRect().top - line) -
+          Math.abs(b.getBoundingClientRect().top - line),
+      )[0];
+    return element
+      ? { element, offset: element.getBoundingClientRect().top }
+      : undefined;
+  }
+  function restoreSection(anchor: Anchor | undefined) {
+    if (!anchor) return;
+    const match = anchor.element
+      ? anchor.element
+      : [...document.querySelectorAll<HTMLElement>("[data-section]")].find(
+          (s) => visible(s) && s.dataset.section!.split(" ").includes(anchor.key),
+        );
+    if (!match || !visible(match)) return;
+    const drift = match.getBoundingClientRect().top - anchor.offset;
+    if (Math.abs(drift) > 2)
+      scrollTo({ top: Math.max(0, scrollY + drift), behavior: "instant" });
+  }
+  // Keep an explicit ?mode= link truthful after the visitor switches.
+  function syncUrl() {
+    const url = new URL(location.href);
+    if (!url.searchParams.has("mode")) return;
+    url.searchParams.set("mode", state.desired === "f1" ? "f1" : "minimal");
+    history.replaceState(history.state, "", url);
   }
   function commit() {
+    const anchor = sectionInView();
+    // Native scroll anchoring would adjust again on the next frame, relative to
+    // a different node, so it is paused while the section is restored here.
+    if (anchor) root.style.setProperty("overflow-anchor", "none");
     root.dataset.theme = state.desired;
+    restoreSection(anchor);
+    if (anchor)
+      requestAnimationFrame(() => {
+        restoreSection(anchor); // late layout such as decoded images
+        root.style.removeProperty("overflow-anchor");
+      });
+    syncUrl();
     toggle!.setAttribute("aria-pressed", String(state.desired === "f1"));
     document
       .querySelector('meta[name="theme-color"]')
@@ -64,7 +133,7 @@ if (toggle) {
       announcement.textContent =
         state.desired === "f1"
           ? "F1 mode enabled"
-          : "Professional mode enabled";
+          : "Minimal mode enabled";
     document.dispatchEvent(
       new CustomEvent("portfolio:transition-end", {
         detail: {
