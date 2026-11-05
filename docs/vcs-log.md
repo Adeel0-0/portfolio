@@ -7,6 +7,18 @@ All significant commits, architectural reorganizations, and cross-agent updates 
 
 ## Log Entries
 
+### [2026-11-05] - Two-Mode Redesign: Minimal + F1 Pit Wall, 3D Track, Gradient Islands
+- **Commit**: `281f4b5e`
+- **Agent**: Claude (Claude Code cloud session)
+- **Branch**: `claude/funny-keller-d5643u`
+- **Scope**: `src/` (pages, layout, components, scripts, styles, islands), `public/fonts/`, `scripts/verify-build.mjs`, `astro.config.mjs`, `package.json`/lock (React islands, ShaderGradient, React Three Fiber), `playwright.config.ts`, tests, `docs/design/`, `docs/content-authoring.md`, `CLAUDE.md`, `CHECKPOINT.md`.
+- **Summary**: Owner brief `PORTFOLIO-REDESIGN-PROMPT.md` plus same-day feedback. Minimal refinement (tokens, fonts, text floor, targets, measure); distinct F1 composition (pit wall, timing tower, fictional circuit, optional procedural 3D track); racing red on carbon with Saira; whole-page animated Three.js gradient as a lazy React island with floating islands; `?mode=` precedence; section continuity; gallery schema for screenshots and YouTube; copy email. The official Formula1 font was not used (proprietary). 21st.dev unreachable (network policy).
+- **Verification Status**:
+  - `npm run check`: PASS (astro check 47 files, 0 errors/warnings; eslint; vitest 85/85; build 8 pages, 232 internal references; home JS 7.9 KB gzip; optional F1 graphics 312.5 KB gzip).
+  - Playwright Chromium (`npm run test:browser`, CI mode, preinstalled Chromium via `PLAYWRIGHT_CHROMIUM_PATH`): 34/34 PASS.
+  - Firefox/WebKit: not run in this container (their Playwright builds are not installed); CI runs them.
+  - Node 22.23.4 used locally; repository requires Node 24 (CI uses `.nvmrc`).
+
 ### [2026-11-02] - UI/UX Pro Max Skill for the Frontend Redesign
 - **Commit**: `8656b19f`
 - **Agent**: Claude (Claude Code cloud session)
