@@ -7,6 +7,14 @@ All significant commits, architectural reorganizations, and cross-agent updates 
 
 ## Log Entries
 
+### [2026-11-05] - F1 Racing Easter Eggs
+- **Commit**: `6a9d9c4d`
+- **Agent**: Claude (Claude Code cloud session)
+- **Branch**: `claude/funny-keller-d5643u`
+- **Scope**: `src/lib/racing.ts`, `src/components/F1Paddock.astro`, `src/scripts/racing-{eggs,loader}.ts`, `F1PitWall.astro`, `index.astro`, `SiteLayout.astro`, `modes.css`, tests, `docs/design/DESIGN.md`.
+- **Summary**: Owner request: small racing easter eggs, not tied to portfolio content. Lights-out reaction test, pit-stop challenge, team radio, DRS, scroll speedometer, chequered flag. F1-only, lazily loaded, fully cleaned up on exit.
+- **Verification Status**: `npm run check` PASS (unit tests 91/91, build 8 pages, home JS 8.1 KB gzip). Playwright Chromium full suite 35/35 PASS before the final speedometer fade tweak; `redesign.spec.ts` 10/10 PASS after it. Firefox/WebKit run in CI only.
+
 ### [2026-11-05] - Two-Mode Redesign: Minimal + F1 Pit Wall, 3D Track, Gradient Islands
 - **Commit**: `281f4b5e`
 - **Agent**: Claude (Claude Code cloud session)
