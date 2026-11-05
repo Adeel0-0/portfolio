@@ -2,6 +2,7 @@
 import SiteLayout from "../layouts/SiteLayout.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 import F1PitWall from "../components/F1PitWall.astro";
+import F1Paddock from "../components/F1Paddock.astro";
 import { getPublishedPortfolio, resumeHref } from "../lib/content";
 import { person, capabilities } from "../data/site";
 const portfolio = await getPublishedPortfolio();
@@ -163,6 +164,7 @@ const credentials = portfolio.credentials;
       </div>
     </div>
   </section>
+  <F1Paddock />
   <section id="about" class="section container about-strip" data-section="about">
     <div>
       <p class="eyebrow">A little about me</p>

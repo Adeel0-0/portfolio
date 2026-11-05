@@ -93,6 +93,22 @@ request is made on arrival.
 | Project media gallery | Screenshots and YouTube videos per project. Videos load the privacy-enhanced player only when *Play video* is pressed. | Without JavaScript the video is a link to YouTube. |
 | Resume and contact shortcuts | Resume in both navigations; *Copy email address* beside the mailto link, result announced. | Copy control hidden without clipboard access. |
 
+## F1 easter eggs (owner request 2026-11-05)
+
+Loaded only while F1 mode is active (`src/scripts/racing-loader.ts` →
+`racing-eggs.ts`, logic in `src/lib/racing.ts`); leaving F1 removes every
+listener, timer and element they added. All keyboard-operable; results are
+announced through one polite status toast.
+
+| Egg | How to find it |
+|---|---|
+| Lights-out reaction test | Paddock island on the home page; catches jump starts, remembers your best time locally. |
+| Pit-stop challenge | Paddock island: *Box, box*, then change four tyres (focus moves tyre to tyre). |
+| Team radio | Click or tap the car number "22". Original, fictional radio lines. |
+| DRS | Type `drs` anywhere (not in a form field): the header's "rear wing" opens. |
+| Scroll speedometer | Bottom-left speed and gear while scrolling; fades out at rest; hidden with reduced motion. |
+| Chequered flag | Waves across the top of the footer at the "finish line" (static with reduced motion). |
+
 ## Feature inventory and parity
 
 | Feature / route | Source | Minimal | F1 | Verified by |

@@ -30,7 +30,9 @@ const trackData = JSON.stringify({
   <header class="pitwall-driver">
     <p class="pitwall-kicker">
       {person.raceNumber !== null && (
-        <span class="car-number" aria-hidden="true">{person.raceNumber}</span>
+        <button type="button" class="car-number" data-radio aria-label={`Team radio for car ${person.raceNumber}`}>
+          {person.raceNumber}
+        </button>
       )}
       <span>{person.displayName}</span>
       <span class="kicker-divider" aria-hidden="true">/</span>

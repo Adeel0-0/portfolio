@@ -2,6 +2,16 @@ import { describe, expect, it } from "vitest";
 import { projectSchema } from "../src/lib/content-schema";
 import { buildEmbedUrl } from "../src/lib/video";
 import { CIRCUIT_POINTS, sampleCircuit, sectors } from "../src/lib/circuit";
+import {
+  RADIO_MESSAGES,
+  formatSeconds,
+  lightsOutDelay,
+  nextRadio,
+  ratePitStop,
+  rateReaction,
+  scrollToSpeed,
+  wordDetector,
+} from "../src/lib/racing";
 
 const project = {
   title: "An actual project",
@@ -77,5 +87,46 @@ describe("F1 circuit geometry", () => {
   it("rejects impossible sector counts", () => {
     expect(() => sectors(0)).toThrow();
     expect(() => sectors(CIRCUIT_POINTS.length + 1)).toThrow();
+  });
+});
+
+
+describe("racing easter eggs", () => {
+  it("formats timing-screen seconds", () => {
+    expect(formatSeconds(231.4)).toBe("0.231 s");
+    expect(formatSeconds(-5)).toBe("0.000 s");
+  });
+  it("keeps the lights-out hold unpredictable but bounded", () => {
+    expect(lightsOutDelay(() => 0)).toBe(200);
+    expect(lightsOutDelay(() => 0.999999)).toBe(3000);
+  });
+  it("rates reactions and pit stops from quick to slow", () => {
+    expect(rateReaction(120)).toMatch(/Stewards/);
+    expect(rateReaction(600)).toMatch(/grid/);
+    expect(ratePitStop(2000)).toMatch(/Record/);
+    expect(ratePitStop(9000)).toMatch(/coffee/);
+  });
+  it("cycles radio messages without repeating back to back", () => {
+    let i = -1;
+    const seen = new Set<number>();
+    for (let n = 0; n < RADIO_MESSAGES.length; n++) {
+      const next = nextRadio(i);
+      expect(next).not.toBe(i);
+      seen.add(next);
+      i = next;
+    }
+    expect(seen.size).toBe(RADIO_MESSAGES.length);
+  });
+  it("detects a typed word across other keys", () => {
+    const feed = wordDetector("drs");
+    expect(["x", "d", "r"].map(feed)).toEqual([false, false, false]);
+    expect(feed("Shift")).toBe(false);
+    expect(feed("S")).toBe(true);
+    expect(feed("d")).toBe(false);
+  });
+  it("maps scroll speed to a capped road speed and gear", () => {
+    expect(scrollToSpeed(0)).toEqual({ kmh: 0, gear: 0 });
+    expect(scrollToSpeed(-1000).kmh).toBe(90);
+    expect(scrollToSpeed(1e6)).toEqual({ kmh: 350, gear: 8 });
   });
 });

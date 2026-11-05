@@ -211,3 +211,46 @@ test("switching modes keeps the visitor on the same section", async ({ page }) =
     await expect(page.locator("#theme-toggle")).toBeFocused();
   }
 });
+
+test("racing easter eggs work in F1 and vanish in Minimal", async ({ page }) => {
+  await startInF1(page);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  const lights = page.locator('[data-game="lights"]');
+  const go = lights.locator("[data-lights-action]");
+  await expect(go).toBeEnabled();
+
+  // Jump start is caught.
+  await go.click();
+  await go.click();
+  await expect(lights.locator("[data-lights-result]")).toContainText("Jump start");
+
+  // A real start: wait for lights out, then react.
+  await go.click();
+  await expect(go).toHaveText("Go!", { timeout: 10000 });
+  await go.click();
+  await expect(lights.locator("[data-lights-result]")).toContainText(/\d\.\d{3} s/);
+  await expect(lights.locator("[data-lights-best]")).toContainText(/\d\.\d{3} s/);
+
+  // Pit stop by keyboard: focus moves from tyre to tyre.
+  const pit = page.locator('[data-game="pit"]');
+  await pit.locator("[data-pit-action]").click();
+  for (let i = 0; i < 4; i++) await page.keyboard.press("Enter");
+  await expect(pit.locator("[data-pit-result]")).toContainText(/\d\.\d{3} s/);
+  await expect(pit.locator("[data-pit-action]")).toBeFocused();
+
+  // Team radio and DRS announce through the shared status toast.
+  await page.locator("[data-radio]").click();
+  await expect(page.locator(".radio-toast")).toContainText("Team radio");
+  await page.locator("body").click({ position: { x: 5, y: 300 } });
+  await page.keyboard.type("drs");
+  await expect(page.locator("html")).toHaveAttribute("data-drs", "open");
+  await expect(page.locator(".radio-toast")).toContainText("Rear wing open");
+
+  // Leaving F1 removes everything the eggs added.
+  await page.locator("#theme-toggle").click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "professional");
+  await expect(page.locator(".radio-toast, .speedo")).toHaveCount(0);
+  await expect(page.locator("html")).not.toHaveAttribute("data-drs", "open");
+  await expect(page.locator("#paddock")).toBeHidden();
+});

@@ -680,3 +680,274 @@
     --island: rgba(12, 13, 17, 0.92);
   }
 }
+
+/* ---------- F1 easter eggs ---------- */
+button.car-number {
+  border: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+button.car-number:hover {
+  filter: brightness(1.12);
+}
+.paddock {
+  padding-block: 56px;
+}
+.paddock-heading h2 {
+  margin: 6px 0 4px;
+}
+.paddock-hint {
+  margin: 0 0 28px;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+kbd {
+  padding: 1px 6px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+}
+.paddock-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 20px;
+}
+.game {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  padding: 24px;
+  border: 1px solid var(--island-line, var(--line));
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.03);
+  text-align: center;
+}
+.game h3 {
+  margin: 0;
+  font-size: 22px;
+}
+.start-lights {
+  display: flex;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #050506;
+}
+.lamp {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #2a0a0e;
+  box-shadow: inset 0 0 0 2px #3a1218;
+  transition: background-color 60ms linear, box-shadow 60ms linear;
+}
+.lamp.on {
+  background: #ff1e35;
+  box-shadow: 0 0 18px #ff1e35aa, inset 0 0 0 2px #ff6a77;
+}
+.game-button {
+  min-width: 160px;
+  min-height: 44px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--action, var(--accent));
+  color: var(--action-contrast, var(--accent-contrast));
+  font: inherit;
+  font-weight: 700;
+  font-stretch: 115%;
+  cursor: pointer;
+}
+.game-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.game-result {
+  min-height: 3em;
+  margin: 0;
+  max-width: 34ch;
+  font-size: var(--text-sm);
+}
+.game-best {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+}
+.pit-car {
+  position: relative;
+  width: 180px;
+  height: 184px;
+}
+.pit-car svg {
+  width: 100%;
+  height: 100%;
+}
+.car-body {
+  fill: #d10a26;
+}
+.car-wing {
+  fill: #f4f5f7;
+}
+.tyre {
+  position: absolute;
+  width: 30px;
+  height: 44px;
+  transform: translate(-50%, -50%);
+  border: 2px solid #f4f5f7;
+  border-radius: 8px;
+  background: #15171c;
+  cursor: pointer;
+}
+.tyre:not(:disabled):hover {
+  border-color: var(--accent);
+}
+.tyre:disabled {
+  cursor: default;
+}
+.tyre[aria-pressed="true"] {
+  background: #ffd400; /* fresh soft-compound marking */
+  border-color: #ffd400;
+}
+
+.radio-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: min(520px, calc(100% - 32px));
+  padding: 12px 18px;
+  border: 1px solid #ffffff1f;
+  border-left: 4px solid var(--accent);
+  border-radius: 12px;
+  background: rgba(11, 12, 15, 0.94);
+  color: var(--text);
+  font-size: var(--text-sm);
+  transform: translate(-50%, 140%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 260ms cubic-bezier(.2,.8,.2,1), opacity 200ms ease;
+}
+.radio-toast[data-open="true"] {
+  transform: translate(-50%, 0);
+  opacity: 1;
+}
+.radio-tag {
+  flex: none;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--action, var(--accent));
+  color: #fff;
+  font-weight: 700;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* DRS: the header's rear wing opens. */
+[data-drs="open"] .site-header::after {
+  content: "DRS";
+  position: absolute;
+  right: 18px;
+  bottom: -14px;
+  padding: 2px 10px;
+  border-radius: 4px;
+  background: #27e07a;
+  color: #04120a;
+  font: 800 var(--text-xs) / 1.6 var(--font-sans);
+  letter-spacing: 0.1em;
+}
+[data-drs="open"] .wordmark {
+  font-stretch: 125%;
+}
+
+.speedo {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 50;
+  display: none;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid #ffffff1a;
+  border-radius: 12px;
+  background: rgba(11, 12, 15, 0.82);
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+[data-theme="f1"] .speedo {
+  display: flex;
+}
+/* Only on screen while the page is moving, so it never covers content at rest. */
+.speedo[data-moving="false"] {
+  opacity: 0;
+}
+.speedo {
+  transition: opacity 400ms ease;
+}
+.speedo-gear {
+  min-width: 1.2em;
+  color: var(--accent);
+  font-weight: 800;
+  font-size: 18px;
+  text-align: center;
+}
+.speedo-value {
+  min-width: 2.4em;
+  font-weight: 800;
+  font-size: 22px;
+  text-align: right;
+}
+.speedo-unit {
+  color: var(--muted);
+  font-size: var(--text-xs);
+}
+
+/* Chequered flag at the finish line (the footer). */
+[data-theme="f1"] .site-footer {
+  position: relative;
+  overflow: hidden;
+}
+[data-theme="f1"] .site-footer::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 14px;
+  background: repeating-conic-gradient(#f4f5f7 0 25%, #0b0c0f 0 50%) 0 0 / 14px 14px;
+  transform-origin: left;
+  transform: scaleX(0);
+}
+[data-theme="f1"] .site-footer[data-finish="true"]::before {
+  animation: flag-wave 1.4s cubic-bezier(.2,.8,.2,1) forwards;
+}
+@keyframes flag-wave {
+  0% { transform: scaleX(0); }
+  60% { transform: scaleX(1) skewX(-12deg); }
+  80% { transform: scaleX(1) skewX(6deg); }
+  100% { transform: scaleX(1) skewX(0); }
+}
+@media (max-width: 760px) {
+  .speedo {
+    bottom: 12px;
+    left: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .speedo {
+    display: none !important;
+  }
+  .radio-toast,
+  .lamp {
+    transition: none;
+  }
+  [data-theme="f1"] .site-footer[data-finish="true"]::before {
+    animation: none;
+    transform: none;
+  }
+}
