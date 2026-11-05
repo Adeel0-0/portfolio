@@ -11,7 +11,6 @@ skills: [C/C++, Python, Automated Test Suites, Data Logging]
 updatedAt: '2026-10-17'
 draft: false
 featuredOrder: 3
-legacyId: project-03
 visual: control
 diagram: [Sensors, PID control, Actuators, UART telemetry, Ground station]
 ---

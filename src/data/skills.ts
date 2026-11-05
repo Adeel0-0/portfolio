@@ -1,8 +1,9 @@
 /**
- * Skills, graded by tyre compound.
+ * Every skill the portfolio may name. src/lib/content-schema.ts validates
+ * project and credential skills against this list, so add a skill here before
+ * using it in content.
  *
- * The grade encodes how hard a tool actually gets run, so the Garage section
- * carries information rather than decoration:
+ * Grades are named after tyre compounds. The current site does not show them:
  *
  *   soft   — daily driver. Current, deep, and evidenced in the projects.
  *   medium — regular use. Solid, reached for often.
@@ -10,10 +11,6 @@
  *
  * Grades below are a first pass inferred from the resume and the three
  * projects. They are meant to be corrected — nobody knows this but you.
- *
- * Note the grade is a value, not a class name: Tailwind's `content` globs skip
- * ./data, so a class string written here would be purged silently. The
- * grade -> colour mapping lives in the component.
  */
 
 export type SkillGrade = "soft" | "medium" | "hard";
@@ -29,10 +26,9 @@ export type SkillGroup = {
 };
 
 /**
- * `as const satisfies` rather than a `SkillGroup[]` annotation, matching the
- * idiom in lib/sections.ts. The annotation would widen every name to `string`;
- * this keeps the literals so `SkillName` below can be derived from them, while
- * `satisfies` still checks the shape.
+ * `as const satisfies` rather than a `SkillGroup[]` annotation. The annotation
+ * would widen every name to `string`; this keeps the literals so `SkillName`
+ * below can be derived from them, while `satisfies` still checks the shape.
  */
 export const skills = [
   {
@@ -113,9 +109,8 @@ export const skills = [
 /**
  * Every skill name that exists, as a union.
  *
- * data/projects.ts uses this for `project.skills`, which are foreign keys into
- * this file. Before, they were plain strings checked by nobody: a typo left the
- * attention connectors silently highlighting nothing.
+ * src/data/site.ts types capability skills with it, so a typo there is a
+ * compile error rather than a filter link that matches nothing.
  */
 export type SkillName = (typeof skills)[number]["items"][number]["name"];
 

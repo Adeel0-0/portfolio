@@ -11,7 +11,6 @@ skills: [Python, Embeddings & Vector Search, REST API Design, GitHub Actions CI/
 updatedAt: '2026-10-17'
 draft: false
 featuredOrder: 1
-legacyId: project-01
 visual: search
 diagram: [Question, Query interpretation, GitHub retrieval, Ranking, Results]
 ---

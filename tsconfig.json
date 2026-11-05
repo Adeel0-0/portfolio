@@ -4,8 +4,8 @@
     "strict": true, "noEmit": true, "skipLibCheck": true, "isolatedModules": true,
     "resolveJsonModule": true, "allowImportingTsExtensions": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"], "types": ["astro/client"],
-    "paths": { "@/*": ["./src/*"], "@legacy/*": ["./*"] }
+    "paths": { "@/*": ["./src/*"] }
   },
   "include": [".astro/types.d.ts", "src/**/*", "tests/**/*", "playwright.config.ts"],
-  "exclude": ["dist", "node_modules", ".recovery", ".tools", "app", "components"]
+  "exclude": ["dist", "node_modules", ".recovery", ".tools"]
 }

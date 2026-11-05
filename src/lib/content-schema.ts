@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { skills } from "../../data/skills";
+import { skills } from "../data/skills";
 
 const text = z.string().trim().min(1);
 const knownSkills = new Set<string>(
@@ -7,7 +7,7 @@ const knownSkills = new Set<string>(
 );
 const skill = text.refine(
   (value) => knownSkills.has(value),
-  "Unknown skill; add it to data/skills.ts first",
+  "Unknown skill; add it to src/data/skills.ts first",
 );
 const date = z
   .string()
@@ -51,7 +51,6 @@ export const projectSchema = z
     repositoryUrl: webUrl.optional(),
     liveUrl: webUrl.optional(),
     videoUrl: webUrl.optional(),
-    legacyId: z.enum(["project-01", "project-02", "project-03"]).optional(),
     visual: z.enum(["search", "vision", "control"]).default("search"),
     diagram: z.array(text).min(2).max(8),
     media: z

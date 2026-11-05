@@ -6,13 +6,12 @@ import { fileURLToPath } from "node:url";
 export default defineConfig({
   test: {
     environment: "node",
-    include: ["lib/**/*.test.ts", "data/**/*.test.ts", "tests/*.test.ts"],
-    exclude: ["node_modules/**", ".next/**", ".tools/**", "tests/browser/**"],
+    include: ["tests/*.test.ts"],
+    exclude: ["node_modules/**", ".tools/**", "tests/browser/**"],
   },
   resolve: {
     // Mirrors the "@/*" path alias in tsconfig.json.
     alias: {
-      "@legacy": fileURLToPath(new URL(".", import.meta.url)),
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },

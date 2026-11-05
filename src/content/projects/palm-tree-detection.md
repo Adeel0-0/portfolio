@@ -11,7 +11,6 @@ skills: [Python, YOLOv5/v7, OpenCV, Flask, PostgreSQL]
 updatedAt: '2026-10-17'
 draft: false
 featuredOrder: 2
-legacyId: project-02
 visual: vision
 repositoryUrl: https://github.com/Adeel0-0/PALM-TREE-DETECTION
 diagram: [Aerial image, Preprocessing, YOLO detection, Review, Stored results]

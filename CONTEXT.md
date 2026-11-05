@@ -18,8 +18,10 @@ or raw conversation transcripts here.
 ## This portfolio
 
 - The portfolio is a hiring-focused site for an ML/software engineer.
-- Its current design is F1 instrumentation: Next.js 14 App Router, Tailwind
-  CSS, Framer Motion, and a deliberate motorsport visual system.
+- It is a prerendered Astro + TypeScript site with typed Markdown content: a
+  professional default plus an optional F1 instrumentation mode. The original
+  Next.js 14 / Tailwind / Framer Motion version was retired on 2026-10-24
+  (`docs/adr/0001-retire-legacy-next-app.md`).
 - Prioritize clear evidence of work, polished copy, accessible interaction,
   performance, and deployable results over novelty for novelty's sake.
 - A 3D face / Gaussian-splat concept was explored for the site, but should not

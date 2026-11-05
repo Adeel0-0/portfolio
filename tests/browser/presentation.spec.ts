@@ -1,8 +1,29 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 
 test.beforeEach(async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
+});
+
+test("case studies show both authored description parts", async ({ page }) => {
+  // Read the copy from the content files, so editing it never needs a test change.
+  const dir = "src/content/projects";
+  for (const file of readdirSync(dir).filter((name) => name.endsWith(".md"))) {
+    const source = readFileSync(join(dir, file), "utf8");
+    if (/^draft:\s*true\s*$/m.test(source)) continue;
+    const block = source.match(/^description:\r?\n((?: {2}- .+\r?\n)+)/m);
+    expect(block, file).not.toBeNull();
+    const parts = block![1]
+      .trim()
+      .split(/\r?\n/)
+      .map((line) => line.replace(/^\s*- /, "").replace(/^["']|["']$/g, ""));
+    expect(parts, file).toHaveLength(2);
+    await page.goto(`/projects/${file.replace(/\.md$/, "")}/`);
+    for (const part of parts)
+      await expect(page.getByText(part, { exact: true })).toBeVisible();
+  }
 });
 
 test("persisted F1 metadata is correct even before enhancement scripts load", async ({

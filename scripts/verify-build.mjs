@@ -16,21 +16,6 @@ function walk(dir) {
   );
 }
 const files = walk(root);
-if (existsSync(".vercel/output/config.json")) {
-  const config = JSON.parse(readFileSync(".vercel/output/config.json", "utf8"));
-  const api = "/api/contributions";
-  const matched = config.routes.filter(
-    (route) => route.src && new RegExp(route.src).test(api),
-  );
-  const redirect = matched.find(
-    (route) => route.status >= 300 && route.status < 400,
-  );
-  if (redirect) throw new Error("Legacy /api/contributions must not redirect");
-  if (!matched.some((route) => route.dest === "_render"))
-    throw new Error(
-      "Legacy contribution API does not reach the server function",
-    );
-}
 const htmlFiles = files.filter((file) => file.endsWith(".html"));
 let links = 0;
 for (const page of htmlFiles) {

@@ -1,5 +1,32 @@
 # Portfolio rebuild checkpoint
 
+## Retire legacy Next app: 2026-10-24
+
+- Objective (owner-approved plan, 2026-10-24): make the repository Astro-only with no visible site change. Delete the retained Next.js app (`app/`, `components/`, the unused parts of `lib/` and `data/`, Next/Tailwind/PostCSS configs, `REDESIGN.md`). Remove the unused `/api/contributions` route; no page calls it. Move the active data (`profile`, `skills`, `education`) and `storage` into `src/`. Drop the Next-era hash anchors (`legacyId`, `#garage`). Update the docs.
+- Owner choices: base on `ea196d5a` (this branch includes `docs/verify-main-20261020`); remove the anchors; keep the Vercel adapter; leave `package.json` and the lockfile unchanged.
+- Status: COMPLETE. Branch `rebuild/retire-legacy-next` pushed to origin on 2026-10-25 at the owner's "Create PR" request. The PR is not opened yet: `gh` is not installed, and the browser pane is not signed in to GitHub, so the owner opens it from the compare page. Not merged. Writer: idle (released by the Claude session in worktree `global-skills-install-d3c01d`).
+- Recovery: local tag `legacy-next-final` -> `6da43246` holds the full legacy app. Restore any file with `git checkout legacy-next-final -- <path>`. The tag is not pushed.
+- Baseline at `ea196d5a`: `npm run check` PASS. 35 Astro files with 0 errors, lint clean, 73/73 unit tests in 9 files, and a build of 8 pages with 189 refs. Home JS is 4.6 KB gzip; cinematic 154.1 KB gzip. Built HTML is saved outside the repo for a parity diff.
+- Commits: `96e92d01` writer claim, `54a012d3` inventory, `9f0a68f6` API removed (no server function), `ad465ce7` 70 legacy files deleted, `68b88ff9` data/storage moved to `src/`, `e3420624` anchors dropped, `1a3d292b` docs/ADR/bug register, `5b3c6e92` fixture fix, plus the log/release commit. The legacy deletion was done before the data move (plan order swapped) so that every commit's unit suite passes.
+- Final verification: `npm run check` PASS (38 Astro files with 0 errors, lint clean, 32/32 unit tests in 6 files, 8 pages / 189 refs, home JS 4.6 KB gzip, cinematic 154.1 KB gzip). `npm run test:browser`: the first run failed because the fixture script copied the deleted `data/`/`lib/`; after `5b3c6e92` it PASSED, with 76 passed, 2 skipped (WebGL Chromium-only by design) and 0 failed across Chromium, Firefox and WebKit.
+- HTML parity vs baseline: 8 of 10 built files byte-identical. `index.html` and `projects/index.html` differ only by the removed `project-01..03` ids and `garage` -> `capabilities`. Asset references are identical.
+- Deviations from plan: `.gitignore` keeps `/.next/` and `next-env.d.ts` (with a comment), because existing checkouts still hold those files. The empty inline PostCSS config stays, with a comment: without it, Vite could find the parent checkout's Tailwind config. The fixture-script fix was not in the plan.
+- Not run: GitHub Actions (nothing pushed), real devices, screen readers.
+- Outstanding owner actions: (1) approve pushing `rebuild/retire-legacy-next`, and optionally the tag `legacy-next-final`, then open the PR. `gh` is not installed, so use the GitHub compare page. (2) Mark the claims in `docs/legacy-content-inventory.md`. (3) The branch also carries the unmerged `docs/verify-main-20261020` commits, which merge with it.
+- Next concrete step: the owner opens the PR at https://github.com/Adeel0-0/portfolio/compare/main...rebuild/retire-legacy-next, CI runs on it, and the owner merges. The tag `legacy-next-final` is still local only.
+
+## Verification of merged main: 2026-10-20
+
+- Objective (owner: "continue where codex left"): verify `main` at `6da43246` (rebuild `b638d49d` + presentation fixes `538420fa`, both merged and pushed), confirm each claimed fix against the 2026-10-19 audit rows, and update the stale bug register (all eight audit rows still say Open).
+- Writer: idle (released by Claude session `portfolio-19`; claimed at `6da43246` after Antigravity's presentation task was merged and pushed). Branch `docs/verify-main-20261020`, local only, not pushed or merged.
+- Verified `main` at `6da43246` (2026-10-20 00:10): `npm run check` PASS (typecheck 0/0/0, lint, 73/73 unit, build 8 pages / 189 refs, arrival JS 4.6 KB gzip); content-fixture build PASS; Playwright 73 passed, 2 skipped (WebGL test is Chromium-only) across Chromium, Firefox, WebKit. All 13 new presentation/boot tests passed in all three engines.
+- Bug register: UI-014, UI-015, UI-016, UI-017, CONTENT-001, TEST-004, TEST-005, TOOL-003 marked fixed with evidence. CONTENT-001 had no test; added `4164dfb7` (reads copy from content files; mutation-checked). New UI-018 (boot swallows browser shortcuts), open for owner decision.
+- Remaining, owner decisions: visual system in `docs/design/2026-10-19-editorial-engineering.md` (Instrument Sans + Newsreader accent, paper palette); one play component (55 SEFGH, 56 detections needs images, 57 drone diagram); next architecture candidate (2 lifecycle owner, 3 content authority); UI-018; merging this branch.
+- Remaining, owner setup: Vercel GitHub connection and project (still 0 projects); NVIDIA credential details; real project screenshots.
+- Not verified: GitHub Actions result for the push to `main` (no Actions tool available here); real devices; screen readers.
+- Global Node is now 24.22.0 (owner installed it); the `.tools` PATH workaround is no longer needed.
+- Vercel (2026-10-20): connected account still has 0 projects and no Git connection. `main` now holds the Astro site, but nothing is live.
+
 ## Active implementation and design research: 2026-10-19
 
 - Objective: implement the approved architecture/correctness improvements from the audit, preserve all portfolio content, and research the owner's reference sites to recommend at least 50 suitable UI components. Discuss typography, imagery, colors, cards and motion before selecting a new visual system.
