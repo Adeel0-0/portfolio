@@ -1,4 +1,4 @@
-import { writeStorage } from "../../lib/storage";
+import { writeStorage } from "../lib/storage";
 import { BOOT, lineFor } from "../lib/boot-sequence";
 
 // The once-per-tab boot terminal, ported from the legacy React preloader.

@@ -1,4 +1,4 @@
-import { cpSync, mkdirSync, readFileSync, writeFileSync, unlinkSync } from 'node:fs';
+import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync, unlinkSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import assert from 'node:assert/strict';
@@ -6,8 +6,10 @@ import assert from 'node:assert/strict';
 // Isolated fixtures never enter the real content tree or deployable artifact.
 const repo = process.cwd();
 const fixture = resolve('.tools/content-fixture');
+// Start empty: a fixture left by an older source layout would keep deleted files.
+rmSync(fixture, {recursive:true, force:true});
 mkdirSync(fixture, {recursive:true});
-for (const dir of ['src','data','lib','public']) cpSync(join(repo,dir),join(fixture,dir),{recursive:true});
+for (const dir of ['src','public']) cpSync(join(repo,dir),join(fixture,dir),{recursive:true});
 for (const file of ['package.json','tsconfig.json','astro.config.mjs']) cpSync(join(repo,file),join(fixture,file));
 const cli = join(repo,'node_modules/astro/bin/astro.mjs');
 function astro(command) {

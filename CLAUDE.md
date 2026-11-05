@@ -2,10 +2,10 @@
 
 Astro + TypeScript portfolio with a professional default and optional F1 mode.
 
-## Active rebuild architecture (approved 2026-10-17)
+## Architecture (Astro rebuild approved 2026-10-17; legacy retired 2026-10-24)
 
-- The active app is `src/`: Astro pages/layouts/components, shared CSS tokens,
-  typed Markdown collections, and small progressive browser scripts.
+- The whole app is `src/`: Astro pages/layouts/components, shared CSS tokens,
+  typed Markdown collections, data modules, and small progressive browser scripts.
 - Use Node 24 and npm. Run `npm run check` and `npm run test:browser`.
   Browser runners are installed with `npx playwright install`. Browser tests
   serve the build on port 4400, so a running `astro dev` (4321) is never tested.
@@ -14,8 +14,9 @@ Astro + TypeScript portfolio with a professional default and optional F1 mode.
   drafts and validates references/assets for every public route.
 - Keep project descriptions as `[what it is, how it works]`. Do not fabricate
   dates, credentials, benchmark results, live URLs or project screenshots.
-- Contact/profile data remains in `data/profile.ts`; shared storage and
-  contribution helpers remain in `lib/`. The original data/logic tests remain.
+- Profile, skills and education data live in `src/data/`; editorial copy and
+  capability groups in `src/data/site.ts`. Guarded browser storage is
+  `src/lib/storage.ts`.
 - `src/scripts/theme.ts` owns the theme and one transition session.
   `src/scripts/f1-scene.ts` is a separate, intent-loaded Three.js/GSAP module.
   Reduced motion never imports the optional effect. Every exit must dispose
@@ -28,17 +29,14 @@ Astro + TypeScript portfolio with a professional default and optional F1 mode.
   Both modes share content, routes and links. Owner decision 2026-11-05:
   F1 may use its own composition (home pit wall, case-study rail); keep
   the single toggle and its transition. See `docs/design/DESIGN.md`.
-- Pages are prerendered; only `/api/contributions` renders on demand through
-  the hosting adapter. Preserve its response, timeout and cache contract.
+- Every page is prerendered and there are no on-demand routes. The Vercel
+  adapter stays for deployment (`docs/deployment.md`).
+- The retired Next.js app is recoverable from tag `legacy-next-final`. See
+  `docs/adr/0001-retire-legacy-next-app.md`. Content that only it held is listed,
+  unverified, in `docs/legacy-content-inventory.md`.
 - Read `docs/content-authoring.md`, `docs/deployment.md`, and `CHECKPOINT.md`.
   The approved design and implementation plan are under `docs/superpowers/`.
-- Root `app/`, `components/`, Next and Tailwind configs are retained legacy
-  recovery source. The older Next-specific conventions below apply only when
-  editing that source, not to the active Astro app. Do not delete it incidentally.
 - Implementation and local checks do not mean committed, deployed or live.
-
-This section records the owner's approved framework change and takes precedence
-over the retained Next-specific repository map and motion instructions below.
 
 ## Agent skills
 
@@ -106,70 +104,66 @@ This repository is a separate project from the parent job-hunt workspace.
 
 ### Repository map
 
-- `app/`: App Router pages, root layout, metadata, error boundaries, global
-  styles, and the contribution API route.
-- `components/sections/`: Hero, About, Projects, Garage, Contact, and footer.
-- `components/providers/`: Shared motion, scroll, notification, and skill state.
-- `components/chrome/`, `components/nav/`, `components/mascot/`: Site decoration
-  and navigation.
-- `components/terminal/`: Interactive terminal interface.
-- `data/`: Profile, projects, skills, education, and site copy.
-- `lib/`: Shared contracts, pure logic, hooks, storage, environment resolution,
-  resume availability, and motion helpers.
-- `public/`: Portraits, resume PDF, and project media.
-- `docs/agents/`: Issue tracker, triage labels, and domain conventions.
+- `src/pages/`: Routes: home, projects index and case studies, about,
+  credentials, 404, robots and sitemap.
+- `src/layouts/SiteLayout.astro`: Document head, prepaint theme and boot gates,
+  header, navigation and the contact footer.
+- `src/components/`: Project card, media, metrics and visual components.
+- `src/content/`: Markdown projects and credentials; `src/content.config.ts`
+  registers the collections.
+- `src/data/`: Profile, skills, education and editorial site copy.
+- `src/lib/`: Content schema and publication rules, boot timing, theme state,
+  guarded storage.
+- `src/scripts/`: Boot terminal, theme transition, F1 scene, project filter.
+- `src/styles/`: Site tokens and components, boot and transition CSS.
+- `public/`: Portrait, resume PDF, favicon and social image.
+- `scripts/`: Build verification, the production-build server and the content
+  fixture build.
+- `tests/`: Vitest unit tests; `tests/browser/`: Playwright journeys and
+  accessibility checks.
+- `docs/agents/`: Issue tracker, triage labels, domain and version-control
+  conventions.
 - `.github/workflows/ci.yml`: Automated verification.
 
 ### Architecture conventions
 
-- Keep route-specific code in `app/`, rendering in `components/`, and reusable
-  logic and contracts in `lib/` or `data/`.
-- `lib/` and `data/` must not depend on `components/` or `app/`.
-- `components/` must not depend on `app/`.
-- Keep the main content server-rendered. Add client boundaries where browser
-  APIs, state, or interaction require them.
-- Keep server-only filesystem and environment logic out of client imports.
-- Resolve resume availability in `lib/resume.ts` and pass its URL to clients.
-- Use `lib/sections.ts` as the shared section registry.
-- Keep project descriptions as `[what it is, how it works]`.
+- Keep routes in `src/pages/`, rendering in `src/components/` and layouts, and
+  reusable logic and contracts in `src/lib/` or `src/data/`.
+- `src/lib/` and `src/data/` must not import pages, layouts or components.
+- Render content at build time. Add browser scripts only where browser APIs,
+  state, or interaction require them.
+- Keep filesystem checks (assets, resume availability) in build-time modules
+  such as `src/lib/content.ts`, never in browser scripts.
 - Keep project skill references consistent with the `SkillName` type.
 
 ### Styling and motion
 
-- Preserve the established F1 visual system unless the task changes it.
-- Use the theme tokens in `app/globals.css` and `tailwind.config.ts`.
-- Keep Tailwind class mappings in scanned source files, not `data/`; `data/`
-  is excluded from the Tailwind content globs.
-- Import shared motion APIs from `lib/motion.ts`. The lazy feature bundle
-  belongs in `lib/motion-features.ts`.
-- Use `m` with the existing strict `LazyMotion` provider.
-- Handle reduced motion explicitly for scroll-linked `MotionValue`s.
-- Preserve readable server-rendered and no-JavaScript content.
-- Keep fixed chrome outside `#site-shell` because preloader transforms change
-  the containing block for fixed descendants.
+- Preserve the established professional and F1 visual systems unless the task
+  changes them. Use the tokens in `src/styles/site.css`.
+- Preserve readable prerendered and no-JavaScript content.
+- Keep fixed chrome outside `#site-shell` because the boot hand-off transform
+  changes the containing block for fixed descendants.
+- Honor reduced motion explicitly.
 - Clean up timers, observers, event listeners, and animation frames.
 
 ### Content and external data
 
-- Keep portfolio copy in `data/` rather than duplicating it in components.
+- Keep portfolio copy in `src/content/` and `src/data/` rather than
+  duplicating it in components.
 - Use verifiable project claims and explain the context behind metrics.
-- Validate contribution data before passing it to rendering code.
 - Keep optional external data failures from breaking the core portfolio.
-- Use `lib/storage.ts` for guarded browser-storage access.
-- Resolve the site origin through `lib/env.ts`.
+- Use `src/lib/storage.ts` for guarded browser-storage access.
+- The site origin comes from `SITE_URL` or Vercel's production URL in
+  `astro.config.mjs`.
 
 ### Verification
 
 Use the package scripts:
 
-- `npm run dev`
-- `npm run typecheck`
-- `npm run lint`
-- `npm test`
-- `npm run build`
-
-The current test suite uses a Node environment for pure logic and content
-invariants. Add browser verification when changing user interactions.
+- `npm run dev` (the owner runs the dev server)
+- `npm run check`: typecheck, lint, unit tests and the verified build
+- `npm run test:browser`: content fixture build and Playwright in Chromium,
+  Firefox and WebKit
 
 Report which checks ran, which passed or failed, and which could not run.
 Do not describe a blocked check as passing.

@@ -36,7 +36,7 @@ Optional fields: `startedAt`, `completedAt`, `featuredOrder`, `repositoryUrl`, `
 
 `visual` supports `search`, `vision`, or `control` architecture artwork. Illustrations describe a system; they are not measured data. Add a real image under `public/projects/` and reference it with `media` when available. The build checks that referenced assets exist. A metric must supply `value`, `label`, `method`, `measuredAt` and `evidence` (an HTTP(S) URL or supported local asset). Numerical claims without context fail validation.
 
-Skills must match `data/skills.ts`. Add a new skill there first, then reference it from projects or credentials. Skill grades in the retained legacy data do not appear as proficiency percentages in the new site.
+Skills must match `src/data/skills.ts`. Add a new skill there first, then reference it from projects or credentials. Its skill grades are not shown on the site.
 
 ## Add screenshots and videos
 
@@ -80,12 +80,12 @@ The NVIDIA entry was migrated as a draft because the old content only provided i
 
 ## Profile and assets
 
-Contact information and location remain in `data/profile.ts`. New editorial copy and capability groups live in `src/data/site.ts`. Replace `public/resume.pdf` to update the resume; deleting it hides resume actions at the next build. Keep the URL stable. Both modes use the same content and links.
+Contact information and location live in `src/data/profile.ts`. New editorial copy and capability groups live in `src/data/site.ts`. Replace `public/resume.pdf` to update the resume; deleting it hides resume actions at the next build. Keep the URL stable. Both modes use the same content and links.
 
 ## Theme behavior
 
 Minimal is the default. The header's F1 mode button stores a validated preference; a `?mode=f1` or `?mode=minimal` link takes precedence and is remembered. F1 mode has its own home composition (the pit wall) and case-study rail; see `docs/design/DESIGN.md`. An intentional entrance runs the brief Lights Out sequence when its scene is ready, otherwise a quick sweep. Reloading and normal navigation restore the selected mode immediately. Reduced motion skips the scene. No effect continues rendering after the transition finishes.
 
-## Existing source
+## Earlier versions
 
-Root `app/`, `components/` and Next/Tailwind configuration are retained recovery material while the rebuild is reviewed. They are not the active site and are excluded from Astro's source tree. The shared pure data, storage and contribution helpers remain in use or under regression coverage. Do not delete legacy files as incidental cleanup.
+The Next.js version of the site was retired on 2026-10-24 (`docs/adr/0001-retire-legacy-next-app.md`) and is recoverable from tag `legacy-next-final`. Project facts and metrics that only it held are listed in `docs/legacy-content-inventory.md`. They are unverified: confirm each claim, and supply the metric fields above, before adding it to a content file.

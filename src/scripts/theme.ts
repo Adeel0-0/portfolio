@@ -1,4 +1,4 @@
-import { writeStorage } from "../../lib/storage";
+import { writeStorage } from "../lib/storage";
 import { parseTheme, ThemeSession, THEME_COLORS } from "../lib/theme-state";
 import type { SceneHandle } from "./f1-scene";
 import { BOOT } from "../lib/boot-sequence";

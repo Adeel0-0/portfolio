@@ -3,19 +3,16 @@
  *
  * `localStorage` and `sessionStorage` throw on *access*, not just on write, in
  * Safari private browsing and anywhere a visitor has disabled site data. An
- * uncaught throw inside a component effect has no boundary between it and the
- * root, so the failure mode is a blank page — for a persisted UI preference
- * that nobody would miss. Every call here is wrapped; every failure degrades
- * to "nothing stored".
+ * uncaught throw would stop the boot or theme script for a persisted UI
+ * preference that nobody would miss. Every call here is wrapped; every failure
+ * degrades to "nothing stored".
  *
  * Reads return `null` rather than taking a caller-supplied default. A caller
  * already has to handle "nothing stored yet" on a first visit, so a separate
  * "storage is broken" branch would be a distinction without a difference.
  *
- * Safe during SSR: `window` is checked before it is touched, so this can be
- * imported from a component that renders on both sides. It must still only be
- * *called* from an effect — branching on storage during render desyncs
- * hydration, which is a different bug this file does not fix.
+ * `window` is checked before it is touched, so importing this during the
+ * build is harmless.
  */
 
 type Area = "local" | "session";

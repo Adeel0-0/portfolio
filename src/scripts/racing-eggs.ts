@@ -1,6 +1,6 @@
 // F1-mode easter eggs. Loaded only after F1 mode starts; `stop()` removes every
 // listener, timer, frame and element this module created.
-import { readStorage, writeStorage } from "../../lib/storage";
+import { readStorage, writeStorage } from "../lib/storage";
 import {
   RADIO_MESSAGES,
   formatSeconds,
