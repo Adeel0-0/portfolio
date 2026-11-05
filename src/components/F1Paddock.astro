@@ -1,0 +1,73 @@
+---
+// F1-only "Paddock": two small racing games. Purely for fun, unrelated to the
+// portfolio content. Controls are inert until F1 mode loads their script.
+const tyres = [
+  { id: "fl", label: "Front left", x: 34, y: 34 },
+  { id: "fr", label: "Front right", x: 146, y: 34 },
+  { id: "rl", label: "Rear left", x: 34, y: 150 },
+  { id: "rr", label: "Rear right", x: 146, y: 150 },
+];
+---
+
+<section
+  id="paddock"
+  class="paddock mode-f1 container"
+  data-section="paddock"
+  aria-labelledby="paddock-title"
+>
+  <div class="paddock-heading">
+    <p class="eyebrow">Paddock</p>
+    <h2 id="paddock-title">Pit lane games</h2>
+    <p class="paddock-hint">
+      Psst: type <kbd>drs</kbd> anywhere, or tap the car number.
+    </p>
+  </div>
+  <div class="paddock-grid">
+    <article class="game" data-game="lights" aria-labelledby="lights-title">
+      <h3 id="lights-title">Lights out</h3>
+      <div class="start-lights" aria-hidden="true">
+        {Array.from({ length: 5 }, () => <span class="lamp"></span>)}
+      </div>
+      <button type="button" class="game-button" data-lights-action disabled>
+        Start
+      </button>
+      <p class="game-result" role="status" data-lights-result>
+        Wait for all five lights to go out, then press as fast as you can.
+      </p>
+      <p class="game-best">
+        Best: <span data-lights-best>—</span>
+      </p>
+    </article>
+
+    <article class="game" data-game="pit" aria-labelledby="pit-title">
+      <h3 id="pit-title">Pit stop</h3>
+      <div class="pit-car">
+        <svg viewBox="0 0 180 184" aria-hidden="true" focusable="false">
+          <path class="car-body" d="M78 6h24l6 40h20v20H108l4 60h22v22H112l-6 30H74l-6-30H46v-22h22l4-60H52V46h20Z" />
+          <rect class="car-wing" x="40" y="2" width="100" height="10" rx="3" />
+          <rect class="car-wing" x="36" y="172" width="108" height="10" rx="3" />
+        </svg>
+        {tyres.map((tyre) => (
+          <button
+            type="button"
+            class="tyre"
+            data-tyre={tyre.id}
+            aria-label={`Change ${tyre.label.toLowerCase()} tyre`}
+            aria-pressed="false"
+            style={`left:${tyre.x}px;top:${tyre.y}px`}
+            disabled
+          ></button>
+        ))}
+      </div>
+      <button type="button" class="game-button" data-pit-action disabled>
+        Box, box
+      </button>
+      <p class="game-result" role="status" data-pit-result>
+        Start the stop, then change all four tyres.
+      </p>
+      <p class="game-best">
+        Best: <span data-pit-best>—</span>
+      </p>
+    </article>
+  </div>
+</section>

@@ -1,0 +1,175 @@
+---
+import type { CollectionEntry } from "astro:content";
+import sharp from "sharp";
+import { resolve } from "node:path";
+
+interface Props {
+  project: CollectionEntry<"projects">["data"];
+}
+const { project: p } = Astro.props;
+// Read image dimensions at build time so each item reserves its space.
+const items = await Promise.all(
+  p.gallery.map(async (item) =>
+    item.type === "image"
+      ? {
+          ...item,
+          size: (await sharp(resolve("public", item.src.slice(1))).metadata())
+            .autoOrient,
+        }
+      : item,
+  ),
+);
+---
+
+{
+  items.length > 0 && (
+    <section class="project-gallery" aria-labelledby="gallery-title">
+      <h2 id="gallery-title">Screenshots and video</h2>
+      <ul class="gallery-list">
+        {items.map((item) => (
+          <li>
+            <figure>
+              {item.type === "image" ? (
+                <img
+                  src={item.src}
+                  alt={item.alt}
+                  width={item.size?.width}
+                  height={item.size?.height}
+                  loading="lazy"
+                  decoding="async"
+                />
+              ) : (
+                <div
+                  class="video-facade"
+                  data-youtube-id={item.id}
+                  data-youtube-title={item.title}
+                  data-youtube-start={item.start ?? 0}
+                >
+                  {/* No YouTube request happens until the visitor asks for the video. */}
+                  <a
+                    class="video-play"
+                    href={`https://www.youtube.com/watch?v=${item.id}${item.start ? `&t=${item.start}s` : ""}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <span class="video-play-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="22" height="22">
+                        <path d="M8 5.5v13l11-6.5-11-6.5Z" fill="currentColor" />
+                      </svg>
+                    </span>
+                    <span class="video-play-label">
+                      Play video<span class="sr-only">: {item.title}</span>
+                    </span>
+                    <span class="video-title" aria-hidden="true">
+                      {item.title}
+                    </span>
+                  </a>
+                </div>
+              )}
+              {(item.caption || item.type === "youtube") && (
+                <figcaption class="figure-caption">
+                  {item.caption ?? (item.type === "youtube" ? item.title : "")}
+                  {item.type === "youtube" && (
+                    <span class="video-source"> · YouTube</span>
+                  )}
+                </figcaption>
+              )}
+            </figure>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+<script>
+  import "../scripts/video-facade";
+</script>
+
+<style>
+  .project-gallery {
+    margin-top: 72px;
+  }
+  .project-gallery h2 {
+    font-size: 28px;
+    margin: 0 0 24px;
+  }
+  .gallery-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 40px;
+  }
+  figure {
+    margin: 0;
+    min-width: 0;
+  }
+  img,
+  .video-facade {
+    display: block;
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--visual);
+  }
+  img {
+    height: auto;
+  }
+  .video-facade {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+  }
+  .video-facade :global(iframe) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .video-play {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 12px;
+    padding: 24px;
+    text-align: center;
+    color: var(--text);
+    background:
+      radial-gradient(circle at 50% 45%, var(--surface) 0, transparent 60%),
+      var(--visual);
+  }
+  .video-play-icon {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--accent-contrast);
+    transition: transform 160ms ease;
+  }
+  .video-play:hover .video-play-icon {
+    transform: scale(1.05);
+  }
+  .video-play-label {
+    font-weight: 600;
+    font-size: var(--text-sm);
+  }
+  .video-title {
+    max-width: 46ch;
+    color: var(--muted);
+    font-size: var(--text-sm);
+  }
+  .video-source {
+    color: var(--muted);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .video-play-icon {
+      transition: none;
+    }
+  }
+</style>

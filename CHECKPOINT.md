@@ -1,5 +1,26 @@
 # Portfolio rebuild checkpoint
 
+## Two-mode redesign: 2026-11-05 (ready for owner review)
+
+- Objective: owner's brief `PORTFOLIO-REDESIGN-PROMPT.md` (Minimal default + distinct F1 mode with a real interactive 3D feature), adjusted by the owner on 2026-11-05: CI/CD-friendly, owner adds pictures and YouTube videos later, F1 keeps the single-button lights-out transition.
+- Writer: Claude (cloud session). Branch `claude/funny-keller-d5643u`, base `7a252e0`.
+- Owner decisions recorded: F1 may use a different composition from Minimal (supersedes the "identical geometry" rule); `frontend-design` and `impeccable` installs were declined, so only `ui-ux-pro-max` is applied.
+- Milestone 1 (baseline): done. 3 published projects (no screenshots, diagrams only), 0 public credentials (NVIDIA course is a draft), resume PDF, email/GitHub/LinkedIn contact, `/api/contributions`. Baseline screenshots and measurements: 54-63 text nodes at 10-11 px, 35 targets under 24 px, contrast passes (min 5.28:1), case-study prose ~85 chars/line.
+- Milestones 2-4 (implementation): done, uncommitted. Minimal: October tokens, self-hosted Instrument Sans (30 KB) + Newsreader italic display cut (12.9 KB, from 147 KB), 13 px text floor, 17 px body, 68ch prose, 32 px targets, header collapses by container width. F1: pit wall (timing tower, fictional SVG circuit, preview), timing-strip nav, sector-rail case-study contents, optional 3D track (procedural Three.js, on request). Shared: `?mode=` precedence, section continuity on switch, YouTube/image `gallery` schema with click-to-load facade, copy-email, resume shortcut, verifier measures full lazy 3D graph.
+- Checks so far: `npm run check` PASS (0 errors, 85/85 unit tests, build 8 pages, 232 refs, home JS 6.7 KB gzip, lazy 3D 158.4 KB gzip). Chromium browser suite: 25 existing + 9 new; all pass after fixes (existing tests updated only for the new ink colour). Firefox/WebKit not run here: their Playwright 1.64.1 builds are not installed in this container; CI installs them.
+- Local note: after content-schema changes, delete `node_modules/.astro/data-store.json` if the build reports missing new fields (stale content cache). CI starts clean.
+- Owner feedback 2026-11-05 applied: F1 is racing red on carbon; Saira replaces the proprietary Formula1 font; whole-page animated Three.js gradient (ShaderGradient, MIT, React island) with floating island sections; less F1 prose. 21st.dev blocked by network policy.
+- Final checks: `npm run check` PASS (47 files 0 errors, 85/85 unit tests, build 8 pages/232 refs, home JS 7.9 KB, optional F1 graphics 312.5 KB gzip). Chromium browser suite 34/34 PASS. Firefox/WebKit not run here (CI runs them).
+- Status: committed and pushed on `claude/funny-keller-d5643u` (see vcs-log). Next: owner review of F1 look; owner adds screenshots/videos via `gallery`.
+
+## Frontend redesign tooling: 2026-11-02
+
+- Objective: install and enable the `ui-ux-pro-max` UI/UX skill before the owner's frontend redesign starts.
+- Status: committed at `8656b19f`. Writer: Claude (Claude Code cloud session). Branch `claude/funny-keller-d5643u`, base `6da4324`.
+- Scope: agent tooling and docs only (`.claude/skills/ui-ux-pro-max/`, `skills-lock.json`, `CLAUDE.md`, `.gitignore`). No application source, content, dependency or test changes.
+- Verification: `npm run check` PASS on Node 22.23.4 (35 Astro files with zero errors/warnings/hints; lint; 73/73 tests; build 8 pages, 189 references). Browser journeys not run. Details in `docs/vcs-log.md`.
+- Next step: the owner sets the redesign direction. Then generate a design system with the skill (`--design-system`, stack `astro`) and weigh it against `docs/design/2026-10-19-editorial-engineering.md` and the repository's styling rules.
+
 ## Retire legacy Next app: 2026-10-24
 
 - Objective (owner-approved plan, 2026-10-24): make the repository Astro-only with no visible site change. Delete the retained Next.js app (`app/`, `components/`, the unused parts of `lib/` and `data/`, Next/Tailwind/PostCSS configs, `REDESIGN.md`). Remove the unused `/api/contributions` route; no page calls it. Move the active data (`profile`, `skills`, `education`) and `storage` into `src/`. Drop the Next-era hash anchors (`legacyId`, `#garage`). Update the docs.

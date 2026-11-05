@@ -79,7 +79,7 @@ html[data-preloader="launching"] .boot-window {
 }
 .boot-title {
   margin-left: 8px;
-  font-size: 12px;
+  font-size: var(--text-xs);
   color: rgb(255 255 255 / 0.5);
 }
 .boot-body {
@@ -118,7 +118,7 @@ html[data-preloader="launching"] .boot-window {
   border-top: 1px solid rgb(255 255 255 / 0.1);
 }
 .boot-label {
-  font-size: 12px;
+  font-size: var(--text-xs);
   color: rgb(255 255 255 / 0.5);
 }
 .boot-percent {
@@ -143,7 +143,7 @@ html[data-preloader="launching"] .boot-window {
 }
 .boot-hint {
   margin: 16px 0 0;
-  font-size: 10px;
+  font-size: var(--text-xs);
   letter-spacing: 0.1em;
   text-align: center;
   text-transform: uppercase;
@@ -216,7 +216,7 @@ html[data-preloader="launching"] #site-shell {
     padding: 20px;
   }
   .boot-body {
-    font-size: 12px;
+    font-size: var(--text-xs);
   }
   .boot-percent {
     font-size: 36px;

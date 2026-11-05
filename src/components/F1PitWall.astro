@@ -1,0 +1,183 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { sectors, sampleCircuit } from "../lib/circuit";
+import { person } from "../data/site";
+
+interface Props {
+  projects: CollectionEntry<"projects">[];
+  resumeHref?: string;
+}
+const { projects, resumeHref } = Astro.props;
+const track = sectors(projects.length);
+const statusLabel = (s: string) =>
+  ({ "in-progress": "In progress", completed: "Completed", archived: "Archived" })[s] ?? s;
+const month = (iso: string) =>
+  new Date(iso).toLocaleDateString("en-IN", { month: "short", year: "numeric", timeZone: "UTC" });
+// The 3D view reuses the exact SVG geometry; it is only fetched on request.
+const trackData = JSON.stringify({
+  points: sampleCircuit(10),
+  sectors: track.map((s) => ({ marker: s.marker, from: s.from, to: s.to })),
+  projects: projects.map((p) => p.id),
+});
+---
+
+<section
+  id="circuit"
+  class="pitwall mode-f1 container"
+  data-section="intro work"
+  aria-labelledby="pitwall-title"
+>
+  <header class="pitwall-driver">
+    <p class="pitwall-kicker">
+      {person.raceNumber !== null && (
+        <button type="button" class="car-number" data-radio aria-label={`Team radio for car ${person.raceNumber}`}>
+          {person.raceNumber}
+        </button>
+      )}
+      <span>{person.displayName}</span>
+      <span class="kicker-divider" aria-hidden="true">/</span>
+      <span>AI &amp; software engineer</span>
+    </p>
+    <h1 id="pitwall-title">{person.headline.join(" ")}</h1>
+    <p class="pitwall-intro">{person.introduction}</p>
+    <div class="hero-actions">
+      <a class="button primary" href="/projects/">
+        Browse all projects <span aria-hidden="true">↗</span>
+      </a>
+      {resumeHref && (
+        <a class="button secondary" href={resumeHref}>
+          View resume
+        </a>
+      )}
+    </div>
+  </header>
+
+  <div class="pitwall-grid">
+    <div class="timing-tower">
+      <h2 id="tower-title">Project timing</h2>
+      <p class="tower-hint">Select a project to see it on the circuit.</p>
+      <ol aria-labelledby="tower-title">
+        {projects.map((project, i) => (
+          <li>
+            <button
+              type="button"
+              class="timing-row"
+              data-project={project.id}
+              aria-pressed={i === 0 ? "true" : "false"}
+              aria-controls="pitwall-preview"
+            >
+              <span class="pos">P{i + 1}</span>
+              <span class="row-name">{project.data.title}</span>
+              <span class="row-sector">S{i + 1}</span>
+              <span class="row-status">{statusLabel(project.data.status)}</span>
+            </button>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <figure class="circuit-map">
+      <div class="circuit-stage" data-track={trackData}>
+        <svg
+          class="circuit-svg"
+          viewBox="0 0 600 400"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path
+            class="circuit-base"
+            d={track.map((s) => s.d).join(" ")}
+          />
+          {track.map((sector, i) => (
+            <path
+              class:list={["circuit-sector", { selected: i === 0 }]}
+              data-project={projects[i].id}
+              d={sector.d}
+            />
+          ))}
+          <line class="start-line" x1="130" y1="326" x2="130" y2="354" />
+          {track.map((sector, i) => (
+            <g
+              class:list={["sector-marker", { selected: i === 0 }]}
+              data-project={projects[i].id}
+              transform={`translate(${sector.marker[0]} ${sector.marker[1]})`}
+            >
+              <circle r="15" />
+              <text dy="5">S{i + 1}</text>
+            </g>
+          ))}
+        </svg>
+      </div>
+      <figcaption>
+        <span>
+          Fictional circuit. Each sector is a project:{" "}
+          {projects.map((p, i) => `S${i + 1} ${p.data.title}`).join(", ")}.
+        </span>
+        <span class="circuit-controls">
+          <button type="button" class="chip-button" id="circuit-3d" aria-pressed="false">
+            3D track
+          </button>
+          <button type="button" class="chip-button" id="circuit-reset" hidden>
+            Reset view
+          </button>
+        </span>
+      </figcaption>
+      <p class="circuit-status" id="circuit-status" role="status"></p>
+    </figure>
+
+    <div id="pitwall-preview" class="pitwall-preview">
+      {projects.map((project, i) => (
+        <article
+          class="preview-card"
+          data-preview={project.id}
+          hidden={i !== 0}
+          aria-labelledby={`preview-${project.id}`}
+        >
+          <p class="preview-meta">
+            <span>S{i + 1}</span>
+            <span>{project.data.category}</span>
+            <span>{statusLabel(project.data.status)}</span>
+          </p>
+          <h3 id={`preview-${project.id}`}>{project.data.title}</h3>
+          <p>{project.data.summary}</p>
+          <dl class="preview-facts">
+            <div>
+              <dt>Role</dt>
+              <dd>{project.data.role}</dd>
+            </div>
+            <div>
+              <dt>Updated</dt>
+              <dd>
+                <time datetime={project.data.updatedAt}>
+                  {month(project.data.updatedAt)}
+                </time>
+              </dd>
+            </div>
+          </dl>
+          <ul class="preview-skills" aria-label="Technologies">
+            {project.data.skills.slice(0, 4).map((skill) => <li>{skill}</li>)}
+          </ul>
+          <div class="preview-actions">
+            <a class="button primary" href={`/projects/${project.id}/`}>
+              Read case study <span aria-hidden="true">↗</span>
+            </a>
+            {project.data.repositoryUrl && (
+              <a
+                class="button secondary"
+                href={project.data.repositoryUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                View code
+              </a>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  import "../scripts/circuit";
+</script>

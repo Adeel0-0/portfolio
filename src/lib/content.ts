@@ -26,6 +26,8 @@ export async function getPublishedPortfolio() {
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(project.id))
       throw new Error(`Use a flat lowercase slug for project ${project.id}`);
     if (project.data.media) checkAsset(project.data.media.src);
+    for (const item of project.data.gallery ?? [])
+      if (item.type === "image") checkAsset(item.src);
     project.data.metrics.forEach((metric) => checkAsset(metric.evidence));
   }
   for (const credential of credentials) {

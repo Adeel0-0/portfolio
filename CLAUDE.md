@@ -26,7 +26,9 @@ Astro + TypeScript portfolio with a professional default and optional F1 mode.
   decides before first paint and has its own deadline. Keep fixed chrome
   outside `#site-shell`, which the hand-off transforms.
 - Styling tokens live in `src/styles/site.css`; transition-only CSS is separate.
-  Keep identical content/layout geometry across both visual modes.
+  Both modes share content, routes and links. Owner decision 2026-11-05:
+  F1 may use its own composition (home pit wall, case-study rail); keep
+  the single toggle and its transition. See `docs/design/DESIGN.md`.
 - Every page is prerendered and there are no on-demand routes. The Vercel
   adapter stays for deployment (`docs/deployment.md`).
 - The retired Next.js app is recoverable from tag `legacy-next-final`. See
@@ -49,6 +51,28 @@ The five canonical triage roles, each label string equal to its name. See `docs/
 ### Domain docs
 
 Single-context: one `CONTEXT.md` and one `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+
+### UI/UX design skill
+
+`.claude/skills/ui-ux-pro-max/` is a vendored copy of the `ui-ux-pro-max` skill
+from `nextlevelbuilder/ui-ux-pro-max-skill`, pinned in `skills-lock.json`. Use
+it for frontend and redesign work. Do not hand-edit it; refresh it by re-running
+`npx skills add nextlevelbuilder/ui-ux-pro-max-skill --skill ui-ux-pro-max --agent claude-code --copy -y`.
+
+Its search tool is local, standard-library Python over bundled CSV data. Run it
+from the repository root by relative path (`python3`, or `py -3` on Windows):
+the `${CLAUDE_PLUGIN_ROOT}` prefix in the skill's examples is unset for a
+project install.
+
+```bash
+python3 .claude/skills/ui-ux-pro-max/scripts/search.py "<query>" --stack astro
+```
+
+Its output is a recommendation. The rules in this file take precedence: the
+Astro stack, tokens in `src/styles/site.css`, shared content and links across
+both modes, the motion, reduced-motion and cleanup contract, and no
+fabricated content. `--persist` writes `design-system/<project>/`; use it only
+for a direction the owner has approved.
 
 ### Version control & Git management
 

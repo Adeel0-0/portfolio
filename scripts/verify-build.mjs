@@ -59,12 +59,24 @@ if (core > 75 * 1024)
   throw new Error(
     `Home arrival JavaScript is ${core} bytes gzip; budget is 76800`,
   );
-const effect = files
-  .filter((file) => /f1-scene.*\.js$/.test(file))
-  .reduce((sum, file) => sum + gzip(file), 0);
-if (!effect) throw new Error("Expected a separately built cinematic chunk");
-if ([...initial].some((file) => /f1-scene/.test(file)))
-  throw new Error("Cinematic unexpectedly loads on arrival");
+// The optional F1 graphics (lights-out transition, circuit track, animated
+// gradient backdrop) and everything they import: Three.js, React and the
+// React Three Fiber renderer.
+const effectEntries = files.filter((file) =>
+  /(?:f1-scene|circuit-scene|F1Gradient).*\.js$/.test(file),
+);
+if (effectEntries.length < 3)
+  throw new Error("Expected separate transition, circuit and backdrop chunks");
+const effectGraph = collectStaticScripts(effectEntries, root);
+const effect = [...effectGraph].reduce((sum, file) => sum + gzip(file), 0);
+const engine = [...effectGraph].filter((file) => /three/i.test(file));
+if (!engine.length) throw new Error("Expected Three.js inside the lazy 3D graph");
+// Minimal arrival must not load the 3D effects or the engine.
+const lazyOnly = [...effectGraph].filter(
+  (file) => /(?:f1-scene|circuit-scene|F1Gradient|three|react|client)/i.test(file),
+);
+if (lazyOnly.some((file) => initial.has(file)))
+  throw new Error("3D code unexpectedly loads on arrival");
 console.log(
-  `Build verification: ${htmlFiles.length} pages, ${links} internal references; home JS ${(core / 1024).toFixed(1)} KB gzip; cinematic ${(effect / 1024).toFixed(1)} KB gzip.`,
+  `Build verification: ${htmlFiles.length} pages, ${links} internal references; home JS ${(core / 1024).toFixed(1)} KB gzip; optional F1 graphics ${(effect / 1024).toFixed(1)} KB gzip.`,
 );

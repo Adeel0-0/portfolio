@@ -7,6 +7,55 @@ All significant commits, architectural reorganizations, and cross-agent updates 
 
 ## Log Entries
 
+### [2026-11-05] - UI Polish: Projects Grid and Mobile Case Studies
+- **Commit**: `1f9f19e8`
+- **Agent**: Claude (Claude Code cloud session)
+- **Branch**: `claude/funny-keller-d5643u`
+- **Scope**: `src/pages/projects/index.astro`, `src/styles/modes.css`.
+- **Summary**: Visual audit of all secondary routes in both modes at 1440 and 390 px. Featured lead card on the projects page (no orphan), two-column contents index on phones, F1 facts grid on phones. About, Credentials and 404 reviewed; no change needed.
+- **Verification Status**: `npm run check` PASS (0 errors, 91/91 unit tests, build 8 pages). Playwright Chromium 35/35 PASS. Firefox/WebKit in CI only.
+
+### [2026-11-05] - F1 Racing Easter Eggs
+- **Commit**: `6a9d9c4d`
+- **Agent**: Claude (Claude Code cloud session)
+- **Branch**: `claude/funny-keller-d5643u`
+- **Scope**: `src/lib/racing.ts`, `src/components/F1Paddock.astro`, `src/scripts/racing-{eggs,loader}.ts`, `F1PitWall.astro`, `index.astro`, `SiteLayout.astro`, `modes.css`, tests, `docs/design/DESIGN.md`.
+- **Summary**: Owner request: small racing easter eggs, not tied to portfolio content. Lights-out reaction test, pit-stop challenge, team radio, DRS, scroll speedometer, chequered flag. F1-only, lazily loaded, fully cleaned up on exit.
+- **Verification Status**: `npm run check` PASS (unit tests 91/91, build 8 pages, home JS 8.1 KB gzip). Playwright Chromium full suite 35/35 PASS before the final speedometer fade tweak; `redesign.spec.ts` 10/10 PASS after it. Firefox/WebKit run in CI only.
+
+### [2026-11-05] - Two-Mode Redesign: Minimal + F1 Pit Wall, 3D Track, Gradient Islands
+- **Commit**: `281f4b5e`
+- **Agent**: Claude (Claude Code cloud session)
+- **Branch**: `claude/funny-keller-d5643u`
+- **Scope**: `src/` (pages, layout, components, scripts, styles, islands), `public/fonts/`, `scripts/verify-build.mjs`, `astro.config.mjs`, `package.json`/lock (React islands, ShaderGradient, React Three Fiber), `playwright.config.ts`, tests, `docs/design/`, `docs/content-authoring.md`, `CLAUDE.md`, `CHECKPOINT.md`.
+- **Summary**: Owner brief `PORTFOLIO-REDESIGN-PROMPT.md` plus same-day feedback. Minimal refinement (tokens, fonts, text floor, targets, measure); distinct F1 composition (pit wall, timing tower, fictional circuit, optional procedural 3D track); racing red on carbon with Saira; whole-page animated Three.js gradient as a lazy React island with floating islands; `?mode=` precedence; section continuity; gallery schema for screenshots and YouTube; copy email. The official Formula1 font was not used (proprietary). 21st.dev unreachable (network policy).
+- **Verification Status**:
+  - `npm run check`: PASS (astro check 47 files, 0 errors/warnings; eslint; vitest 85/85; build 8 pages, 232 internal references; home JS 7.9 KB gzip; optional F1 graphics 312.5 KB gzip).
+  - Playwright Chromium (`npm run test:browser`, CI mode, preinstalled Chromium via `PLAYWRIGHT_CHROMIUM_PATH`): 34/34 PASS.
+  - Firefox/WebKit: not run in this container (their Playwright builds are not installed); CI runs them.
+  - Node 22.23.4 used locally; repository requires Node 24 (CI uses `.nvmrc`).
+
+### [2026-11-02] - UI/UX Pro Max Skill for the Frontend Redesign
+- **Commit**: `8656b19f`
+- **Agent**: Claude (Claude Code cloud session)
+- **Branch**: `claude/funny-keller-d5643u`
+- **Scope**: `.claude/skills/ui-ux-pro-max/` (73 vendored files), `skills-lock.json`, `CLAUDE.md`, `.gitignore`.
+- **Summary**:
+  - Installed the `ui-ux-pro-max` skill from `nextlevelbuilder/ui-ux-pro-max-skill` at the owner's request, ahead of the frontend redesign: `npx skills add nextlevelbuilder/ui-ux-pro-max-skill --skill ui-ux-pro-max --agent claude-code --copy -y`. Pinned by `skills-lock.json`. Copy mode avoids git symlinks on Windows. The package's six sibling skills were not installed.
+  - Reviewed the vendored scripts before use: standard-library Python, no network, subprocess or eval use. Only the opt-in `--persist` flag writes files, and it refuses to overwrite without `--force`.
+  - Registered the skill in `CLAUDE.md` with the working invocation path (its `${CLAUDE_PLUGIN_ROOT}` examples do not resolve for a project install) and repository-rule precedence.
+  - Ignored the Python bytecode (`__pycache__/`, `*.py[cod]`) that the skill's search tool writes on every run.
+- **Verification Status**:
+  - `npm run check`: PASS, on Node 22.23.4 (the repository requires Node 24; `npm ci` warned `EBADENGINE`).
+  - `astro check`: PASS (35 files, 0 errors, 0 warnings, 0 hints).
+  - `eslint`: PASS (0 errors).
+  - `vitest run`: PASS (73/73 across 9 files).
+  - `astro build && node scripts/verify-build.mjs`: PASS (8 pages, 189 internal references; home JS 4.6 KB gzip, cinematic 154.1 KB gzip).
+  - Skill search smoke tests (`--stack astro`, `--domain ux`, `--domain landing`): PASS.
+  - `npm run test:browser`: not run; no application source or interaction changed.
+
+---
+
 ### [2026-10-24] - Retire Legacy Next.js App & Unused Contributions API
 - **Commits**: `96e92d01` (writer claim), `54a012d3` (legacy content inventory), `9f0a68f6` (remove `/api/contributions`), `ad465ce7` (delete 70 legacy files), `68b88ff9` (move data/storage into `src/`), `e3420624` (drop Next-era anchors), `1a3d292b` (docs, ADR 0001, bug register), `5b3c6e92` (content fixture copies `src/` only), plus this log/release commit
 - **Agent**: Claude (worktree `global-skills-install-d3c01d`), owner-approved plan

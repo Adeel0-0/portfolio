@@ -38,6 +38,27 @@ Optional fields: `startedAt`, `completedAt`, `featuredOrder`, `repositoryUrl`, `
 
 Skills must match `src/data/skills.ts`. Add a new skill there first, then reference it from projects or credentials. Its skill grades are not shown on the site.
 
+## Add screenshots and videos
+
+Each project can carry a `gallery`, shown on its case study under "Screenshots and video" in the order you list it (up to 12 items):
+
+```yaml
+gallery:
+  - type: image
+    src: /projects/sefgh/results.webp   # file in public/projects/sefgh/
+    alt: Ranked repositories for the query "lightweight vector database"
+    caption: Results page with private details removed   # optional
+  - type: youtube
+    id: dQw4w9WgXcQ        # the 11 characters after v= in the YouTube URL
+    title: SEFGH demo walkthrough
+    start: 30              # optional, seconds
+```
+
+- Images: put the file in `public/projects/<slug>/` (PNG, JPEG, WebP or AVIF; WebP/AVIF are smaller). The build checks the file exists and reserves its size so nothing jumps while it loads. Write `alt` to describe what the image shows.
+- YouTube: use only the video id, not the full link. Nothing loads from YouTube until a visitor presses *Play video*; then the privacy-enhanced player (`youtube-nocookie.com`) opens in place. Without JavaScript it is a normal link to the video.
+- `media` (one image) still sets the project's card thumbnail; `gallery` is for the case study.
+- If a build reports a missing new field after a schema update, delete `node_modules/.astro/data-store.json` (a stale local content cache) and build again. CI always starts clean.
+
 ## Add a credential
 
 Create `src/content/certifications/my-credential.md`:
@@ -63,7 +84,7 @@ Contact information and location live in `src/data/profile.ts`. New editorial co
 
 ## Theme behavior
 
-Professional is the default. The header's F1 mode button stores a validated preference. An intentional entrance runs the brief Lights Out sequence when its scene is ready, otherwise a quick sweep. Reloading and normal navigation restore the selected mode immediately. Reduced motion skips the scene. No effect continues rendering after the transition finishes.
+Minimal is the default. The header's F1 mode button stores a validated preference; a `?mode=f1` or `?mode=minimal` link takes precedence and is remembered. F1 mode has its own home composition (the pit wall) and case-study rail; see `docs/design/DESIGN.md`. An intentional entrance runs the brief Lights Out sequence when its scene is ready, otherwise a quick sweep. Reloading and normal navigation restore the selected mode immediately. Reduced motion skips the scene. No effect continues rendering after the transition finishes.
 
 ## Earlier versions
 

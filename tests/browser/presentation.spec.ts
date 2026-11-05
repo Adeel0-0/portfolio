@@ -36,7 +36,7 @@ test("persisted F1 metadata is correct even before enhancement scripts load", as
   await expect(page.locator("html")).toHaveAttribute("data-theme", "f1");
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute(
     "content",
-    "#10151e",
+    "#0b0c0f",
   );
 });
 

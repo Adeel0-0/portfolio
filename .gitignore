@@ -42,3 +42,7 @@ yarn-error.log*
 /.tools/
 /test-results/
 /playwright-report/
+
+# Python bytecode from the vendored UI/UX skill scripts (.claude/skills/)
+__pycache__/
+*.py[cod]

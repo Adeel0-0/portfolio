@@ -24,6 +24,28 @@ const localAsset = z
   .string()
   .regex(/^\/[a-zA-Z0-9_/-]+\.(png|jpe?g|webp|avif|pdf)$/)
   .refine((value) => !value.includes("..") && !value.startsWith("//"));
+const image = localAsset.refine(
+  (value) => !value.endsWith(".pdf"),
+  "Project media must be an image",
+);
+/** An 11-character YouTube video id, e.g. the part after `v=` in a watch URL. */
+const youtubeId = z
+  .string()
+  .regex(/^[A-Za-z0-9_-]{11}$/, "Use the 11-character YouTube video id");
+const galleryItem = z.discriminatedUnion("type", [
+  z
+    .object({ type: z.literal("image"), src: image, alt: text, caption: text.optional() })
+    .strict(),
+  z
+    .object({
+      type: z.literal("youtube"),
+      id: youtubeId,
+      title: text,
+      caption: text.optional(),
+      start: z.number().int().nonnegative().optional(),
+    })
+    .strict(),
+]);
 const metric = z
   .object({
     value: text,
@@ -54,14 +76,10 @@ export const projectSchema = z
     visual: z.enum(["search", "vision", "control"]).default("search"),
     diagram: z.array(text).min(2).max(8),
     media: z
-      .object({
-        src: localAsset.refine(
-          (value) => !value.endsWith(".pdf"),
-          "Project media must be an image",
-        ),
-        alt: text,
-      })
+      .object({ src: image, alt: text })
       .optional(),
+    /** Screenshots and YouTube videos shown on the case study, in order. */
+    gallery: z.array(galleryItem).max(12).default([]),
     metrics: z.array(metric).default([]),
   })
   .strict()

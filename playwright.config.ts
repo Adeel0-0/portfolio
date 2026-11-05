@@ -39,6 +39,9 @@ export default defineConfig({
         ...devices["Desktop Chrome"],
         channel: process.env.CI ? undefined : "chrome",
         launchOptions: {
+          // Opt-in for machines with a preinstalled Chromium that differs from
+          // the pinned Playwright build. Unset in CI.
+          executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH || undefined,
           args: [
             "--use-gl=angle",
             "--use-angle=swiftshader",
