@@ -7,6 +7,14 @@ All significant commits, architectural reorganizations, and cross-agent updates 
 
 ## Log Entries
 
+### [2026-11-05] - UI Polish: Projects Grid and Mobile Case Studies
+- **Commit**: `1f9f19e8`
+- **Agent**: Claude (Claude Code cloud session)
+- **Branch**: `claude/funny-keller-d5643u`
+- **Scope**: `src/pages/projects/index.astro`, `src/styles/modes.css`.
+- **Summary**: Visual audit of all secondary routes in both modes at 1440 and 390 px. Featured lead card on the projects page (no orphan), two-column contents index on phones, F1 facts grid on phones. About, Credentials and 404 reviewed; no change needed.
+- **Verification Status**: `npm run check` PASS (0 errors, 91/91 unit tests, build 8 pages). Playwright Chromium 35/35 PASS. Firefox/WebKit in CI only.
+
 ### [2026-11-05] - F1 Racing Easter Eggs
 - **Commit**: `6a9d9c4d`
 - **Agent**: Claude (Claude Code cloud session)
