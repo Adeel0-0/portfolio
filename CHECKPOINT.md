@@ -1,5 +1,13 @@
 # Portfolio rebuild checkpoint
 
+## Preprint default look: 2026-11-15 (in progress)
+
+- Objective: replace the Minimal look with the owner-approved **Preprint** design (a research paper on a desk). Design system: https://claude.ai/artifact/11pLepVzP2G45kuvpaooAX. F1 mode must stay exactly as it is; the boot terminal stays unchanged and its look is never used in the site.
+- Writer: Claude (desktop session), worktree `priceless-engelbart-dfb478`, branch `feat/preprint-default`, base `c167cd98` (main).
+- Approach: the internal theme id stays `professional` (storage compatibility, F1 code untouched). Preprint markup is rendered beside today's markup; today's markup shows only in F1 (`mode-f1`), the paper only in the default mode. Preprint CSS lives in its own file scoped to `:root:not([data-theme="f1"])`. URL `?mode=preprint`, with `minimal` kept as an alias.
+- Owner approvals: build go-ahead and the `@fontsource-variable/stix-two-text` download (2026-11-15).
+- Status: started. Next: baseline `npm run check`, font install, foundations.
+
 ## Two-mode redesign: 2026-11-05 (ready for owner review)
 
 - Objective: owner's brief `PORTFOLIO-REDESIGN-PROMPT.md` (Minimal default + distinct F1 mode with a real interactive 3D feature), adjusted by the owner on 2026-11-05: CI/CD-friendly, owner adds pictures and YouTube videos later, F1 keeps the single-button lights-out transition.
