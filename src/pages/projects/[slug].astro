@@ -4,6 +4,7 @@ import SiteLayout from "../../layouts/SiteLayout.astro";
 import ProjectMedia from "../../components/ProjectMedia.astro";
 import ProjectMetrics from "../../components/ProjectMetrics.astro";
 import ProjectGallery from "../../components/ProjectGallery.astro";
+import PipelineFigure from "../../components/PipelineFigure.astro";
 import { getPublishedProjects } from "../../lib/content";
 export async function getStaticPaths() {
   return (await getPublishedProjects()).map((project) => ({
@@ -23,7 +24,11 @@ const contents = [
 ];
 ---
 
-<SiteLayout title={`${p.title} — Mohammad Adeel`} description={p.summary}>
+<SiteLayout
+  title={`${p.title} — Mohammad Adeel`}
+  description={p.summary}
+  runningHead={p.title}
+>
   <article class="container case-study">
     <a class="back-link" href="/projects/">
       ← All projects
@@ -85,6 +90,14 @@ const contents = [
         )}
       </div>
     </header>
+    {!p.media && (
+      <PipelineFigure
+        id="fig-1"
+        number={1}
+        stages={p.diagram}
+        caption={`The ${p.title} pipeline: ${p.diagram.join(" → ")}.`}
+      />
+    )}
     <ProjectMedia project={p} />
     <div class="case-body">
       <aside class="case-aside">
@@ -118,6 +131,28 @@ const contents = [
         <ProjectGallery project={p} />
       </div>
     </div>
+    {(p.repositoryUrl || p.liveUrl || p.videoUrl) && (
+      <section class="pp-refs mode-minimal" aria-labelledby="pp-refs-title">
+        <h2 id="pp-refs-title" class="pp-h2">References</h2>
+        <ol>
+          {p.repositoryUrl && (
+            <li>
+              Source code: <a href={p.repositoryUrl}>{p.repositoryUrl.replace(/^https?:\/\//, "")}</a>
+            </li>
+          )}
+          {p.liveUrl && (
+            <li>
+              Live project: <a href={p.liveUrl}>{p.liveUrl.replace(/^https?:\/\//, "")}</a>
+            </li>
+          )}
+          {p.videoUrl && (
+            <li>
+              Demo video: <a href={p.videoUrl}>{p.videoUrl.replace(/^https?:\/\//, "")}</a>
+            </li>
+          )}
+        </ol>
+      </section>
+    )}
   </article>
   <ProjectMetrics metrics={p.metrics} />
 </SiteLayout>

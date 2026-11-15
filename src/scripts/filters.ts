@@ -2,7 +2,12 @@ const form = document.querySelector<HTMLFormElement>("#project-filter");
 const select = document.querySelector<HTMLSelectElement>("#skill-filter");
 if (form && select) {
   form.hidden = false;
+  // Both looks list the projects: F1 as cards, Preprint as table rows. Count
+  // only the list the current look shows.
   const cards = [...document.querySelectorAll<HTMLElement>("[data-project]")];
+  const shown = (card: HTMLElement) =>
+    (document.documentElement.dataset.theme === "f1") ===
+    !card.closest(".mode-minimal");
   const apply = () => {
     let count = 0;
     cards.forEach((card) => {
@@ -12,7 +17,7 @@ if (form && select) {
           select.value,
         );
       card.hidden = !matches;
-      if (matches) count++;
+      if (matches && shown(card)) count++;
     });
     const status = document.querySelector("#filter-status");
     if (status)
@@ -47,5 +52,6 @@ if (form && select) {
     apply();
   });
   form.addEventListener("submit", (event) => event.preventDefault());
+  document.addEventListener("portfolio:transition-end", apply);
   apply();
 }

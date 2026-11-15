@@ -1,6 +1,7 @@
 ---
 import SiteLayout from "../../layouts/SiteLayout.astro";
 import ProjectCard from "../../components/ProjectCard.astro";
+import PaperTable from "../../components/PaperTable.astro";
 import { getPublishedProjects } from "../../lib/content";
 import { capabilities } from "../../data/site";
 const projects = await getPublishedProjects();
@@ -9,7 +10,7 @@ const skills = [...new Set(projects.flatMap((p) => p.data.skills))].sort();
 const linkedSkills = [...new Set(capabilities.flatMap((c) => c.skills))];
 ---
 
-<SiteLayout title="Projects — Mohammad Adeel">
+<SiteLayout title="Projects — Mohammad Adeel" runningHead="Table of results">
   <section class="container page-intro">
     <p class="eyebrow">Projects</p>
     <h1>Work with a purpose.</h1>
@@ -36,7 +37,14 @@ const linkedSkills = [...new Set(capabilities.flatMap((c) => c.skills))];
         {projects.length} projects
       </p>
     </form>
-    <div class="project-grid">
+    <PaperTable
+      id="tab-1"
+      number={1}
+      caption="Table of results: every project, its area, my role and its status."
+      projects={projects}
+      withRole
+    />
+    <div class="project-grid mode-f1">
       {/* The lead project spans the row, so an odd count never leaves an orphan. */}
       {projects.map((project, i) => (
         <ProjectCard project={project} featured={i === 0 && projects.length % 2 === 1} />

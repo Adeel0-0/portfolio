@@ -1,0 +1,880 @@
+/* Preprint: the default look, the site typeset as a research paper on a desk.
+   Design system: https://claude.ai/artifact/11pLepVzP2G45kuvpaooAX
+   Everything here is scoped to the default mode, so F1 never sees it.
+   The internal theme id of this look stays "professional". */
+
+:root:not([data-theme="f1"]) {
+  --pp-desk: #e9e6df;
+  --pp-paper: #fcfbf8;
+  --pp-ink: #141414; /* 17.80:1 on paper */
+  --pp-muted: #5c5a55; /* 6.66:1 on paper, 5.53:1 on desk */
+  --pp-link: #0f6b4e; /* 6.28:1 on paper, 5.21:1 on desk; green means a link */
+  --pp-highlight: #fff1a8;
+  --pp-rule: #141414;
+  --pp-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 12px 40px rgba(0, 0, 0, 0.08);
+  --pp-serif: "STIX Two Text Variable", "STIX Two Text", "Times New Roman", serif;
+  --pp-sheet: 980px;
+  --pp-pad-x: 64px;
+
+  /* Shared parts (header, footer, other pages) read the legacy tokens. */
+  --bg: var(--pp-desk);
+  --surface: var(--pp-paper);
+  --text: var(--pp-ink);
+  --muted: var(--pp-muted);
+  --line: #cfcac0;
+  --accent: var(--pp-link);
+  --accent-contrast: var(--pp-paper);
+  --soft: var(--pp-desk);
+  --visual: var(--pp-paper);
+  --radius: 0;
+  --radius-control: 0;
+  --shadow: none;
+  --header: var(--pp-desk);
+  --font-sans: var(--pp-serif);
+  --font-accent: var(--pp-serif);
+  --target: 44px;
+  font-family: var(--pp-serif);
+
+  & body {
+    background: var(--pp-desk);
+    color: var(--pp-ink);
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  & p {
+    color: var(--pp-ink);
+  }
+  & h1,
+  & h2,
+  & h3 {
+    letter-spacing: 0;
+    line-height: 1.2;
+  }
+  & a:hover {
+    color: var(--pp-link);
+  }
+  & :focus-visible {
+    outline: 2px solid var(--pp-link);
+    outline-offset: 3px;
+    border-radius: 0;
+  }
+  & ::selection {
+    background: var(--pp-highlight);
+    color: var(--pp-ink);
+  }
+
+  /* ---------- Small caps, done honestly: uppercase at 0.86em ---------- */
+  & .pp-wordmark,
+  & .desktop-nav a,
+  & .mobile-menu summary,
+  & .mobile-menu nav a,
+  & .theme-toggle,
+  & .pp-btn,
+  & .pp-lab,
+  & .eyebrow,
+  & .button,
+  & .footer-links a,
+  & .copy-email {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* ---------- Top bar on the desk ---------- */
+  & .site-header {
+    position: static;
+    background: transparent;
+    border-bottom: 0;
+    backdrop-filter: none;
+  }
+  & .header-inner {
+    width: min(var(--pp-sheet), calc(100% - 32px));
+    min-height: 60px;
+  }
+  & .wordmark {
+    letter-spacing: 0;
+    color: var(--pp-ink);
+  }
+  & .pp-wordmark {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--pp-ink);
+  }
+  & .desktop-nav {
+    gap: 22px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  & .desktop-nav a {
+    padding-block: 12px;
+    color: var(--pp-ink);
+  }
+  & .desktop-nav [aria-current="page"],
+  & .desktop-nav a:hover {
+    color: var(--pp-link);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  & .theme-toggle {
+    min-height: 40px;
+    padding: 0 12px;
+    border: 1px solid var(--pp-ink);
+    border-radius: 0;
+    background: transparent;
+    color: var(--pp-ink);
+    font-size: 12px;
+    font-weight: 500;
+  }
+  & .theme-toggle:hover {
+    background: var(--pp-paper);
+    border-color: var(--pp-ink);
+    color: var(--pp-ink);
+  }
+  & .mobile-menu summary {
+    border-radius: 0;
+    border-color: var(--pp-ink);
+    background: transparent;
+    font-size: 12px;
+  }
+  & .mobile-menu nav {
+    border-radius: 0;
+    background: var(--pp-paper);
+    box-shadow: var(--pp-shadow);
+  }
+
+  /* ---------- The sheet: main and footer together form one paper ---------- */
+  & main {
+    container: sheet / inline-size;
+    max-width: var(--pp-sheet);
+    /* -1px closes the sub-pixel seam with the footer below. */
+    margin: 4px auto -1px;
+    padding: 30px var(--pp-pad-x) 8px;
+    background: var(--pp-paper);
+    box-shadow: var(--pp-shadow);
+    /* Clip only the bottom edge's shadow; the sides stay open for margin notes. */
+    clip-path: inset(-60px -400px 0 -400px);
+  }
+  & .site-footer {
+    max-width: var(--pp-sheet);
+    margin: 0 auto 48px;
+    padding: 8px var(--pp-pad-x) 30px;
+    background: var(--pp-paper);
+    border-top: 0;
+    box-shadow: var(--pp-shadow);
+    clip-path: inset(0 -400px -60px -400px);
+  }
+  & main .container,
+  & .site-footer .container {
+    width: auto;
+    margin-inline: 0;
+  }
+
+  /* Running head */
+  & .pp-rh {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--pp-muted);
+    padding-bottom: 6px;
+    border-bottom: 0.75px solid var(--pp-rule);
+  }
+
+  /* ---------- Buttons ---------- */
+  & .pp-btn,
+  & .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 18px;
+    border: 1px solid var(--pp-ink);
+    border-radius: 0;
+    background: transparent;
+    color: var(--pp-ink);
+    font: 500 13px/1 var(--pp-serif);
+    text-decoration: none;
+    box-shadow: none;
+  }
+  & .pp-btn:hover,
+  & .button:hover {
+    background: var(--pp-desk);
+    color: var(--pp-ink);
+  }
+  & .pp-btn.primary,
+  & .button.primary {
+    background: var(--pp-ink);
+    border-color: var(--pp-ink);
+    color: var(--pp-paper);
+  }
+  & .pp-actions,
+  & .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* ---------- Title page ---------- */
+  & .pp-title {
+    display: grid;
+    gap: 10px;
+    justify-items: center;
+    text-align: center;
+    padding: 34px 0 8px;
+  }
+  & .pp-title h1 {
+    font-size: clamp(28px, 4vw, 40px);
+    line-height: 1.12;
+    font-weight: 600;
+    text-wrap: balance;
+    max-width: 26ch;
+    margin: 0;
+  }
+  & .pp-author {
+    font-size: 17px;
+    margin: 4px 0 0;
+  }
+  & .pp-aff {
+    font-size: 14px;
+    font-style: italic;
+    color: var(--pp-muted);
+    margin: 0;
+  }
+  & sup {
+    font-size: 0.7em;
+    line-height: 0;
+  }
+  & .pp-title .pp-actions {
+    justify-content: center;
+    margin: 8px 0 4px;
+  }
+  & .pp-abstract {
+    text-align: left;
+    margin: 18px 52px 0;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  & .pp-lab {
+    font-weight: 700;
+    font-size: 0.86em;
+  }
+  & .pp-hl {
+    color: var(--pp-ink);
+    padding: 0 2px;
+    background: linear-gradient(var(--pp-highlight), var(--pp-highlight)) no-repeat;
+    background-size: 100% 100%;
+    /* `backwards`, not `both`: the finished sweep releases itself, so no
+       animation lingers once the mark is in place. */
+    animation: pp-sweep 400ms ease-out backwards;
+  }
+
+  /* ---------- Sections and running text ---------- */
+  & .pp-sec {
+    margin-top: 34px;
+  }
+  & .pp-h2 {
+    display: flex;
+    font-size: 17px;
+    line-height: 1.3;
+    font-weight: 700;
+    margin: 0 0 10px;
+    break-after: avoid;
+  }
+  & .pp-n {
+    flex: none;
+    width: 22px;
+  }
+  & .pp-body p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  & .pp-body p + p {
+    text-indent: 1.2em;
+  }
+  & .pp-body a,
+  & .pp-bio a,
+  & .pp-fn a,
+  & .pp-table td a,
+  & .prose a {
+    color: var(--pp-link);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+  & .pp-cols {
+    column-count: 2;
+    column-gap: 34px;
+  }
+  & .pp-flash {
+    background-color: var(--pp-highlight);
+    transition: background-color 300ms;
+  }
+
+  /* Margin notes: in the desk margin when there is room, inline otherwise. */
+  & .pp-noted {
+    position: relative;
+  }
+  & .pp-note {
+    margin-top: 6px;
+    font-size: 13px;
+    line-height: 1.4;
+    font-style: italic;
+    color: var(--pp-muted);
+  }
+
+  /* ---------- Figure ---------- */
+  & .pp-fig {
+    container-type: inline-size;
+    margin: 26px 0;
+  }
+  & .pp-fig svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  & .pp-fig-v {
+    display: none !important;
+    max-width: 280px;
+  }
+  & .pp-fig figcaption {
+    margin-top: 8px;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  & .pp-box {
+    fill: var(--pp-paper);
+    stroke: var(--pp-ink);
+    stroke-width: 1;
+  }
+  & .pp-box.hot {
+    stroke: var(--pp-link);
+    stroke-width: 1.6;
+  }
+  & .pp-lbl {
+    font: 13px var(--pp-serif);
+    fill: var(--pp-ink);
+  }
+  & .pp-lbl.hot {
+    fill: var(--pp-link);
+    text-decoration: underline;
+  }
+  & .pp-ann {
+    font: italic 13px var(--pp-serif);
+    fill: var(--pp-muted);
+  }
+  & .pp-arrow {
+    fill: none;
+    stroke: var(--pp-ink);
+    stroke-width: 1;
+  }
+  & .pp-ink-fill {
+    fill: var(--pp-ink);
+  }
+
+  /* ---------- Booktabs tables ---------- */
+  & .pp-table {
+    overflow-x: auto;
+    margin: 26px 0;
+  }
+  & .pp-table table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    border-top: 1.5px solid var(--pp-rule);
+    border-bottom: 1.5px solid var(--pp-rule);
+  }
+  & .pp-table caption {
+    caption-side: top;
+    text-align: left;
+    font-size: 13px;
+    line-height: 1.4;
+    padding-bottom: 8px;
+  }
+  & .pp-table th {
+    font-weight: 600;
+    text-align: left;
+    padding: 7px 12px;
+    border-bottom: 0.75px solid var(--pp-rule);
+  }
+  & .pp-table td {
+    padding: 6px 12px;
+    vertical-align: top;
+  }
+  & .pp-table :is(th, td):first-child {
+    padding-left: 0;
+  }
+  & .pp-table tbody tr:hover td {
+    background: var(--pp-desk);
+  }
+
+  /* ---------- Author biography and footnotes ---------- */
+  & .pp-bio {
+    display: grid;
+    grid-template-columns: 58px minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+    break-inside: avoid;
+  }
+  & .pp-bio img {
+    width: 58px;
+    height: 70px;
+    object-fit: cover;
+    filter: grayscale(1);
+  }
+  & .pp-bio p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.45;
+  }
+  & .pp-fn {
+    margin: 30px 0 0;
+    padding: 10px 0 0 18px;
+    border-top: 0.75px solid var(--pp-rule);
+    max-width: 60%;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--pp-muted);
+  }
+
+  /* ---------- Correspondence (the shared footer, as the foot of the sheet) ---------- */
+  & .contact-grid {
+    display: block;
+    padding-top: 30px;
+  }
+  & .pp-corr-title {
+    font-size: 17px;
+    font-weight: 700;
+    margin: 0 0 10px;
+  }
+  & .contact-actions {
+    display: grid;
+    gap: 10px;
+    justify-items: start;
+  }
+  & .contact-actions > p {
+    margin: 0;
+    font-size: 16px;
+  }
+  & .pp-corr-line .pp-addr {
+    font-weight: 600;
+    color: var(--pp-ink);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  & .copy-email {
+    min-height: 44px;
+    padding: 0 18px;
+    border: 1px solid var(--pp-ink);
+    background: var(--pp-ink);
+    color: var(--pp-paper);
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  & .copy-status:not(:empty) {
+    font-size: 13px;
+    color: var(--pp-muted);
+  }
+  & .footer-links {
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 0;
+  }
+  & .footer-links a {
+    min-height: 44px;
+    padding: 0 18px;
+    border: 1px solid var(--pp-ink);
+    font-size: 13px;
+    color: var(--pp-ink);
+  }
+  & .footer-links a:hover {
+    background: var(--pp-desk);
+  }
+  & .footer-base {
+    margin-top: 28px;
+    padding-block: 12px 0;
+    border-top: 0.75px solid var(--pp-rule);
+  }
+  & .footer-base .pp-wordmark {
+    font-size: 13px;
+  }
+  & .footer-base a {
+    font-size: 13px;
+  }
+
+  /* ---------- Other pages: shared markup, set as papers ---------- */
+  & .section {
+    padding-block: 0;
+  }
+  & .page-intro {
+    padding: 34px 0 8px;
+    text-align: center;
+  }
+  & .page-intro h1,
+  & .case-header h1 {
+    font-size: clamp(28px, 4vw, 40px);
+    line-height: 1.12;
+    font-weight: 600;
+    text-wrap: balance;
+    max-width: 26ch;
+    margin: 0 auto 12px;
+  }
+  & .eyebrow {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--pp-muted);
+    margin-bottom: 10px;
+  }
+  & .large-copy,
+  & .page-intro .large-copy {
+    font-size: 16px;
+    line-height: 1.5;
+    max-width: 66ch;
+    margin-inline: auto;
+    color: var(--pp-ink);
+  }
+  & .text-link {
+    color: var(--pp-link);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* Projects page: the filter above the Table of results */
+  & .projects-index {
+    padding-top: 10px;
+  }
+  & .filter-bar {
+    justify-content: flex-start;
+    border-bottom: 0;
+    padding: 8px 0 0;
+    margin: 0;
+  }
+  & .filter-bar select {
+    border-radius: 0;
+    border: 1px solid var(--pp-ink);
+    background: var(--pp-paper);
+    min-height: 40px;
+    font-family: var(--pp-serif);
+  }
+
+  /* Case study */
+  & .case-study {
+    padding: 10px 0 20px;
+  }
+  & .back-link {
+    margin-bottom: 0;
+    font-size: 13px;
+    color: var(--pp-link);
+  }
+  & .case-header {
+    max-width: none;
+    text-align: center;
+    padding-top: 10px;
+  }
+  & .case-facts {
+    justify-content: center;
+    gap: 6px 18px;
+    margin: 14px 0;
+    font-style: italic;
+  }
+  & .case-facts > div {
+    flex-direction: row;
+    gap: 6px;
+    font-size: 14px;
+  }
+  & .case-facts span,
+  & .case-facts strong,
+  & .case-facts time {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--pp-muted);
+  }
+  & .case-header .hero-actions {
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  & .pp-fig.mode-minimal + .project-media {
+    display: none;
+  }
+  & .case-body {
+    display: block;
+  }
+  & .case-aside {
+    display: grid;
+    gap: 2px;
+    padding: 10px 0;
+    margin-bottom: 18px;
+    border-top: 0.75px solid var(--pp-rule);
+    border-bottom: 0.75px solid var(--pp-rule);
+    font-size: 13px;
+  }
+  & .case-aside h2,
+  & .case-contents h2 {
+    font-size: 13px;
+    font-weight: 700;
+    margin: 6px 0 0;
+  }
+  & .case-contents {
+    margin: 0;
+  }
+  & .case-contents ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 14px;
+    margin: 0;
+    color: var(--pp-ink);
+    font-size: 13px;
+  }
+  & .case-contents a,
+  & .case-skills a {
+    color: var(--pp-link);
+    min-height: 32px;
+  }
+  & .case-skills {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0 12px;
+  }
+  & .prose {
+    max-width: 66ch;
+    margin-inline: auto;
+    counter-reset: pp-sec;
+  }
+  & .prose li {
+    color: var(--pp-ink);
+    line-height: 1.5;
+    margin-bottom: 4px;
+  }
+  & .prose h2 {
+    font-size: 17px;
+    font-weight: 700;
+    margin: 26px 0 8px;
+  }
+  & .prose h2::before {
+    counter-increment: pp-sec;
+    content: counter(pp-sec);
+    display: inline-block;
+    width: 22px;
+  }
+  & .prose p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  & .prose p + p {
+    text-indent: 1.2em;
+  }
+  & .pp-refs {
+    max-width: 66ch;
+    margin: 28px auto 0;
+  }
+  & .pp-refs ol {
+    margin: 0;
+    padding-left: 30px;
+    font-size: 15px;
+  }
+  & .pp-refs a {
+    color: var(--pp-link);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* About */
+  & .about-page {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+    padding-top: 20px;
+  }
+  & .about-page > img {
+    width: 120px;
+    filter: grayscale(1);
+    border-radius: 0;
+  }
+  & .about-page .prose {
+    margin: 0;
+  }
+  & .about-page ul {
+    padding-left: 20px;
+  }
+
+  /* Credentials and empty states */
+  & .credential-section {
+    padding-top: 20px;
+  }
+  & .credential-section > h2 {
+    font-size: 17px;
+    font-weight: 700;
+  }
+  & .credential-card {
+    border-radius: 0;
+    border: 0;
+    border-top: 1.5px solid var(--pp-rule);
+    border-bottom: 1.5px solid var(--pp-rule);
+    box-shadow: none;
+    background: transparent;
+  }
+  & .empty-state {
+    border-radius: 0;
+    border: 0;
+    background: transparent;
+    padding: 10px 0;
+    text-align: left;
+  }
+  & .empty-state > svg {
+    display: none;
+  }
+  & .empty-state h3 {
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  /* 404 */
+  & .error-page {
+    min-height: 0;
+    padding-bottom: 30px;
+  }
+  & .error-page .hero-actions {
+    justify-content: center;
+    margin: 20px 0 0;
+  }
+}
+
+@keyframes pp-sweep {
+  from {
+    background-size: 0 100%;
+  }
+  to {
+    background-size: 100% 100%;
+  }
+}
+
+/* Justify only in the wide two-column layout, and only with hyphenation. */
+@supports (hyphens: auto) {
+  :root:not([data-theme="f1"]) .pp-cols p,
+  :root:not([data-theme="f1"]) .pp-abstract {
+    text-align: justify;
+    hyphens: auto;
+  }
+}
+@container sheet (max-width: 700px) {
+  :root:not([data-theme="f1"]) .pp-cols {
+    column-count: 1;
+  }
+  :root:not([data-theme="f1"]) .pp-cols p,
+  :root:not([data-theme="f1"]) .pp-abstract {
+    text-align: left;
+  }
+  :root:not([data-theme="f1"]) .pp-abstract {
+    margin-inline: 0;
+  }
+  :root:not([data-theme="f1"]) .pp-fn {
+    max-width: none;
+  }
+}
+/* The horizontal figure never scales its 13px labels down: below its natural
+   width it is replaced by the vertical drawing. */
+@container (max-width: 851px) {
+  :root:not([data-theme="f1"]) .pp-fig-h {
+    display: none !important;
+  }
+  :root:not([data-theme="f1"]) .pp-fig-v {
+    display: block !important;
+  }
+}
+:root:not([data-theme="f1"]) .pp-fig-tall .pp-fig-h {
+  display: none !important;
+}
+:root:not([data-theme="f1"]) .pp-fig-tall .pp-fig-v {
+  display: block !important;
+}
+/* Margin notes need the desk margin: 980px sheet plus two 140px margins. */
+@media (min-width: 1260px) {
+  :root:not([data-theme="f1"]) .pp-note {
+    position: absolute;
+    top: 2px;
+    right: calc(100% + var(--pp-pad-x) + 24px);
+    width: 116px;
+    margin: 0;
+    text-align: right;
+  }
+}
+/* Narrowest phones: the uppercase bar labels must still fit beside each other. */
+@media (max-width: 420px) {
+  :root:not([data-theme="f1"]) .header-inner {
+    width: calc(100% - 24px);
+    gap: 8px;
+  }
+  :root:not([data-theme="f1"]) .header-actions {
+    gap: 6px;
+  }
+  :root:not([data-theme="f1"]) .pp-wordmark {
+    font-size: 13px;
+  }
+  :root:not([data-theme="f1"]) .theme-toggle,
+  :root:not([data-theme="f1"]) .mobile-menu summary {
+    padding-inline: 8px;
+    letter-spacing: 0.02em;
+  }
+}
+@media (max-width: 760px) {
+  :root:not([data-theme="f1"]) {
+    --pp-pad-x: 20px;
+  }
+  :root:not([data-theme="f1"]) main,
+  :root:not([data-theme="f1"]) .site-footer {
+    box-shadow: none;
+    clip-path: none;
+    margin-inline: 0;
+  }
+  :root:not([data-theme="f1"]) .site-footer {
+    margin-bottom: 0;
+  }
+  :root:not([data-theme="f1"]) .pp-actions .pp-btn,
+  :root:not([data-theme="f1"]) .hero-actions .button {
+    flex: 1 1 100%;
+  }
+  :root:not([data-theme="f1"]) .about-page {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-theme="f1"]) .pp-hl {
+    animation: none;
+  }
+  :root:not([data-theme="f1"]) .pp-flash {
+    background-color: transparent;
+    transition: none;
+  }
+}
+
+/* Print: a recruiter who presses Print gets a clean paper. */
+@media print {
+  :root:not([data-theme="f1"]) body {
+    background: #fff;
+  }
+  :root:not([data-theme="f1"]) .site-header,
+  :root:not([data-theme="f1"]) .copy-email,
+  :root:not([data-theme="f1"]) .pp-note,
+  :root:not([data-theme="f1"]) .skip-link,
+  :root:not([data-theme="f1"]) .back-link {
+    display: none !important;
+  }
+  :root:not([data-theme="f1"]) main,
+  :root:not([data-theme="f1"]) .site-footer {
+    max-width: none;
+    margin: 0;
+    padding-inline: 0;
+    box-shadow: none;
+    clip-path: none;
+  }
+  :root:not([data-theme="f1"]) :is(.pp-body, .prose, .pp-fn, .pp-refs) a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: var(--pp-muted);
+  }
+  :root:not([data-theme="f1"]) :is(figure, table, .pp-bio) {
+    break-inside: avoid;
+  }
+}

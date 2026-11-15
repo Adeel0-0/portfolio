@@ -1,6 +1,9 @@
 ---
+import "@fontsource-variable/stix-two-text/wght.css";
+import "@fontsource-variable/stix-two-text/wght-italic.css";
 import "../styles/site.css";
 import "../styles/modes.css";
+import "../styles/preprint.css";
 import "../styles/transition.css";
 import "../styles/boot.css";
 import { person } from "../data/site";
@@ -11,10 +14,13 @@ import { resumeHref } from "../lib/content";
 interface Props {
   title?: string;
   description?: string;
+  /** Left side of the Preprint running head: what this sheet is. */
+  runningHead?: string;
 }
 const {
   title = "Mohammad Adeel — AI & software engineer",
   description = person.introduction,
+  runningHead = "Portfolio",
 } = Astro.props;
 const path = Astro.url.pathname;
 const canonical = new URL(path, Astro.site);
@@ -42,12 +48,13 @@ const links = [
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{title}</title>
     <script is:inline define:vars={{ themeColors: THEME_COLORS }}>
-      // Mode precedence: an explicit ?mode=f1|minimal URL choice, then the
-      // remembered choice, then Minimal. A URL choice is also remembered.
+      // Mode precedence: an explicit ?mode=f1|preprint URL choice (minimal is
+      // the old name of preprint, kept for shared links), then the remembered
+      // choice, then Preprint. A URL choice is also remembered.
       let mode = null;
       try {
         const param = new URLSearchParams(location.search).get("mode");
-        if (param === "f1" || param === "minimal") {
+        if (param === "f1" || param === "preprint" || param === "minimal") {
           mode = param === "f1" ? "f1" : "professional";
           try {
             localStorage.setItem("portfolio-theme", mode);
@@ -125,8 +132,9 @@ const links = [
     <div id="site-shell">
       <header class="site-header">
         <div class="header-inner">
-          <a class="wordmark" href="/" aria-label="Mohammad Adeel, home">
-            adeel<span aria-hidden="true">.</span>
+          <a class="wordmark" href="/" aria-label="adeel.cloud, Mohammad Adeel, home">
+            <data class="mode-f1">adeel<span aria-hidden="true">.</span></data><b
+              class="mode-minimal pp-wordmark">adeel.cloud</b>
           </a>
           <nav class="desktop-nav" aria-label="Main navigation">
             {links.map((link) => (
@@ -179,11 +187,15 @@ const links = [
         </div>
       </header>
       <main id="main" tabindex="-1">
+        <div class="pp-rh mode-minimal">
+          <span>{runningHead}</span>
+          <span>{person.displayName}</span>
+        </div>
         <slot />
       </main>
       <footer id="contact" class="site-footer">
         <div class="container contact-grid">
-          <div>
+          <div class="mode-f1">
             <p class="eyebrow">Let’s build something useful</p>
             <h2>
               Good work starts
@@ -191,8 +203,13 @@ const links = [
               with a conversation.
             </h2>
           </div>
+          <h2 class="mode-minimal pp-corr-title">Correspondence</h2>
           <div class="contact-actions">
-            <a class="contact-email" href={`mailto:${person.email}`}>
+            <p class="mode-minimal pp-corr-line">
+              Correspondence:{" "}
+              <a class="pp-addr" href={`mailto:${person.email}`}>{person.email}</a>
+            </p>
+            <a class="contact-email mode-f1" href={`mailto:${person.email}`}>
               Send me an email <span aria-hidden="true">↗</span>
             </a>
             <p>
@@ -215,9 +232,10 @@ const links = [
         </div>
         <div class="container footer-base">
           <a class="wordmark" href="/">
-            adeel<span>.</span>
+            <data class="mode-f1">adeel<span>.</span></data><b
+              class="mode-minimal pp-wordmark">adeel.cloud</b>
           </a>
-          <p>Thoughtful software. A little racing spirit.</p>
+          <p class="mode-f1">Thoughtful software. A little racing spirit.</p>
           <a href="#main">Back to top ↑</a>
         </div>
       </footer>
@@ -238,6 +256,7 @@ const links = [
       import "../scripts/copy-email";
       import "../scripts/f1-backdrop";
       import "../scripts/racing-loader";
+      import "../scripts/xref";
     </script>
   </body>
 </html>

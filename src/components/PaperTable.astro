@@ -1,0 +1,58 @@
+---
+import type { CollectionEntry } from "astro:content";
+// All projects as a booktabs table. Rows carry data-project/data-skills so the
+// projects-page skill filter (src/scripts/filters.ts) can hide them.
+interface Props {
+  id: string;
+  number: number;
+  caption: string;
+  projects: CollectionEntry<"projects">[];
+  /** Add a Role column (the projects page). */
+  withRole?: boolean;
+  /** Footnote ids for projects with a public repository, keyed by project id. */
+  footnotes?: Record<string, number>;
+}
+const { id, number, caption, projects, withRole = false, footnotes = {} } =
+  Astro.props;
+const status = (s: string) =>
+  s === "in-progress" ? "In progress" : s[0].toUpperCase() + s.slice(1);
+---
+
+<div class="pp-table mode-minimal" id={id}>
+  <table>
+    <caption><b>Table {number}:</b> {caption}</caption>
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Project</th>
+        <th scope="col">Area</th>
+        {withRole && <th scope="col">Role</th>}
+        <th scope="col">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {projects.map((project, i) => (
+        <tr data-project data-skills={JSON.stringify(project.data.skills)}>
+          <td>{i + 1}</td>
+          <td>
+            <a href={`/projects/${project.id}/`}>{project.data.title}</a>
+            {footnotes[project.id] && (
+              <sup>
+                <a
+                  href={`#fn-${footnotes[project.id]}`}
+                  id={`fnref-${footnotes[project.id]}`}
+                  aria-label={`Footnote ${footnotes[project.id]}`}
+                >
+                  {footnotes[project.id]}
+                </a>
+              </sup>
+            )}
+          </td>
+          <td>{project.data.category}</td>
+          {withRole && <td>{project.data.role}</td>}
+          <td>{status(project.data.status)}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

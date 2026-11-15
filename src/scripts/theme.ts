@@ -55,12 +55,18 @@ if (toggle) {
         offset: current.getBoundingClientRect().top,
       };
     }
-    // Other pages show the same elements in both modes: keep the first
-    // project or heading that is on screen exactly where it is.
+    // Other pages share most elements between the modes: keep the first shared
+    // project or heading on screen exactly where it is. Parts only one mode
+    // shows (.mode-minimal / .mode-f1) cannot anchor, they vanish on switch.
     const element = [
       ...document.querySelectorAll("main :is([data-project], h1, h2, h3, figure)"),
     ]
-      .filter((el) => visible(el) && el.getBoundingClientRect().bottom > line)
+      .filter(
+        (el) =>
+          visible(el) &&
+          !el.closest(".mode-minimal, .mode-f1") &&
+          el.getBoundingClientRect().bottom > line,
+      )
       .sort(
         (a, b) =>
           Math.abs(a.getBoundingClientRect().top - line) -
@@ -86,7 +92,7 @@ if (toggle) {
   function syncUrl() {
     const url = new URL(location.href);
     if (!url.searchParams.has("mode")) return;
-    url.searchParams.set("mode", state.desired === "f1" ? "f1" : "minimal");
+    url.searchParams.set("mode", state.desired === "f1" ? "f1" : "preprint");
     history.replaceState(history.state, "", url);
   }
   function commit() {
@@ -133,7 +139,7 @@ if (toggle) {
       announcement.textContent =
         state.desired === "f1"
           ? "F1 mode enabled"
-          : "Minimal mode enabled";
+          : "Preprint mode enabled";
     document.dispatchEvent(
       new CustomEvent("portfolio:transition-end", {
         detail: {
