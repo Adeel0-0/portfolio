@@ -89,6 +89,9 @@
   & .header-inner {
     width: min(var(--pp-sheet), calc(100% - 32px));
     min-height: 60px;
+    /* Wrap rather than overflow when zoom leaves too little room. */
+    flex-wrap: wrap;
+    row-gap: 4px;
   }
   & .wordmark {
     letter-spacing: 0;
@@ -814,7 +817,7 @@
   }
   :root:not([data-theme="f1"]) .theme-toggle,
   :root:not([data-theme="f1"]) .mobile-menu summary {
-    padding-inline: 8px;
+    padding-inline: 5px;
     letter-spacing: 0.02em;
   }
 }
