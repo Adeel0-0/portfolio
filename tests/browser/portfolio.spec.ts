@@ -47,7 +47,7 @@ test("secondary pages remain accessible in both modes and at mobile width", asyn
     for (const theme of ["professional", "f1"]) {
       await expect(page.locator("body")).toHaveCSS(
         "color",
-        theme === "f1" ? "rgb(244, 245, 247)" : "rgb(29, 38, 44)",
+        theme === "f1" ? "rgb(244, 245, 247)" : "rgb(20, 20, 20)",
       );
       const results = await new AxeBuilder({ page }).analyze();
       expect(results.violations, route).toEqual([]);
@@ -163,7 +163,10 @@ test("main journeys and source-backed content are reachable", async ({
   );
   await expect(page.locator("#theme-toggle")).toBeVisible();
   await expect(page.locator(".f1-overlay")).toHaveCount(0);
-  await page.getByRole("link", { name: "All projects" }).click();
+  await page
+    .getByRole("navigation", { name: "Main navigation" })
+    .getByRole("link", { name: "Projects" })
+    .click();
   await expect(page).toHaveURL(/\/projects\//);
   await page
     .getByRole("link", { name: "Palm-tree detection", exact: true })
@@ -200,7 +203,8 @@ test("reduced-motion switch preserves filter, scroll and preference across pages
       const el = [
         ...document.querySelectorAll("main :is([data-project], h1, h2, h3, figure)"),
       ]
-        .filter((e) => (e as HTMLElement).offsetParent !== null && e.getBoundingClientRect().bottom > line)
+        // Same contract as theme.ts: only parts both modes show can anchor.
+        .filter((e) => (e as HTMLElement).offsetParent !== null && !e.closest(".mode-minimal, .mode-f1") && e.getBoundingClientRect().bottom > line)
         .sort(
           (x, y) =>
             Math.abs(x.getBoundingClientRect().top - line) -
@@ -298,7 +302,7 @@ test("both modes fit narrow screens and pass automated accessibility checks", as
     if (theme === "f1") await page.locator("#theme-toggle").click();
     await expect(page.locator("body")).toHaveCSS(
       "color",
-      theme === "f1" ? "rgb(244, 245, 247)" : "rgb(29, 38, 44)",
+      theme === "f1" ? "rgb(244, 245, 247)" : "rgb(20, 20, 20)",
     );
     const results = await new AxeBuilder({ page }).analyze();
     expect(results.violations).toEqual([]);
@@ -321,7 +325,8 @@ test("content and navigation remain usable without JavaScript", async ({
     .getByRole("navigation", { name: "Mobile navigation" })
     .getByRole("link", { name: "Projects" })
     .click();
-  await expect(page.locator("[data-project]")).toHaveCount(3);
+  // Both looks list the projects; without JavaScript only Preprint shows.
+  await expect(page.locator("[data-project]:visible")).toHaveCount(3);
   await context.close();
 });
 
