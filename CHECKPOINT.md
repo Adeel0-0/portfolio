@@ -1,12 +1,22 @@
 # Portfolio rebuild checkpoint
 
-## Preprint default look: 2026-11-15 (in progress)
+## Preprint default look: 2026-11-15 (implemented and committed; not pushed or deployed)
+
+- Final state: COMPLETE on branch `feat/preprint-default` (commits `23e35455`..`d4403785` plus the vcs-log/checkpoint commit). Writer: released (idle). Not pushed, no PR, not deployed: adeel.cloud still shows the old Minimal look.
+- Final checks: `npm run check` PASS; F1 pixel-identical to `c167cd98` on 14 page/size shots; `npm run test:browser` 107 passed / 4 skipped / 6 failed, the 6 being pre-existing F1 canvas tests in Firefox/WebKit that also fail on `main` (see `docs/vcs-log.md`).
+- Outstanding owner decisions: push the branch and open a PR (GitHub account Adeel0-0); content changes (copy is placeholder; NEW wording in `src/data/site.ts` `paper` awaits approval); whether to fix the pre-existing F1 Firefox/WebKit canvas failures.
+- Notes: without JavaScript the projects skill filter cannot filter a prerendered page, so all rows show (the form stays hidden). Real small caps could not be verified in the font file, so small caps are set as uppercase at 0.86em with letter spacing.
+
+## Preprint default look: build ledger (2026-11-15)
 
 - Objective: replace the Minimal look with the owner-approved **Preprint** design (a research paper on a desk). Design system: https://claude.ai/artifact/11pLepVzP2G45kuvpaooAX. F1 mode must stay exactly as it is; the boot terminal stays unchanged and its look is never used in the site.
 - Writer: Claude (desktop session), worktree `priceless-engelbart-dfb478`, branch `feat/preprint-default`, base `c167cd98` (main).
 - Approach: the internal theme id stays `professional` (storage compatibility, F1 code untouched). Preprint markup is rendered beside today's markup; today's markup shows only in F1 (`mode-f1`), the paper only in the default mode. Preprint CSS lives in its own file scoped to `:root:not([data-theme="f1"])`. URL `?mode=preprint`, with `minimal` kept as an alias.
 - Owner approvals: build go-ahead and the `@fontsource-variable/stix-two-text` download (2026-11-15).
-- Status: started. Next: baseline `npm run check`, font install, foundations.
+- Commits so far: `23e35455` writer claim, `149fe091` font dependency. Everything else below is uncommitted in the worktree (do not reset it).
+- Implemented (uncommitted): `src/styles/preprint.css` (new), `PipelineFigure.astro`, `PaperTable.astro`, `src/scripts/xref.ts` (new); home rebuilt as the paper (`index.astro`); projects table, case-study figure and references, running heads, 404 Erratum; shared header/footer restyled with mode-only spans in `SiteLayout.astro`; `?mode=preprint` (+ `minimal` alias); `paper` copy in `src/data/site.ts`; theme.ts anchors only shared elements on switch; filters.ts counts the visible list; docs (`CLAUDE.md`, `docs/design/DESIGN.md`); browser tests updated for Preprint.
+- Checks: `npm run check` PASS (0 errors, 50/50 unit, 8 pages, home JS 8.2 KB, F1 graphics 312.5 KB). F1 pixel-compared against a `c167cd98` build: identical on 7 routes x 2 widths. First full browser run: 72 passed / 32 failed / 4 skipped; failures were old-layout assertions (fixed in tests), a lingering highlighter animation (fixed: `backwards` fill) and a 19px header overflow at 320px (fixed). Open: Firefox/WebKit leave one `canvas` after mode switches in three tests; checking whether `main` has the same failure.
+- Next: full `npm run test:browser` rerun, commit in logical groups, `docs/vcs-log.md` entry, release writer.
 
 ## Two-mode redesign: 2026-11-05 (ready for owner review)
 
