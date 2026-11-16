@@ -2,7 +2,7 @@
 
 ## Preprint default look: 2026-11-15 (implemented and committed; not pushed or deployed)
 
-- Final state: COMPLETE on branch `feat/preprint-default` (commits `23e35455`..`d4403785` plus the vcs-log/checkpoint commit). Writer: released (idle). Not pushed, no PR, not deployed: adeel.cloud still shows the old Minimal look.
+- Final state: COMPLETE on branch `feat/preprint-default` (commits `23e35455`..`0ab2463d` plus this checkpoint commit). Writer: released (idle). Pushed 2026-11-16 at the owner's request; PR https://github.com/Adeel0-0/portfolio/pull/4 opened as Adeel0-0 and bound to the session. Not merged or deployed: adeel.cloud still shows the old Minimal look until #4 merges. CI runs Playwright in all three engines, so the pre-existing F1 Firefox/WebKit canvas failures are expected to fail CI there too.
 - Final checks: `npm run check` PASS; F1 pixel-identical to `c167cd98` on 14 page/size shots; `npm run test:browser` 107 passed / 4 skipped / 6 failed, the 6 being pre-existing F1 canvas tests in Firefox/WebKit that also fail on `main` (see `docs/vcs-log.md`).
 - Outstanding owner decisions: push the branch and open a PR (GitHub account Adeel0-0); content changes (copy is placeholder; NEW wording in `src/data/site.ts` `paper` awaits approval); whether to fix the pre-existing F1 Firefox/WebKit canvas failures.
 - Notes: without JavaScript the projects skill filter cannot filter a prerendered page, so all rows show (the form stays hidden). Real small caps could not be verified in the font file, so small caps are set as uppercase at 0.86em with letter spacing.
