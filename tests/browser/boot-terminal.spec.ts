@@ -2,9 +2,26 @@ import { test, expect, type Page } from "@playwright/test";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
-// CI-only failures here have not reproduced locally. On failure, print what
-// the page was doing: whether timers kept firing (heartbeat), how far the
-// counter got, and the boot state.
+// A freshly launched CI browser freezes its first page for ~15 s while its
+// software graphics stack (SwiftShader) starts up: the heartbeat below showed
+// timers at 0.5 s and then not again until 15-17 s (CI run 19). The boot
+// itself was on time. Warm each worker's browser once, with the boot marked
+// seen and a canvas drawn, so the timing tests measure the boot, not startup.
+test.beforeAll(async ({ browser }) => {
+  test.setTimeout(90_000);
+  const page = await browser.newPage();
+  await page.addInitScript(() => sessionStorage.setItem("preloader:seen", "1"));
+  await page.goto("/");
+  await page.evaluate(() => {
+    const canvas = document.createElement("canvas");
+    canvas.getContext("2d")?.fillRect(0, 0, 1, 1);
+    return new Promise((done) => requestAnimationFrame(() => done(null)));
+  });
+  await page.close();
+});
+
+// On failure, print what the page was doing: whether timers kept firing
+// (heartbeat), how far the counter got, and the boot state.
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     const t0 = performance.now();
