@@ -2,6 +2,37 @@ import { test, expect, type Page } from "@playwright/test";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
+// CI-only failures here have not reproduced locally. On failure, print what
+// the page was doing: whether timers kept firing (heartbeat), how far the
+// counter got, and the boot state.
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    const t0 = performance.now();
+    const beats: number[] = [];
+    Object.assign(window, { bootBeats: beats });
+    const beat = () => {
+      beats.push(Math.round(performance.now() - t0));
+      if (beats.length < 40) setTimeout(beat, 500);
+    };
+    setTimeout(beat, 500);
+  });
+});
+test.afterEach(async ({ page }, testInfo) => {
+  if (testInfo.status === testInfo.expectedStatus) return;
+  const state = await page
+    .evaluate(() => ({
+      at: Math.round(performance.now()),
+      readyState: document.readyState,
+      preloader: document.documentElement.dataset.preloader ?? null,
+      overlays: document.querySelectorAll(".boot-terminal").length,
+      percent: document.querySelector(".boot-percent")?.textContent ?? null,
+      seen: sessionStorage.getItem("preloader:seen"),
+      beats: (window as unknown as { bootBeats?: number[] }).bootBeats,
+    }))
+    .catch((error: Error) => ({ unavailable: error.message }));
+  console.log(`BOOT-DIAG ${testInfo.title}: ${JSON.stringify(state)}`);
+});
+
 // The boot terminal plays once per tab on arrival. Every exit must leave an
 // ordinary page: no overlay, no canvas, no page-hiding attribute or transform.
 // Generous timeout: the sequence runs ~3 s and the inline ceiling is ~5.7 s.

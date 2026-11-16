@@ -66,6 +66,9 @@ test("all routes fit both themes at every supported test width", async ({
         await page.setViewportSize({ width, height: 900 });
         await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
         const result = await page.evaluate(async () => {
+          // A lazy image below the fold may not have started loading yet;
+          // load it now so "broken" means broken, not merely deferred.
+          for (const image of document.images) image.loading = "eager";
           await Promise.all(
             [...document.images].map((image) => image.decode().catch(() => {})),
           );
