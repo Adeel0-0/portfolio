@@ -99,7 +99,7 @@ test("the Preprint path requests no 3D code until F1 asks for it", async ({
   expect(requested.filter((u) => !u.startsWith("http://127.0.0.1"))).toEqual([]);
 });
 
-test("3D track opens on request, selects projects and releases its canvas", async ({
+test("3D track opens on request, selects projects and releases its canvas", { tag: "@webgl" }, async ({
   page,
 }) => {
   await startInF1(page);
@@ -152,7 +152,7 @@ test("3D track falls back to the map without WebGL or when loading fails", async
   await expect(page.locator(".circuit-svg")).toBeVisible();
 });
 
-test("a failed 3D import leaves the map usable", async ({ page }) => {
+test("a failed 3D import leaves the map usable", { tag: "@webgl" }, async ({ page }) => {
   await startInF1(page);
   await page.route(/circuit-scene/, (route) => route.abort());
   await page.goto("/");

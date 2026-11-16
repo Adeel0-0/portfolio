@@ -61,7 +61,7 @@ test("secondary pages remain accessible in both modes and at mobile width", asyn
   }
 });
 
-test("cinematic renders and twenty switches leave no temporary resources", async ({
+test("cinematic renders and twenty switches leave no temporary resources", { tag: "@webgl" }, async ({
   page,
   browserName,
 }, testInfo) => {

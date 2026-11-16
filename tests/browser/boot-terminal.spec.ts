@@ -2,23 +2,6 @@ import { test, expect, type Page } from "@playwright/test";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
-// In CI, a freshly launched browser freezes the first page that draws the
-// boot's full-screen effects for 12-17 s while its software graphics
-// (SwiftShader) prepare them: the heartbeat below showed timers at 0.5 s and
-// then not again until 12-17 s (CI runs 19-20), whereas a page without the
-// boot did not freeze. The boot itself finished correctly. Warm each worker's
-// browser by playing the boot once to the end, so the timing tests measure
-// the boot rather than that one-time preparation.
-test.beforeAll(async ({ browser }) => {
-  test.setTimeout(120_000);
-  const page = await browser.newPage();
-  await page.goto("/");
-  await expect(page.locator(".boot-terminal")).toHaveCount(0, {
-    timeout: 90_000,
-  });
-  await page.close();
-});
-
 // On failure, print what the page was doing: whether timers kept firing
 // (heartbeat), how far the counter got, and the boot state.
 test.beforeEach(async ({ page }) => {

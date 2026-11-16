@@ -36,14 +36,31 @@ export default defineConfig({
     },
   ],
   projects: [
+    // Chromium runs twice. Forcing SwiftShader gives tests WebGL on machines
+    // without a GPU, but it also renders every blur on the CPU: in CI it froze
+    // pages that animate under the boot terminal's frosted glass for 12-21 s
+    // (CI runs 19-21). So only the tests tagged @webgl get SwiftShader; every
+    // other test uses Chromium's normal rendering.
     {
       name: "chromium",
+      grepInvert: /@webgl/,
       use: {
         ...devices["Desktop Chrome"],
         channel: process.env.CI ? undefined : "chrome",
         launchOptions: {
           // Opt-in for machines with a preinstalled Chromium that differs from
           // the pinned Playwright build. Unset in CI.
+          executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH || undefined,
+        },
+      },
+    },
+    {
+      name: "chromium-webgl",
+      grep: /@webgl/,
+      use: {
+        ...devices["Desktop Chrome"],
+        channel: process.env.CI ? undefined : "chrome",
+        launchOptions: {
           executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH || undefined,
           args: [
             "--use-gl=angle",
