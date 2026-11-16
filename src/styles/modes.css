@@ -1,5 +1,6 @@
 /* Two compositions over one content model. Without JavaScript the page is
-   always Minimal (data-theme="professional"), so F1-only blocks never show. */
+   always the default look, Preprint (data-theme="professional"), so F1-only
+   blocks never show. `.mode-minimal` marks default-only blocks. */
 :root:not([data-theme="f1"]) .mode-f1,
 :root[data-theme="f1"] .mode-minimal {
   display: none !important;

@@ -7,6 +7,18 @@ All significant commits, architectural reorganizations, and cross-agent updates 
 
 ## Log Entries
 
+### [2026-11-15] - Preprint: the research-paper look becomes the default
+- **Commits**: `23e35455` (writer claim), `149fe091` (STIX Two Text font), `38da2547` (feature), `65a5b70e` (tests), `d9c14f5b` (docs), `d4403785` (top-bar fix), plus this log entry.
+- **Agent**: Claude (Claude Code desktop session)
+- **Branch**: `feat/preprint-default`, base `c167cd98` (main)
+- **Scope**: `src/styles/preprint.css`, `src/components/{PipelineFigure,PaperTable}.astro`, `src/scripts/xref.ts`, `src/layouts/SiteLayout.astro`, all pages, `src/data/site.ts`, `src/lib/theme-state.ts`, `src/scripts/{theme,filters}.ts`, `src/styles/modes.css`, `package.json`/lock, browser tests, `CLAUDE.md`, `docs/design/DESIGN.md`.
+- **Summary**: Owner-approved Preprint design (https://claude.ai/artifact/11pLepVzP2G45kuvpaooAX) replaces the Minimal look: a paper on a desk, STIX Two Text, home as one paper (title page, §1 figure and booktabs table, §2, §3 bio, footnotes, Correspondence), Table of results, case studies as papers, Erratum 404, print stylesheet. `?mode=preprint` added, `?mode=minimal` kept as alias; internal id stays `professional`. F1 untouched: Preprint CSS is scoped to `:root:not([data-theme="f1"])`.
+- **Verification Status** (Node 24.22.0, local):
+  - `npm run check`: PASS (astro check 0 errors/warnings, eslint, vitest 50/50, build 8 pages / 247 refs, home JS 8.2 KB gzip, optional F1 graphics 312.5 KB gzip, unchanged).
+  - F1 pixel comparison against a `c167cd98` build (Playwright Chromium, reduced motion, 7 routes x 1366/390 px): 0 differing pixels on all 14.
+  - `npm run test:browser` (Chromium, Firefox, WebKit): 107 passed, 4 skipped, 6 failed. All 6 are pre-existing on `main`: the F1 transition tests "Skip, Tab, scroll and context loss", "rapid reversal" and "late preparation" find a leftover `canvas` in Firefox and WebKit. `main` fails the same tests (5 of 6 in one run; the WebKit Skip/Tab test fails 2 of 4 repeats on `main`). The two-mode redesign was only verified in Chromium before; not fixed here because it is F1 code.
+  - Not run: real devices, screen readers, Lighthouse, print output on paper.
+
 ### [2026-11-05] - UI Polish: Projects Grid and Mobile Case Studies
 - **Commit**: `1f9f19e8`
 - **Agent**: Claude (Claude Code cloud session)

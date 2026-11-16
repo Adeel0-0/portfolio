@@ -1,6 +1,7 @@
 export type Theme = "professional" | "f1";
 export const THEME_COLORS: Record<Theme, string> = {
-  professional: "#f5f4f0",
+  // The internal id stays "professional" for stored choices; it is the Preprint look.
+  professional: "#e9e6df",
   f1: "#0b0c0f",
 };
 export function parseTheme(value: string | null): Theme {

@@ -1,5 +1,17 @@
 # Two-mode portfolio: design record
 
+> **Update 2026-11-15: the default look is now Preprint.** The owner approved
+> the Preprint design system (https://claude.ai/artifact/11pLepVzP2G45kuvpaooAX):
+> the site typeset as a research paper on a desk, in STIX Two Text, with a
+> numbered home paper (title page, §1 figure and booktabs table, §2, §3,
+> correspondence, footnotes) and a print stylesheet. It replaces the Minimal
+> look described below; the F1 sections of this record still hold, and F1 was
+> verified pixel-identical after the change. Preprint styles live in
+> `src/styles/preprint.css`, scoped to `:root:not([data-theme="f1"])`. The
+> internal theme id stays `professional`; `?mode=preprint` (and the old
+> `?mode=minimal`) select it. The boot terminal is unchanged and its look is
+> never used inside the site.
+
 Date: 2026-11-05. Source brief: owner's `PORTFOLIO-REDESIGN-PROMPT.md`, with the
 owner's adjustments of the same day: CI/CD-friendly, pictures and YouTube videos
 added later by the owner, and F1 entered through the existing single toggle with

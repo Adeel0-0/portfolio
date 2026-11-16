@@ -1,6 +1,7 @@
 # portfolio
 
-Astro + TypeScript portfolio with a professional default and optional F1 mode.
+Astro + TypeScript portfolio with a Preprint default (a research paper on a
+desk; internal theme id `professional`) and optional F1 mode.
 
 ## Architecture (Astro rebuild approved 2026-10-17; legacy retired 2026-10-24)
 
@@ -26,6 +27,10 @@ Astro + TypeScript portfolio with a professional default and optional F1 mode.
   decides before first paint and has its own deadline. Keep fixed chrome
   outside `#site-shell`, which the hand-off transforms.
 - Styling tokens live in `src/styles/site.css`; transition-only CSS is separate.
+  The Preprint look (owner-approved 2026-11-15) lives in `src/styles/preprint.css`,
+  scoped to `:root:not([data-theme="f1"])`, so F1 never sees it. Preprint-only
+  markup carries `mode-minimal`, F1-only markup `mode-f1`; shared markup is
+  restyled. Never let a Preprint change alter F1: compare F1 screenshots.
   Both modes share content, routes and links. Owner decision 2026-11-05:
   F1 may use its own composition (home pit wall, case-study rail); keep
   the single toggle and its transition. See `docs/design/DESIGN.md`.

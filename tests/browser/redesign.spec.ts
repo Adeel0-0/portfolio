@@ -15,12 +15,12 @@ const mode = (page: Page) => page.locator("html").getAttribute("data-theme");
 const startInF1 = (page: Page) =>
   page.addInitScript(() => localStorage.setItem("portfolio-theme", "f1"));
 
-test("mode precedence: URL choice, then remembered choice, then Minimal", async ({
+test("mode precedence: URL choice, then remembered choice, then Preprint", async ({
   page,
 }) => {
   await page.goto("/");
   expect(await mode(page)).toBe("professional");
-  await expect(page.locator("#hero")).toBeVisible();
+  await expect(page.locator("#sec-intro")).toBeVisible();
   await expect(page.locator("#circuit")).toBeHidden();
 
   await page.goto("/projects/sefgh/?mode=f1");
@@ -32,7 +32,10 @@ test("mode precedence: URL choice, then remembered choice, then Minimal", async 
   await page.goto("/about/");
   expect(await mode(page)).toBe("f1"); // remembered
 
-  await page.goto("/?mode=minimal");
+  await page.goto("/?mode=preprint");
+  expect(await mode(page)).toBe("professional");
+  await page.goto("/?mode=f1");
+  await page.goto("/?mode=minimal"); // the old name of Preprint still works
   expect(await mode(page)).toBe("professional");
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.locator("#theme-toggle").click();
@@ -47,7 +50,7 @@ test("F1 has its own composition; the timing tower works by keyboard", async ({
   await startInF1(page);
   await page.goto("/");
   await expect(page.locator("#circuit")).toBeVisible();
-  await expect(page.locator("#hero")).toBeHidden();
+  await expect(page.locator("#sec-intro")).toBeHidden();
   await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
 
   const rows = page.locator(".timing-row");
@@ -77,7 +80,7 @@ test("F1 has its own composition; the timing tower works by keyboard", async ({
   await expect(page.locator("#circuit")).toBeVisible();
 });
 
-test("the Minimal path requests no 3D code until F1 asks for it", async ({
+test("the Preprint path requests no 3D code until F1 asks for it", async ({
   page,
 }) => {
   const requested: string[] = [];
@@ -187,11 +190,16 @@ test("switching modes keeps the visitor on the same section", async ({ page }) =
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
   await page.evaluate(() => document.fonts.ready);
-  for (const id of ["garage", "about"]) {
+  // Each look has its own section elements, matched by data-section key:
+  // scroll to one in the current look, switch, and expect its counterpart.
+  for (const [from, id] of [
+    ["sec-skills", "capabilities"],
+    ["about", "sec-about"],
+  ]) {
     await page.evaluate((target) => {
       const el = document.getElementById(target)!;
       scrollTo({ top: el.getBoundingClientRect().top + scrollY - 100, behavior: "instant" });
-    }, id);
+    }, from);
     // Keyboard activation: Playwright's click() would first scroll the page
     // to reach the sticky header, changing which section is in view.
     await page.locator("#theme-toggle").evaluate((el) =>
@@ -212,7 +220,7 @@ test("switching modes keeps the visitor on the same section", async ({ page }) =
   }
 });
 
-test("racing easter eggs work in F1 and vanish in Minimal", async ({ page }) => {
+test("racing easter eggs work in F1 and vanish in Preprint", async ({ page }) => {
   await startInF1(page);
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
