@@ -2,20 +2,19 @@ import { test, expect, type Page } from "@playwright/test";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
-// A freshly launched CI browser freezes its first page for ~15 s while its
-// software graphics stack (SwiftShader) starts up: the heartbeat below showed
-// timers at 0.5 s and then not again until 15-17 s (CI run 19). The boot
-// itself was on time. Warm each worker's browser once, with the boot marked
-// seen and a canvas drawn, so the timing tests measure the boot, not startup.
+// In CI, a freshly launched browser freezes the first page that draws the
+// boot's full-screen effects for 12-17 s while its software graphics
+// (SwiftShader) prepare them: the heartbeat below showed timers at 0.5 s and
+// then not again until 12-17 s (CI runs 19-20), whereas a page without the
+// boot did not freeze. The boot itself finished correctly. Warm each worker's
+// browser by playing the boot once to the end, so the timing tests measure
+// the boot rather than that one-time preparation.
 test.beforeAll(async ({ browser }) => {
-  test.setTimeout(90_000);
+  test.setTimeout(120_000);
   const page = await browser.newPage();
-  await page.addInitScript(() => sessionStorage.setItem("preloader:seen", "1"));
   await page.goto("/");
-  await page.evaluate(() => {
-    const canvas = document.createElement("canvas");
-    canvas.getContext("2d")?.fillRect(0, 0, 1, 1);
-    return new Promise((done) => requestAnimationFrame(() => done(null)));
+  await expect(page.locator(".boot-terminal")).toHaveCount(0, {
+    timeout: 90_000,
   });
   await page.close();
 });
