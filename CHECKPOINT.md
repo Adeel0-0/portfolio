@@ -1,5 +1,11 @@
 # Portfolio rebuild checkpoint
 
+## CI fix: 2026-11-16 (committed on `fix/ci-browser-tests`)
+
+- Objective (owner: "fix CI"): make the browser suite pass in GitHub Actions without changing F1. PR #4 (Preprint) was merged to main by the owner; adeel.cloud serves Preprint.
+- Writer: Claude, released. Branch `fix/ci-browser-tests` from `b04b7d3a`; commits `c1c70ca3`, `fd669548` and the log commit. Details and causes in `docs/vcs-log.md`.
+- Local result with CI settings: 113 passed, 4 skipped, 0 failed. Next: push, PR, confirm the GitHub Actions run.
+
 ## Preprint default look: 2026-11-15 (implemented and committed; not pushed or deployed)
 
 - Final state: COMPLETE on branch `feat/preprint-default` (commits `23e35455`..`0ab2463d` plus this checkpoint commit). Writer: released (idle). Pushed 2026-11-16 at the owner's request; PR https://github.com/Adeel0-0/portfolio/pull/4 opened as Adeel0-0 and bound to the session. Not merged or deployed: adeel.cloud still shows the old Minimal look until #4 merges. CI runs Playwright in all three engines, so the pre-existing F1 Firefox/WebKit canvas failures are expected to fail CI there too.
