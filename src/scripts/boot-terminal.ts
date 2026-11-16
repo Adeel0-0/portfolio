@@ -46,17 +46,10 @@ function particles(canvas: HTMLCanvasElement): () => void {
   let angle = 0;
   let last = performance.now();
   let stopped = false;
-  // A device that cannot keep the sphere above ~10 fps (no GPU, a busy
-  // runner) is also re-blurring the frosted glass above it every frame,
-  // which starves the boot's own timers. Three slow frames in a row: keep
-  // the current frame and stop animating.
-  let slowFrames = 0;
   const draw = (now: number) => {
     raf = 0;
     // A detached canvas means someone else released the page: stop drawing.
     if (stopped || !canvas.isConnected) return;
-    slowFrames = now - last > 100 ? slowFrames + 1 : 0;
-    if (slowFrames >= 3) return;
     angle += Math.min((now - last) / 1000, 0.05) * 0.22;
     last = now;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
