@@ -9,7 +9,10 @@ export default defineConfig({
   timeout: 30000,
   expect: { timeout: 6000 },
   retries: process.env.CI ? 1 : 0,
-  workers: process.env.CI ? 2 : 1,
+  // One worker everywhere: the cinematic test renders a 3D scene on the CPU
+  // (SwiftShader), and beside a second worker it starved timing-sensitive
+  // tests such as the boot terminal's (CI on main, October-November 2026).
+  workers: 1,
   reporter: [["list"], ["html", { open: "never" }]],
   use: {
     baseURL: `http://127.0.0.1:${port}`,
