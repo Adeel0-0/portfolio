@@ -107,6 +107,9 @@ function play() {
   function finish() {
     if (phase === "done") return;
     phase = "done";
+    // Every exit counts as seen, including the failsafe on a slow device;
+    // otherwise the next page in the tab would play the boot again.
+    writeStorage("session", BOOT.sessionKey, "1");
     stopCounter();
     timers.forEach(clearTimeout);
     stopParticles();
@@ -200,13 +203,14 @@ function play() {
       fill.style.width = `${progress}%`;
     };
     // Counter and typing pace off the same clock, so they cannot drift apart.
+    // The clock is elapsed time, not a tick count: on a busy device ticks
+    // arrive late, and counting them stretched the boot past its failsafe.
     const step = 30;
-    let ticks = 0;
+    const begun = performance.now();
     render(0);
     interval = setInterval(() => {
-      ticks++;
       const progress = Math.min(
-        Math.round(((ticks * step) / BOOT.loader) * 100),
+        Math.round(((performance.now() - begun) / BOOT.loader) * 100),
         100,
       );
       render(progress);
