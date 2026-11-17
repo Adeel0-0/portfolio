@@ -38,10 +38,16 @@
   & body {
     background: var(--pp-desk);
     color: var(--pp-ink);
+  }
+  /* Type metrics apply to the site only, so the boot terminal (outside
+     #site-shell) keeps exactly the spacing it always had. */
+  & #site-shell {
     font-size: 16px;
     line-height: 1.5;
   }
-  & p {
+  /* Only the page itself: the boot terminal (outside #site-shell) keeps its
+     own colours, which a bare `p` rule here turned invisible on black. */
+  & #site-shell p {
     color: var(--pp-ink);
   }
   & h1,

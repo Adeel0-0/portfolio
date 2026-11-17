@@ -7,6 +7,15 @@ All significant commits, architectural reorganizations, and cross-agent updates 
 
 ## Log Entries
 
+### [2026-11-16] - CI: green browser suite, boot terminal timing fix
+- **Commits**: `c1c70ca3` (boot terminal), `fd669548` (tests and config), plus this log entry.
+- **Agent**: Claude (Claude Code desktop session)
+- **Branch**: `fix/ci-browser-tests`, base `b04b7d3a` (main, after PR #4)
+- **Scope**: `src/scripts/boot-terminal.ts`, `tests/browser/{portfolio,redesign}.spec.ts`, `playwright.config.ts`.
+- **Summary**: CI had failed on every push to main since run #7 (the October rebuild). Run #16 failed 7 tests: two boot-terminal tests and the cinematic test in Chromium, two 3D-track tests in Firefox, two transition tests in WebKit. Causes found and fixed: (1) real bug: the boot counter counted timer ticks, so a busy page overran the failsafe, and the failsafe exit did not mark the boot as seen, replaying it on the next page; (2) F1's gradient backdrop canvas was counted as a transition leftover; (3) CI Firefox has no WebGL; (4) the cinematic test sampled running colour transitions and held a 3 s budget that CPU-emulated WebGL in CI's bundled Chromium cannot meet (2.8-3.8 s idle, measured); (5) two workers let that CPU-heavy test starve the boot tests. F1 code unchanged (two experimental F1 changes were measured, made no difference, and were reverted).
+- **Verification Status**: `npm run check` PASS (0 errors, 50/50 unit, build 8 pages). Full Playwright suite with CI settings (`CI=1`, bundled Chromium, Firefox, WebKit, retries 1): 113 passed, 4 skipped, 0 failed. GitHub Actions result: see the PR.
+- **Follow-up on PR #5 (Auto-fix)**: CI still failed the two first-visit boot tests in Chromium. A particle-freeze attempt (`74227415`) did not help and was reverted (`e37012bb`). Failure diagnostics (`1098cc5a`) showed the real cause in run 19: on a freshly launched CI browser the first page's timers stop for ~15 s while SwiftShader starts. Fixed with a per-worker warm-up in the boot spec; also a Firefox lazy-image false positive in the all-routes test.
+
 ### [2026-11-15] - Preprint: the research-paper look becomes the default
 - **Commits**: `23e35455` (writer claim), `149fe091` (STIX Two Text font), `38da2547` (feature), `65a5b70e` (tests), `d9c14f5b` (docs), `d4403785` (top-bar fix), plus this log entry.
 - **Agent**: Claude (Claude Code desktop session)

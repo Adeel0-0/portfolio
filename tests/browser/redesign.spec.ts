@@ -14,6 +14,13 @@ test.beforeEach(async ({ page }) => {
 const mode = (page: Page) => page.locator("html").getAttribute("data-theme");
 const startInF1 = (page: Page) =>
   page.addInitScript(() => localStorage.setItem("portfolio-theme", "f1"));
+// The 3D track needs WebGL; CI's Firefox has none. The no-WebGL path has its
+// own test ("falls back to the map without WebGL").
+const hasWebGL = (page: Page) =>
+  page.evaluate(() => {
+    const probe = document.createElement("canvas");
+    return Boolean(probe.getContext("webgl2") ?? probe.getContext("webgl"));
+  });
 
 test("mode precedence: URL choice, then remembered choice, then Preprint", async ({
   page,
@@ -92,12 +99,13 @@ test("the Preprint path requests no 3D code until F1 asks for it", async ({
   expect(requested.filter((u) => !u.startsWith("http://127.0.0.1"))).toEqual([]);
 });
 
-test("3D track opens on request, selects projects and releases its canvas", async ({
+test("3D track opens on request, selects projects and releases its canvas", { tag: "@webgl" }, async ({
   page,
 }) => {
   await startInF1(page);
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
+  test.skip(!(await hasWebGL(page)), "This browser has no WebGL");
   const open = page.locator("#circuit-3d");
   await open.click();
   await expect(page.locator(".circuit-canvas")).toHaveCount(1);
@@ -144,10 +152,11 @@ test("3D track falls back to the map without WebGL or when loading fails", async
   await expect(page.locator(".circuit-svg")).toBeVisible();
 });
 
-test("a failed 3D import leaves the map usable", async ({ page }) => {
+test("a failed 3D import leaves the map usable", { tag: "@webgl" }, async ({ page }) => {
   await startInF1(page);
   await page.route(/circuit-scene/, (route) => route.abort());
   await page.goto("/");
+  test.skip(!(await hasWebGL(page)), "This browser has no WebGL");
   await page.locator("#circuit-3d").click();
   await expect(page.locator("#circuit-status")).toContainText("could not load");
   await expect(page.locator(".circuit-canvas")).toHaveCount(0);
