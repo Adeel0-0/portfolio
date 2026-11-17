@@ -59,6 +59,16 @@ test("first visit plays the boot terminal, then hands over a clean page", async 
   const boot = page.locator(".boot-terminal");
   await expect(boot).toBeVisible();
   await expect(boot).toContainText("sys_init.sh");
+  // The terminal keeps its own colours whatever the page styles say: a bare
+  // `p` rule in the Preprint look once turned its text black on black.
+  await expect(boot.locator(".boot-banner")).toHaveCSS(
+    "color",
+    "rgba(255, 255, 255, 0.7)",
+  );
+  await expect(boot.locator(".boot-line")).toHaveCSS(
+    "color",
+    "rgb(74, 222, 128)",
+  );
   await expect(boot.locator("canvas")).toHaveCount(1);
   await expectSettledPage(page);
   await expect(page.locator("canvas")).toHaveCount(0);
