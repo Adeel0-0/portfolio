@@ -127,7 +127,8 @@ This repository is a separate project from the parent job-hunt workspace.
   guarded storage.
 - `src/scripts/`: Boot terminal, theme transition, F1 scene, project filter.
 - `src/styles/`: Site tokens and components, boot and transition CSS.
-- `public/`: Portrait, resume PDF, favicon and social image.
+- `public/`: Portrait, resume PDF, favicon, social image and `swarm-cursors.js`
+  (the owner's swarm rebuild engine, loaded on intent by `src/scripts/shred-swarm.ts`).
 - `scripts/`: Build verification, the production-build server and the content
   fixture build.
 - `tests/`: Vitest unit tests; `tests/browser/`: Playwright journeys and

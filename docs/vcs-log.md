@@ -7,6 +7,13 @@ All significant commits, architectural reorganizations, and cross-agent updates 
 
 ## Log Entries
 
+### [2026-11-22] - Shred & rebuild button (Preprint)
+- **Agent**: Claude (Claude Code desktop session)
+- **Branch**: `feat/shred-swarm`, base `e26a5835` (main after PR #6)
+- **Scope**: `src/scripts/shred-swarm.ts` (new), `public/swarm-cursors.js` (new, owner's engine), `src/layouts/SiteLayout.astro`, `src/styles/preprint.css`, `tests/browser/preprint.spec.ts`, `CLAUDE.md`, `docs/design/DESIGN.md`, `CHECKPOINT.md`.
+- **Summary**: Owner request: a button that shreds the research paper like a shredder, using an existing component, then the owner's swarm-cursors tool rebuilds it. Shred ported from the MIT useLayouts Paper Shred Button (React/Motion to the Web Animations API, MIT notice kept); swarm engine lazy-loaded on intent. The real page is never altered for the rebuild (shell animated, desk cover, shell restored, swarm snapshots the intact page). Boot terminal and F1 untouched.
+- **Verification Status**: `npm run check` passed (0 errors, 50/50 unit, 8 pages, home JS 9.6 KB gzip). `tests/browser/preprint.spec.ts` 15/15 in Chromium, Firefox and WebKit. F1 pixel-identical on 14 shots; boot files identical to `c167cd98`. Full CI-settings browser suite was still running locally at push time; CI is the authority.
+
 ### [2026-11-22] - Agent tooling: vendored ECC subset
 - **Commits**: see `git log` on the branch (single `chore(agents)` commit).
 - **Agent**: Claude (Claude Code desktop session)

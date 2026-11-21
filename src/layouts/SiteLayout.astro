@@ -150,6 +150,15 @@ const links = [
           </nav>
           <div class="header-actions">
             <button
+              class="shred-toggle mode-minimal"
+              id="shred-toggle"
+              type="button"
+              data-swarm-ignore
+              hidden
+            >
+              Shred &amp; rebuild
+            </button>
+            <button
               class="theme-toggle"
               id="theme-toggle"
               type="button"
@@ -257,6 +266,7 @@ const links = [
       import "../scripts/f1-backdrop";
       import "../scripts/racing-loader";
       import "../scripts/xref";
+      import "../scripts/shred-swarm";
     </script>
   </body>
 </html>

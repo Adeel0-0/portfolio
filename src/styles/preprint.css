@@ -133,6 +133,27 @@
     font-size: 12px;
     font-weight: 500;
   }
+  & .shred-toggle {
+    min-height: 40px;
+    padding: 0 12px;
+    border: 1px solid var(--pp-ink);
+    border-radius: 0;
+    background: var(--pp-ink);
+    color: var(--pp-paper);
+    font: 500 12px/1 var(--pp-serif);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  & .shred-toggle:hover {
+    background: var(--pp-link);
+    border-color: var(--pp-link);
+  }
+  & .shred-toggle:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
   & .theme-toggle:hover {
     background: var(--pp-paper);
     border-color: var(--pp-ink);
@@ -747,6 +768,44 @@
   & .error-page .hero-actions {
     justify-content: center;
     margin: 20px 0 0;
+  }
+}
+
+/* "Shred & rebuild": the shredder rig lives outside #site-shell, above it. */
+.shred-rig {
+  position: fixed;
+  inset: 0;
+  z-index: 2147482000;
+  pointer-events: none;
+}
+.shred-rig.is-covering {
+  background: var(--pp-desk);
+}
+.shred-rig.is-covering > * {
+  display: none;
+}
+.shred-slot {
+  position: absolute;
+  height: 12px;
+  background: var(--pp-ink);
+  border-radius: 6px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+}
+.shred-strips {
+  position: absolute;
+  overflow: hidden; /* as in the original: strips appear only below the slot */
+  fill: none;
+  stroke: var(--pp-paper);
+  stroke-width: 9;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.12));
+}
+@media (max-width: 760px) {
+  :root:not([data-theme="f1"]) .shred-toggle {
+    display: none;
   }
 }
 
