@@ -1,5 +1,10 @@
 # Portfolio rebuild checkpoint
 
+## ECC subset: 2026-11-22 (committed on `claude/ecc-project-implementation-9eb212`; not pushed)
+
+- Objective (owner: "implement ECC for this project ... be stingy"): vendor only the ECC parts that fit, at low context cost. Writer: Claude, released. Base `659bd8d3`.
+- Done: rules, agents, skills, `/ecc-*` commands and `docs/agents/ecc.md`. Tooling only; `npm run check` not run. Next: owner tries the agents/commands; push/PR only on request.
+
 ## CI fix: 2026-11-16 (committed on `fix/ci-browser-tests`)
 
 - Objective (owner: "fix CI"): make the browser suite pass in GitHub Actions without changing F1. PR #4 (Preprint) was merged to main by the owner; adeel.cloud serves Preprint.

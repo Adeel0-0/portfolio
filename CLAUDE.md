@@ -79,6 +79,12 @@ both modes, the motion, reduced-motion and cleanup contract, and no
 fabricated content. `--persist` writes `design-system/<project>/`; use it only
 for a direction the owner has approved.
 
+### ECC subset
+
+A path-scoped subset of ECC (rules, review/build/e2e/a11y agents, a few
+skills and `/ecc-*` commands) is vendored under `.claude/`. This file wins
+over it. Contents, omissions and update steps: `docs/agents/ecc.md`.
+
 ### Version control & Git management
 
 Strict zero-tolerance policy for all agents (ChatGPT, Claude, Codex, Copilot, Cursor, etc.). Uncoordinated, untracked, uncommitted, or broken changes will be **IMMEDIATELY REVERTED AND REMOVED** via `git restore` and clean resets. All git operations, commit standards, and changelog updates must follow `docs/agents/version-control.md` and log into `docs/vcs-log.md`.
