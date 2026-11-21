@@ -150,15 +150,6 @@ const links = [
           </nav>
           <div class="header-actions">
             <button
-              class="shred-toggle mode-minimal"
-              id="shred-toggle"
-              type="button"
-              data-swarm-ignore
-              hidden
-            >
-              Shred &amp; rebuild
-            </button>
-            <button
               class="theme-toggle"
               id="theme-toggle"
               type="button"
@@ -179,6 +170,17 @@ const links = [
               </svg>
               <span>F1 mode</span>
               <span class="toggle-state" aria-hidden="true"></span>
+            </button>
+            <!-- After the mode toggle so it stays the first header control
+                 in tab order, whether or not this optional button shows. -->
+            <button
+              class="shred-toggle mode-minimal"
+              id="shred-toggle"
+              type="button"
+              data-swarm-ignore
+              hidden
+            >
+              Shred &amp; rebuild
             </button>
             <details class="mobile-menu">
               <summary>
