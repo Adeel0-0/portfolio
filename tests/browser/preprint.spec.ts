@@ -56,6 +56,51 @@ test("cross-references and footnotes are real links that go both ways", async ({
   await expect(page).toHaveURL(/#fnref-1$/);
 });
 
+test("Shred & rebuild shreds the paper, hands over to the swarm and cleans up", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1366, height: 860 });
+  await page.goto("/");
+  const button = page.locator("#shred-toggle");
+  await expect(button).toBeVisible();
+  await button.click();
+  // The shredder rig appears while the paper is fed through.
+  await expect(page.locator(".shred-rig")).toHaveCount(1);
+  // Then the swarm engine takes over with the real page intact underneath.
+  await expect(page.locator("swarm-rebuild")).toHaveCount(1, { timeout: 15000 });
+  expect(
+    await page.evaluate(() => ({
+      animations: document.querySelector("#site-shell")!.getAnimations().length,
+      transform: getComputedStyle(document.querySelector("#site-shell")!).transform,
+    })),
+  ).toEqual({ animations: 0, transform: "none" });
+  await page.keyboard.press("Escape");
+  await expect(page.locator("swarm-rebuild")).toHaveCount(0, { timeout: 5000 });
+  await expect(page.locator(".shred-rig")).toHaveCount(0);
+  await expect(button).toBeEnabled();
+});
+
+test("Shred & rebuild is absent in F1, under reduced motion and on phones", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1366, height: 860 });
+  await page.goto("/?mode=f1");
+  await expect(page.locator("#shred-toggle")).toBeHidden();
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/?mode=preprint");
+  await expect(page.locator("#shred-toggle")).toBeHidden();
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await expect(page.locator("#shred-toggle")).toBeHidden();
+  // Nothing from the swarm engine is fetched until someone shows intent.
+  const requests: string[] = [];
+  page.on("request", (r) => requests.push(r.url()));
+  await page.setViewportSize({ width: 1366, height: 860 });
+  await page.reload({ waitUntil: "networkidle" });
+  expect(requests.filter((u) => u.includes("swarm-cursors"))).toEqual([]);
+});
+
 test("the paper is complete without JavaScript and on a phone", async ({ browser }) => {
   const context = await browser.newContext({
     javaScriptEnabled: false,
