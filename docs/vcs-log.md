@@ -7,6 +7,14 @@ All significant commits, architectural reorganizations, and cross-agent updates 
 
 ## Log Entries
 
+### [2026-11-22] - Agent tooling: vendored ECC subset
+- **Commits**: see `git log` on the branch (single `chore(agents)` commit).
+- **Agent**: Claude (Claude Code desktop session)
+- **Branch**: `claude/ecc-project-implementation-9eb212`, base `659bd8d3` (main)
+- **Scope**: `.claude/{rules/ecc,agents,commands}/`, ten skills in `.claude/skills/`, `docs/agents/ecc.md`, `CLAUDE.md`, `CHECKPOINT.md`.
+- **Summary**: Owner asked to implement affaan-m/ECC for this project, selectively. Vendored path-scoped rules (common/typescript/web), 8 agents, 10 skills and 3 `/ecc-*` commands from ECC `4adeee67`. Hooks, installer, design/motion skills and other stacks left out; reasons in `docs/agents/ecc.md`. No application source, dependency or test changes.
+- **Verification Status**: tooling and docs only; `npm run check` and browser tests not run (no app code changed).
+
 ### [2026-11-16] - CI: green browser suite, boot terminal timing fix
 - **Commits**: `c1c70ca3` (boot terminal), `fd669548` (tests and config), plus this log entry.
 - **Agent**: Claude (Claude Code desktop session)
