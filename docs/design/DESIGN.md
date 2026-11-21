@@ -11,6 +11,12 @@
 > internal theme id stays `professional`; `?mode=preprint` (and the old
 > `?mode=minimal`) select it. The boot terminal is unchanged and its look is
 > never used inside the site.
+>
+> **Shred & rebuild (2026-11-22).** A Preprint-only top-bar button feeds the
+> paper through a shredder (port of the MIT useLayouts Paper Shred Button,
+> `src/scripts/shred-swarm.ts`) and then hands over to the swarm-cursors
+> rebuild (`public/swarm-cursors.js`, loaded on intent). Desktop pointers only;
+> absent in F1, under reduced motion, without JavaScript and below 760px.
 
 Date: 2026-11-05. Source brief: owner's `PORTFOLIO-REDESIGN-PROMPT.md`, with the
 owner's adjustments of the same day: CI/CD-friendly, pictures and YouTube videos

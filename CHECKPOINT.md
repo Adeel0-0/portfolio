@@ -1,5 +1,13 @@
 # Portfolio rebuild checkpoint
 
+## Shred & rebuild button: 2026-11-22 (branch `feat/shred-swarm`, from `e26a5835`)
+
+- Objective (owner): a button that shreds the whole research paper like a shredder (use an existing component, not a home-made one), then the owner's swarm-cursors tool rebuilds it.
+- Writer: Claude, released after the commit. Boot terminal and F1 untouched (boot files identical to `c167cd98`; F1 pixel-identical on 14 shots).
+- Shred: useLayouts "Paper Shred Button" (MIT, (c) 2025 Urvish Mali, github.com/iurvish/uselayouts) ported from React/Motion to the Web Animations API in `src/scripts/shred-swarm.ts` (strip paths, timings, easings kept; MIT notice in the header). Other candidates rejected: Shredline (no licence), CSS Shredder CodePen (unreadable), Disintegrate.js (particles, not strips).
+- Rebuild: `public/swarm-cursors.js` from the owner's swarm-cursors skill (credit header kept), loaded only on hover/focus/click with its own button and hotkey off. Licensing: the Swarm effect is Joel Califa's design and the original has no licence; the owner should confirm permission before relying on it publicly.
+- Button: Preprint only, desktop with a fine pointer, wider than 760px, never under reduced motion, hidden without JS.
+
 ## ECC subset: 2026-11-22 (committed on `claude/ecc-project-implementation-9eb212`; not pushed)
 
 - Objective (owner: "implement ECC for this project ... be stingy"): vendor only the ECC parts that fit, at low context cost. Writer: Claude, released. Base `659bd8d3`.
